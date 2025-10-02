@@ -34,7 +34,6 @@ const EmailLoginScreen = () => {
     // 로그인 성공 후 언어 선택 화면으로 이동
     navigation.navigate('LanguageSelection');
     };
-  };
 
   return (
     <View style={[GlobalStyles.container, { paddingTop: insets.top }]}>
