@@ -192,7 +192,7 @@
     "delete_future": "미래 예정된 Task도 모두 삭제",
     "yes": "예",
     "no": "아니오",
-    "edit_add_title": "할 일 추가",
+    "edit_add_title": "Task 추가",
     "edit_edit_title": "할 일 수정",
     "content_placeholder": "할 일 내용을 입력하세요",
     "category_setting": "카테고리 설정",
