@@ -1,16 +1,13 @@
 // src/screens/HomeScreen.jsx
-
-import React, {useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Alert, ScrollView, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ScrollView, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { format, addDays, subDays } from 'date-fns';
-// --- 수정: date-fns의 locale import 경로를 최신 버전에 맞게 변경 ---
 import { ko } from 'date-fns/locale/ko';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 
-import { GlobalStyles } from '../styles/GlobalStyles';
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
 import Button from '../components/common/Button';
@@ -38,56 +35,38 @@ const HomeScreen = ({ isPremiumUser }) => {
 
   useEffect(() => {
     if (tasks.length > 0 && tasks.every(task => task.completed)) {
-      setTimeout(() => {
-        setShowCoinGrantModal(true);
-      }, 500);
+      setTimeout(() => setShowCoinGrantModal(true), 500);
     }
   }, [tasks]);
 
-
-  const goToPreviousDay = () => {
-    setCurrentDate(subDays(currentDate, 1));
-  };
-
-  const goToNextDay = () => {
-    setCurrentDate(addDays(currentDate, 1));
-  };
+  const goToPreviousDay = () => setCurrentDate(subDays(currentDate, 1));
+  const goToNextDay = () => setCurrentDate(addDays(currentDate, 1));
 
   const toggleTaskCompletion = (id) => {
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
+    setTasks(prev =>
+      prev.map(task => (task.id === id ? { ...task, completed: !task.completed } : task))
     );
   };
 
-  const goToTaskDetail = (task) => {
-    Alert.alert(t('core.home.task_detail'), t('core.home.task_detail_message'));
-  };
+  const handleGoToTaskCalendar = () => navigation.navigate('TaskCalendar');
 
-  const handleGoToTaskCalendar = () => {
-    navigation.navigate('TaskCalendar');
-  };
-
-  const handleObooniPress = () => {
-    navigation.navigate('ObooniCustomization', { isPremiumUser: isPremiumUser });
-  };
+  const handleObooniPress = () =>
+    navigation.navigate('ObooniCustomization', { isPremiumUser });
 
   const renderTaskItem = ({ item }) => (
+    // 아이템 전체를 눌러도 체크 토글
     <TouchableOpacity
       style={styles.taskItem}
-      onPress={() => goToTaskDetail(item)}
+      activeOpacity={0.7}
+      onPress={() => toggleTaskCompletion(item.id)}
     >
-      <TouchableOpacity
-        style={styles.checkboxContainer}
-        onPress={() => toggleTaskCompletion(item.id)}
-      >
+      <View style={styles.checkboxContainer}>
         {item.completed ? (
           <FontAwesome name="check-square" size={24} color={Colors.accentApricot} />
         ) : (
           <FontAwesome name="square-o" size={24} color={Colors.secondaryBrown} />
         )}
-      </TouchableOpacity>
+      </View>
       <Text style={[styles.taskText, item.completed && styles.taskTextCompleted]}>
         {item.text}
       </Text>
@@ -112,15 +91,12 @@ const HomeScreen = ({ isPremiumUser }) => {
         {isPremiumUser && (
           <View style={styles.coinDisplayContainer}>
             <Text style={styles.coinText}>{coins}</Text>
-            <FontAwesome name="dollar" size={FontSizes.medium} color={Colors.accentApricot} style={styles.coinIcon} />
+            <FontAwesome name="dollar" size={FontSizes.medium} color={Colors.accentApricot} />
           </View>
         )}
 
         <TouchableOpacity onPress={handleObooniPress}>
-          <Image 
-            source={require('../../assets/기본오분이.png')} 
-            style={styles.obooniCharacter} 
-          />
+          <Image source={require('../../assets/기본오분이.png')} style={styles.obooniCharacter} />
         </TouchableOpacity>
 
         <View style={styles.taskListContainer}>
@@ -130,11 +106,12 @@ const HomeScreen = ({ isPremiumUser }) => {
               <FontAwesome name="plus" size={20} color={Colors.textLight} />
             </TouchableOpacity>
           </View>
+
           {tasks.length > 0 ? (
             <FlatList
               data={tasks}
               renderItem={renderTaskItem}
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
               scrollEnabled={false}
             />
           ) : (
@@ -148,16 +125,14 @@ const HomeScreen = ({ isPremiumUser }) => {
 
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent
         visible={showCoinGrantModal}
         onRequestClose={() => setShowCoinGrantModal(false)}
       >
         <View style={styles.coinModalOverlay}>
           <View style={styles.coinModalContent}>
             <Image source={require('../../assets/coin.png')} style={styles.modalCoinImage} />
-            <Text style={styles.modalMessage}>
-              {t('home.completion_modal_message')}
-            </Text>
+            <Text style={styles.modalMessage}>{t('home.completion_modal_message')}</Text>
             <Button title={t('common.ok')} onPress={() => setShowCoinGrantModal(false)} style={styles.modalButton} />
           </View>
         </View>
@@ -167,153 +142,60 @@ const HomeScreen = ({ isPremiumUser }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.primaryBeige,
-  },
-  scrollViewContentContainer: {
-    alignItems: 'center',
-    paddingBottom: 100,
-  },
+  container: { flex: 1, backgroundColor: Colors.primaryBeige },
+  scrollViewContentContainer: { alignItems: 'center', paddingBottom: 100 },
   dateNavigationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '90%',
-    paddingVertical: 15,
-    marginTop: 20,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    width: '90%', paddingVertical: 15, marginTop: 20,
   },
-  dateNavButton: {
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-  },
-  dateNavButtonText: {
-    fontSize: FontSizes.extraLarge,
-    fontWeight: FontWeights.bold,
-    color: Colors.secondaryBrown,
-  },
-  currentDateText: {
-    fontSize: FontSizes.large,
-    fontWeight: FontWeights.bold,
-    color: Colors.textDark,
-  },
+  dateNavButton: { paddingHorizontal: 15, paddingVertical: 5 },
+  dateNavButtonText: { fontSize: FontSizes.extraLarge, fontWeight: FontWeights.bold, color: Colors.secondaryBrown },
+  currentDateText: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.textDark },
+
   coinDisplayContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    width: '90%',
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-    backgroundColor: Colors.textLight,
-    borderRadius: 15,
-    elevation: 2,
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end',
+    width: '90%', paddingVertical: 8, paddingHorizontal: 15, marginBottom: 10,
+    backgroundColor: Colors.textLight, borderRadius: 15, elevation: 2,
   },
-  coinText: {
-    fontSize: FontSizes.medium,
-    fontWeight: FontWeights.bold,
-    color: Colors.textDark,
-    marginRight: 5,
-  },
-  coinIcon: {},
-  obooniCharacter: {
-    width: 250,
-    height: 250,
-    marginVertical: 20,
-    resizeMode: 'contain',
-  },
+  coinText: { fontSize: FontSizes.medium, fontWeight: FontWeights.bold, color: Colors.textDark, marginRight: 5 },
+
+  obooniCharacter: { width: 250, height: 250, marginVertical: 20, resizeMode: 'contain' },
+
+  // 🔧 카드: 흰색 → 반투명 회색
   taskListContainer: {
     width: '90%',
-    backgroundColor: Colors.textLight,
-    borderRadius: 15,
+    backgroundColor: 'rgba(0,0,0,0.06)',  // 반투명 회색
+    borderRadius: 16,
     padding: 20,
     marginBottom: 20,
-    elevation: 3,
   },
-  taskListHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  taskListTitle: {
-    fontSize: FontSizes.large,
-    fontWeight: FontWeights.bold,
-    color: Colors.textDark,
-  },
+  taskListHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
+  taskListTitle: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.textDark },
+
   addTaskButton: {
-    backgroundColor: Colors.accentApricot,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 3,
+    backgroundColor: Colors.accentApricot, width: 40, height: 40, borderRadius: 20,
+    justifyContent: 'center', alignItems: 'center', elevation: 3,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3,
   },
+
   taskItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'row', alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.primaryBeige,
+    borderBottomColor: 'rgba(0,0,0,0.06)',
   },
-  checkboxContainer: {
-    marginRight: 15,
-  },
-  taskText: {
-    fontSize: FontSizes.medium,
-    color: Colors.textDark,
-    flex: 1,
-  },
-  taskTextCompleted: {
-    textDecorationLine: 'line-through',
-    color: Colors.secondaryBrown,
-  },
-  noTaskContainer: {
-    alignItems: 'center',
-    paddingVertical: 50,
-  },
-  noTaskText: {
-    fontSize: FontSizes.medium,
-    color: Colors.secondaryBrown,
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  coinModalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  coinModalContent: {
-    backgroundColor: Colors.textLight,
-    borderRadius: 20,
-    padding: 30,
-    alignItems: 'center',
-    width: '80%',
-    elevation: 10,
-  },
-  modalCoinImage: {
-    width: 150,
-    height: 150,
-    resizeMode: 'contain',
-    marginBottom: 20,
-  },
-  modalMessage: {
-    fontSize: FontSizes.large,
-    fontWeight: FontWeights.bold,
-    color: Colors.textDark,
-    textAlign: 'center',
-    marginBottom: 30,
-    lineHeight: 28,
-  },
-  modalButton: {
-    width: '70%',
-  },
+  checkboxContainer: { marginRight: 15 },
+  taskText: { fontSize: FontSizes.medium, color: Colors.textDark, flex: 1 },
+  taskTextCompleted: { textDecorationLine: 'line-through', color: Colors.secondaryBrown },
+
+  noTaskContainer: { alignItems: 'center', paddingVertical: 50 },
+  noTaskText: { fontSize: FontSizes.medium, color: Colors.secondaryBrown, textAlign: 'center', marginBottom: 10 },
+
+  coinModalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'center', alignItems: 'center' },
+  coinModalContent: { backgroundColor: Colors.textLight, borderRadius: 20, padding: 30, alignItems: 'center', width: '80%', elevation: 10 },
+  modalCoinImage: { width: 150, height: 150, resizeMode: 'contain', marginBottom: 20 },
+  modalMessage: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.textDark, textAlign: 'center', marginBottom: 30, lineHeight: 28 },
+  modalButton: { width: '70%' },
 });
 
 export default HomeScreen;
