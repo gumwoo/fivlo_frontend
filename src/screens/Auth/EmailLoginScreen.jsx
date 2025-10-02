@@ -35,10 +35,11 @@ const EmailLoginScreen = () => {
     navigation.navigate('LanguageSelection');
     };
 
+
   return (
-    <View style={[GlobalStyles.container, { paddingTop: insets.top }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('core.auth.login_header')} showBackButton={true} />
-      <ScrollView contentContainerStyle={styles.formContainer}>
+      <View style={styles.formContainer}>
         <Input
           placeholder={t('core.auth.email_placeholder')}
           keyboardType="email-address"
@@ -52,27 +53,40 @@ const EmailLoginScreen = () => {
           value={password}
           onChangeText={setPassword}
         />
-
+      </View>
+      
+      <View style={styles.buttonContainer}>
         <Button
           title={t('core.auth.login_header')}
           onPress={handleLogin}
           style={styles.loginButton}
         />
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    backgroundColor: Colors.primaryBeige,
+  },
   formContainer: {
-    flexGrow: 1,
-    width: '80%',
+    flex: 1,
+    width: '100%',
     alignItems: 'center',
-    marginTop: 50,
-    paddingBottom: 40,
+    paddingTop: 80,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 40,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    paddingHorizontal: 40,
   },
   loginButton: {
-    marginTop: 30,
+    width: '80%',
   },
 });
 

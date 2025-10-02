@@ -1,20 +1,53 @@
-// src/components/common/Button.jsx (예시)
+// src/components/common/Button.jsx
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 
-const Button = ({ title, onPress, style, textStyle, primary = true }) => {
+// variant: "brand" | "default" | "text"
+// brandType: "google" | "apple" | "kakao"
+const Button = ({ title, onPress, style, textStyle, variant = "default", brandType }) => {
+  let buttonStyle = styles.defaultButton;
+  let textColor = Colors.textLight;
+
+  if (variant === "brand") {
+    switch (brandType) {
+      case "google":
+        buttonStyle = { backgroundColor: Colors.googleBlue };
+        textColor = Colors.textLight;
+        break;
+      case "apple":
+        buttonStyle = { backgroundColor: Colors.appleBlack };
+        textColor = Colors.textLight;
+        break;
+      case "kakao":
+        buttonStyle = { backgroundColor: Colors.kakaoYellow };
+        textColor = Colors.textDark; // 카카오는 검정 텍스트
+        break;
+    }
+  } else if (variant === "default") {
+    buttonStyle = styles.secondaryButton; // 갈색 (이메일 등)
+    textColor = Colors.textLight;
+  } else if (variant === "text") {
+    buttonStyle = styles.textButton; // 배경 없음
+    textColor = Colors.secondaryBrown;
+  }
+
   return (
     <TouchableOpacity
-      style={[
-        styles.button,
-        primary ? styles.primaryButton : styles.secondaryButton,
-        style,
-      ]}
+      style={[styles.button, buttonStyle, style]}
       onPress={onPress}
     >
-      <Text style={[styles.buttonText, textStyle]}>{title}</Text>
+      <Text
+        style={[
+          styles.buttonText,
+          { color: textColor },
+          variant === "text" ? styles.textButtonText : null,
+          textStyle,
+        ]}
+      >
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -26,19 +59,25 @@ const styles = StyleSheet.create({
     borderRadius: 10, // 둥근 모서리
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%', // 기본적으로 너비 100%
-    marginVertical: 10, // 버튼 간 여백
+    width: '100%',
+    marginVertical: 10,
   },
-  primaryButton: {
-    backgroundColor: Colors.accentApricot, // 강조색
+  defaultButton: {
+    backgroundColor: Colors.accentApricot,
   },
   secondaryButton: {
-    backgroundColor: Colors.secondaryBrown, // 보조색
+    backgroundColor: Colors.secondaryBrown,
+  },
+  textButton: {
+    backgroundColor: 'transparent',
   },
   buttonText: {
-    color: Colors.textLight, // 버튼 텍스트 색상
     fontSize: FontSizes.medium,
     fontWeight: FontWeights.bold,
+  },
+  textButtonText: {
+    textDecorationLine: 'underline',
+    fontWeight: FontWeights.medium,
   },
 });
 

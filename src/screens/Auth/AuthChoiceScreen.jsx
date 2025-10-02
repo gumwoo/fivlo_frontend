@@ -12,6 +12,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
+// ✅ 로고 이미지 불러오기
+const logo = require('../../../assets/로고.png');
+
 const AuthChoiceScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
@@ -25,6 +28,10 @@ const AuthChoiceScreen = () => {
     console.log('Apple Sign In');
   };
 
+  const handleKakaoSignIn = () => {
+    console.log('Kakao Sign In');
+  };
+
   const handleEmailSignUp = () => {
     navigation.navigate('EmailSignUp');
   };
@@ -35,18 +42,39 @@ const AuthChoiceScreen = () => {
 
   return (
     <View style={[GlobalStyles.container, { paddingTop: insets.top }]}>
-      <Header title="" showBackButton={true} />
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
       
-        <CharacterImage style={styles.obooniCharacter} />
+        {/* ✅ 여기서 직접 로고 이미지를 사용 */}
+        <Image source={logo} style={styles.logo} />
+
         <Text style={styles.tagline}>
           {t('core.auth.tagline')}
         </Text>
 
         <View style={styles.buttonContainer}>
-          <Button title={t('core.auth.google')} onPress={handleGoogleSignIn} />
-          <Button title={t('core.auth.apple')} onPress={handleAppleSignIn} />
-          <Button title={t('core.auth.email')} onPress={handleEmailSignUp} primary={false} />
+          <Button
+            title={t('core.auth.google')}
+            onPress={handleGoogleSignIn}
+            variant="brand"
+            brandType="google"
+          />
+          <Button
+            title={t('core.auth.apple')}
+            onPress={handleAppleSignIn}
+            variant="brand"
+            brandType="apple"
+          />
+          <Button
+            title={t('core.auth.kakao')}
+            onPress={handleKakaoSignIn}
+            variant="brand"
+            brandType="kakao"
+          />
+          <Button
+            title={t('core.auth.email')}
+            onPress={handleEmailSignUp}
+            variant="default"
+          />
           <TouchableOpacity onPress={handleLogin} style={styles.loginTextButton}>
             <Text style={styles.loginText}>{t('core.auth.login')}</Text>
           </TouchableOpacity>
@@ -65,10 +93,11 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   logo: {
-    width: 150,
-    height: 60,
+    width: 350,
+    height: 150,
     resizeMode: 'contain',
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 30
   },
   obooniCharacter: {
     width: 150,
@@ -83,12 +112,12 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   buttonContainer: {
-    width: '80%',
+    width: '75%',
     alignItems: 'center',
   },
   loginTextButton: {
-    marginTop: 20,
-    padding: 10,
+    marginTop: 0,
+    padding: 20,
   },
   loginText: {
     color: Colors.secondaryBrown,

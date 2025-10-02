@@ -48,9 +48,9 @@ const EmailSignUpScreen = () => {
   };
 
   return (
-    <View style={[GlobalStyles.container, { paddingTop: insets.top }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('core.auth.signup_header')} showBackButton={true} />
-      <ScrollView contentContainerStyle={styles.formContainer}>
+      <View style={styles.formContainer}>
         <Input
           placeholder={t('core.auth.email_placeholder')}
           keyboardType="email-address"
@@ -64,36 +64,57 @@ const EmailSignUpScreen = () => {
           value={password}
           onChangeText={setPassword}
         />
-        <Checkbox
-          label={t('core.auth.over14')}
-          isChecked={isOver14}
-          onPress={() => setIsOver14(!isOver14)}
-        />
-        <Checkbox
-          label={t('core.auth.agree_terms')}
-          isChecked={agreedToTerms}
-          onPress={() => setAgreedToTerms(!agreedToTerms)}
-        />
+        <View style={styles.checkboxContainer}>
+          <Checkbox
+            label={t('core.auth.over14')}
+            isChecked={isOver14}
+            onPress={() => setIsOver14(!isOver14)}
+          />
+          <Checkbox
+            label={t('core.auth.agree_terms')}
+            isChecked={agreedToTerms}
+            onPress={() => setAgreedToTerms(!agreedToTerms)}
+          />
+        </View>
+      </View>
+      
+      <View style={styles.buttonContainer}>
         <Button
           title={t('core.auth.start_routine')}
           onPress={handleSignUp}
           style={styles.signUpButton}
         />
-      </ScrollView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    backgroundColor: Colors.primaryBeige,
+  },
   formContainer: {
-    flexGrow: 1,
-    width: '80%',
+    flex: 1,
+    width: '100%',
     alignItems: 'center',
-    marginTop: 50,
-    paddingBottom: 40,
+    paddingTop: 80,
+  },
+  checkboxContainer: {
+    width: 260,
+    alignItems: 'flex-start',
+    marginTop: 10,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 40,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    paddingHorizontal: 40,
   },
   signUpButton: {
-    marginTop: 30,
+    width: '80%',
   },
 });
 

@@ -285,9 +285,10 @@
     },
     "purpose_header": "사용 목적 선택",
     "auth": {
-      "tagline": "짧은 열정이 아닌 꾸준함이 변한다.\n삶을 바꾸는 집중 루틴 플랫폼",
+      "tagline": "짧은 몰입이 긴 변화를 만든다.\n삶을 바꾸는 집중 루틴 플랫폼",
       "google": "Google로 시작하기",
       "apple": "Apple로 시작하기",
+      "kakao": "KAKAO로 시작하기",
       "email": "이메일로 시작하기",
       "login": "로그인하기",
       "login_header": "로그인하기",

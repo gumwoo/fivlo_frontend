@@ -6,4 +6,7 @@ export const Colors = {
   textDark: '#333333',
   textLight: '#FFFFFF',
   // ... 추가 색상
+  googleBlue: '#4285F4',
+  appleBlack: '#000000',
+  kakaoYellow: '#FEE500',
 };

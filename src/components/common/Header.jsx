@@ -30,8 +30,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     // --- 수정: 좌우 여백을 15에서 30으로 늘림 ---
-    paddingHorizontal: 30,
-    paddingVertical: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: Colors.textLight,
     borderBottomWidth: 0,
     borderBottomColor: '#eee',
   },

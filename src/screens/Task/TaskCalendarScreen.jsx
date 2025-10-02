@@ -148,22 +148,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryBeige,
   },
   scrollViewContentContainer: {
-    paddingHorizontal: 10,
     paddingBottom: 40,
     alignItems: 'center',
-    paddingTop: 10,
   },
   calendar: {
     width: '100%',
-    aspectRatio: 1, // 캘린더 비율 유지
     padding: 10,
-    borderRadius: 15,
     backgroundColor: Colors.textLight,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
 });
 

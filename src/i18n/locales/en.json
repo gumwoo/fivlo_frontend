@@ -285,9 +285,10 @@
     },
     "purpose_header": "Select purpose",
     "auth": {
-      "tagline": "Consistency, not a short burst of passion.\nA focus routine platform that changes your life",
+      "tagline": "Short immersion leads to lasting change..\nA focus routine platform that changes your life",
       "google": "Continue with Google",
       "apple": "Continue with Apple",
+      "kakao": "Continue with Kakao",
       "email": "Continue with Email",
       "login": "Log in",
       "login_header": "Log in",

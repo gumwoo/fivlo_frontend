@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',   // 로고를 수평 중앙에 배치
   },
   logo: {
-    width: 250,
-    height: 100, // 로고 비율에 맞게 높이 조절
+    width: 350,
+    height: 200, // 로고 비율에 맞게 높이 조절
     resizeMode: 'contain',
   },
 });

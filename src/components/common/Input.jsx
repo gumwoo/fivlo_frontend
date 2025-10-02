@@ -16,14 +16,15 @@ const Input = ({ style, ...props }) => {
 
 const styles = StyleSheet.create({
   input: {
-    height: 50,
-    width: '100%',
+    height: 45,
+    width: 260,
     backgroundColor: Colors.textLight, // 흰색 또는 라이트 베이지
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    fontSize: FontSizes.medium,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 14,
     color: Colors.textDark,
-    marginVertical: 10,
+    marginVertical: 5,
+    alignSelf: 'center',
   },
 });
 
