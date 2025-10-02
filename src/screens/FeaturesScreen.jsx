@@ -1,11 +1,10 @@
 // src/screens/FeaturesScreen.jsx
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Header from '../components/common/Header';
-import { GlobalStyles } from '../styles/GlobalStyles';
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
 import { useTranslation } from 'react-i18next';
@@ -35,16 +34,17 @@ const FeaturesScreen = () => {
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('core.features_header')} showBackButton={true} />
-      <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
-        <View style={styles.featureGrid}>
-          {features.map((feature, index) => (
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.grid}>
+          {features.map((feature, idx) => (
             <TouchableOpacity
-              key={index}
-              style={styles.featureItem}
+              key={idx}
+              style={styles.item}
+              activeOpacity={0.7}
               onPress={() => handleFeaturePress(feature.screen)}
             >
-              <Image source={feature.image} style={styles.featureImage} />
-              <Text style={styles.featureText}>{feature.name}</Text>
+              <Image source={feature.image} style={styles.icon} />
+              <Text style={styles.label} numberOfLines={1}>{feature.name}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -58,43 +58,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primaryBeige,
   },
-  scrollViewContentContainer: {
-    paddingHorizontal: 30,
-    // --- 수정: paddingTop 값을 늘려 버튼들을 아래로 내림 ---
-    paddingTop: 50, 
-    paddingBottom: 20,
-    alignItems: 'center',
+  content: {
+    paddingHorizontal: 16,
+    paddingTop: 80,      // 헤더 아래 여백
+    paddingBottom: 24,
   },
-  featureGrid: {
+  grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    width: '100%',
+    justifyContent: 'space-between', // 2열 그리드
   },
-  featureItem: {
-    width: '45%',
-    aspectRatio: 1,
-    backgroundColor: Colors.textLight,
-    borderRadius: 15,
-    justifyContent: 'center',
+  item: {
+    width: '48%',        // 2열
     alignItems: 'center',
-    margin: '2.5%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    marginBottom: 24,
+    // ✅ 카드 배경/그림자 완전히 제거
   },
-  featureImage: {
-    width: 60,
-    height: 60,
+  icon: {
+    width: 150,           // 아이콘 크게
+    height: 130,
     resizeMode: 'contain',
+    marginBottom: 10,
   },
-  featureText: {
+  label: {
     fontSize: FontSizes.medium,
     fontWeight: FontWeights.medium,
     color: Colors.textDark,
-    marginTop: 10,
     textAlign: 'center',
   },
 });
