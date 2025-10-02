@@ -86,7 +86,12 @@ const AccountManagementScreen = () => {
         </TouchableOpacity>
         
         <Text style={styles.label}>{t('account.fivlo_purpose')}</Text>
-        <Text style={styles.infoText}>{t('account.purpose_placeholder')}</Text>
+        <TouchableOpacity 
+          style={styles.purposeBox} 
+          onPress={() => navigation.navigate('PurposeSelection', { from: 'profile' })}
+        >
+          <Text style={styles.infoText}>{t('account.purpose_placeholder')}</Text>
+        </TouchableOpacity>
 
       </ScrollView>
       <View style={styles.saveButtonContainer}>
@@ -115,7 +120,16 @@ const styles = StyleSheet.create({
   actionButton: { width: '100%', marginTop: 24, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: Colors.secondaryBrown+'50'},
   actionText: { fontSize: FontSizes.medium, color: Colors.textDark, fontWeight: '600' },
   deleteText: { color: Colors.accentRed },
-  saveButtonContainer: { padding: 20, borderTopWidth: 1, borderTopColor: '#e0e0e0', backgroundColor: Colors.primaryBeige },
+  purposeBox: { 
+  width: '100%',
+  backgroundColor: Colors.textLight,
+  borderRadius: 12,
+  padding: 12,
+  borderWidth: 2,
+  borderColor: Colors.secondaryBrown,
+  marginTop: 8
+},
+  saveButtonContainer: { position: 'absolute', bottom: 30, left: 0, right: 0, paddingHorizontal: 20, backgroundColor: Colors.primaryBeige },
 });
 
 export default AccountManagementScreen;
