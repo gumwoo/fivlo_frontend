@@ -318,7 +318,7 @@
       "target_period_label": "Goal Achievement Period",
       "continuous": "Ongoing without deadline",
       "set_period": "Set Achievement Period",
-      "generate": "Generate personalized schedule",
+      "generate": "Generate personalized schedule with AI",
       "loading": "Obooni is creating a routine for you!",
       "ai_title": "AI recommended repeating schedules",
       "weekly_placeholder_1": "Weekly goals and schedules will be shown here.",
