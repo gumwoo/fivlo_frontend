@@ -279,7 +279,7 @@
       "reminder": "Reminder",
       "album": "Growth album",
       "time_attack": "Time attack",
-      "routine": "Routine setup",
+      "routine": "Goal Segmentation",
       "analysis": "Focus analysis graph",
       "navigate": "Go to {{screen}} screen."
     },
@@ -312,12 +312,12 @@
       "start_routine": "Start managing routines"
     },
     "routine": {
-      "header": "Routine setup",
-      "goal_input_label": "Write your main goal",
-      "goal_input_placeholder": "e.g., Lose 5kg healthily in 2 months",
-      "target_period_label": "Set target period",
-      "continuous": "Continue without end date",
-      "set_period": "Set target period",
+      "header": "Goal Segmentation",
+      "goal_input_label": "Enter Goal",
+      "goal_input_placeholder": "Please enter the goal you want to achieve.\n Ex. TOEIC score above 800, Exercise daily, etc.",
+      "target_period_label": "Goal Achievement Period",
+      "continuous": "Ongoing without deadline",
+      "set_period": "Set Achievement Period",
       "generate": "Generate personalized schedule",
       "loading": "Obooni is creating a routine for you!",
       "ai_title": "AI recommended repeating schedules",

@@ -32,7 +32,7 @@ const WeeklyTaskCard = ({ weekNumber, tasks = [], onEditTask, onAddToTask }) => 
   return (
     <View style={styles.card}>
       {/* 제목 */}
-      <Text style={styles.title}>오토이가 추천하는 인정</Text>
+      <Text style={styles.title}>오분이가 추천하는 일정</Text>
       
       {/* 구분선 */}
       <View style={styles.divider} />

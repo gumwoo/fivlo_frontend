@@ -83,7 +83,7 @@ import ObooniClosetScreen from '../screens/Obooni/ObooniClosetScreen';
 import ObooniOwnedItemsScreen from '../screens/Obooni/ObooniOwnedItemsScreen';
 import ObooniShopScreen from '../screens/Obooni/ObooniShopScreen';
 
-// 10. 루틴 설정
+// 10. 목표 세분화
 import RoutineSettingScreen from '../screens/RoutineSettingScreen';
 
 
