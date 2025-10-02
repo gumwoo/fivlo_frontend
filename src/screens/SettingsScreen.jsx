@@ -55,46 +55,46 @@ const SettingsScreen = ({ initialIsPremiumUser = true }) => {
         </TouchableOpacity>
 
         {/* 설정 목록 */}
-        <View style={styles.settingsListContainer}>
+        <View>
           {/* 알림 */}
           <View style={styles.settingItem}>
             <Text style={styles.settingItemText}>{t('settings.notifications', '알림')}</Text>
             <Switch
               trackColor={{ false: '#767577', true: Colors.accentApricot }}
               thumbColor={Colors.textLight}
-              onValueChange={() => setNotificationsEnabled(previousState => !previousState)}
+              onValueChange={() => setNotificationsEnabled(prev => !prev)}
               value={notificationsEnabled}
             />
           </View>
 
           {/* 언어 */}
-          <View>
-            <TouchableOpacity style={styles.settingItem} onPress={() => setIsLanguageExpanded(!isLanguageExpanded)}>
-              <Text style={styles.settingItemText}>{t('settings.language', '언어')}</Text>
-              <View style={styles.languagePicker}>
-                <FontAwesome5 name="globe" size={16} color={Colors.secondaryBrown} style={{ marginRight: 8 }}/>
-                <Text style={styles.settingItemText}>{i18n.language === 'ko' ? t('settings.language_korean') : t('settings.language_english')}</Text>
-                <FontAwesome5 name={isLanguageExpanded ? "chevron-up" : "chevron-down"} size={14} color={Colors.secondaryBrown} style={{ marginLeft: 8 }}/>
-              </View>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.settingItem} onPress={() => setIsLanguageExpanded(!isLanguageExpanded)}>
+            <Text style={styles.settingItemText}>{t('settings.language', '언어')}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <FontAwesome5 name="globe" size={16} color={Colors.secondaryBrown} style={{ marginRight: 6 }} />
+              <Text style={styles.settingItemText}>
+                {i18n.language === 'ko' ? t('settings.language_korean') : t('settings.language_english')}
+              </Text>
+              <FontAwesome5 name={isLanguageExpanded ? "chevron-up" : "chevron-down"} size={14} color={Colors.secondaryBrown} style={{ marginLeft: 6 }}/>
+            </View>
+          </TouchableOpacity>
 
-            {isLanguageExpanded && (
-              <View style={styles.languageExpandedContainer}>
-                <TouchableOpacity style={styles.languageOptionButton} onPress={() => handleSelectLanguage('ko')}>
-                  <Text style={[styles.languageOptionText, i18n.language === 'ko' && styles.languageOptionTextActive]}>
-                    {t('settings.language_korean')}
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.languageOptionButton} onPress={() => handleSelectLanguage('en')}>
-                  <Text style={[styles.languageOptionText, i18n.language === 'en' && styles.languageOptionTextActive]}>
-                    {t('settings.language_english')}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
+          {isLanguageExpanded && (
+            <View style={styles.languageExpandedContainer}>
+              <TouchableOpacity style={styles.languageOptionButton} onPress={() => handleSelectLanguage('ko')}>
+                <Text style={[styles.languageOptionText, i18n.language === 'ko' && styles.languageOptionTextActive]}>
+                  {t('settings.language_korean')}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.languageOptionButton} onPress={() => handleSelectLanguage('en')}>
+                <Text style={[styles.languageOptionText, i18n.language === 'en' && styles.languageOptionTextActive]}>
+                  {t('settings.language_english')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
-          {/* FIVLO 프리미엄 멤버십 */}
+          {/* 프리미엄 멤버십 */}
           <TouchableOpacity style={styles.settingItem} onPress={handlePremiumPress}>
             <Text style={styles.settingItemText}>{t('settings.premium_membership', 'FIVLO 프리미엄 멤버십')}</Text>
             <FontAwesome5 name="chevron-right" size={16} color={Colors.secondaryBrown} />
@@ -105,9 +105,8 @@ const SettingsScreen = ({ initialIsPremiumUser = true }) => {
             <Text style={styles.settingItemText}>{t('settings.information', '정보')}</Text>
             <FontAwesome5 name="chevron-right" size={16} color={Colors.secondaryBrown} />
           </TouchableOpacity>
-
-          
         </View>
+
       </ScrollView>
     </View>
   );
@@ -122,18 +121,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   profileContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.textLight,
-    borderRadius: 15,
-    paddingVertical: 20,
-    paddingHorizontal: 15,
-    marginBottom: 20,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: Colors.textLight,
+  borderRadius: 12,
+  paddingVertical: 16,
+  paddingHorizontal: 15,
+  marginBottom: 16,
   },
   profileIcon: {
     marginRight: 15,
@@ -177,13 +171,14 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   settingItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 20,
-    paddingHorizontal: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.primaryBeige,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingVertical: 18,
+  paddingHorizontal: 15,
+  borderBottomWidth: 1,
+  borderBottomColor: '#E5E5E5',
+  backgroundColor: Colors.primaryBeige, // 전체 배경과 같게
   },
   settingItemText: {
     fontSize: FontSizes.medium,
@@ -201,11 +196,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.secondaryBrown,
   },
   languageExpandedContainer: {
-    backgroundColor: Colors.primaryBeige,
-    paddingHorizontal: 15,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.primaryBeige,
+  backgroundColor: Colors.primaryBeige,
+  paddingLeft: 20,
+  paddingBottom: 10,
+  borderBottomWidth: 1,
+  borderBottomColor: '#E5E5E5',
   },
   languageOptionButton: {
     paddingVertical: 12,
