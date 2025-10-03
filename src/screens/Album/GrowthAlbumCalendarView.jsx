@@ -60,34 +60,30 @@ const GrowthAlbumCalendarView = ({ photos }) => {
     const dayPhotos = photos[dateString] || [];
     const isSelected = dateString === selectedDate;
     const isDisabled = state === 'disabled';
-
+  
     return (
       <TouchableOpacity 
         style={styles.dayContainer}
         onPress={() => !isDisabled && onDayPress(date)}
         disabled={isDisabled}
       >
-        <Text style={[
-          styles.dayText,
-          isSelected && styles.dayTextSelected,
-          isDisabled && styles.dayTextDisabled,
-        ]}>
-          {date.day}
-        </Text>
-        
-        {/* 사진 썸네일 표시 (최대 2-3개) */}
-        {dayPhotos.length > 0 && (
-          <View style={styles.photoThumbnailsContainer}>
-            {dayPhotos.slice(0, 3).map((photo, index) => (
-              <TouchableOpacity
-                key={photo.id}
-                style={[styles.miniThumbnail, { zIndex: 3 - index }]}
-                onPress={() => handlePhotoPress(photo, dateString)}
-              >
-                <Image source={{ uri: photo.uri }} style={styles.miniThumbnailImage} />
-              </TouchableOpacity>
-            ))}
-          </View>
+        {dayPhotos.length > 0 ? (
+          // 사진이 있으면 사진만 표시 (날짜 숨김)
+          <TouchableOpacity
+            style={styles.fullDayImageContainer}
+            onPress={() => handlePhotoPress(dayPhotos[0], dateString)}
+          >
+            <Image source={{ uri: dayPhotos[0].uri }} style={styles.fullDayImage} />
+          </TouchableOpacity>
+        ) : (
+          // 사진 없으면 날짜 숫자 표시
+          <Text style={[
+            styles.dayText,
+            isSelected && styles.dayTextSelected,
+            isDisabled && styles.dayTextDisabled,
+          ]}>
+            {date.day}
+          </Text>
         )}
       </TouchableOpacity>
     );
@@ -117,7 +113,8 @@ const GrowthAlbumCalendarView = ({ photos }) => {
 const styles = StyleSheet.create({
   container: { flex: 1, width: '100%', alignItems: 'center' },
   calendar: { 
-    width: '100%', 
+    width: '100%',
+    height: '90%',
     borderRadius: 15, 
     backgroundColor: Colors.textLight, 
     shadowColor: '#000', 
@@ -128,17 +125,15 @@ const styles = StyleSheet.create({
     marginBottom: 20 
   },
   dayContainer: {
-    width: 40,
+    width: 50,
     height: 60,
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: 5,
+    justifyContent: 'center',
   },
   dayText: {
     fontSize: FontSizes.small,
     color: Colors.textDark,
     fontWeight: FontWeights.medium,
-    marginBottom: 2,
   },
   dayTextSelected: {
     color: Colors.accentApricot,
@@ -147,22 +142,13 @@ const styles = StyleSheet.create({
   dayTextDisabled: {
     color: '#d9e1e8',
   },
-  photoThumbnailsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 2,
-  },
-  miniThumbnail: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
+  fullDayImageContainer: {
+    width: '90%',
+    height: '100%',
+    borderRadius: 8,
     overflow: 'hidden',
-    marginHorizontal: -2,
-    borderWidth: 1,
-    borderColor: Colors.textLight,
   },
-  miniThumbnailImage: {
+  fullDayImage: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
