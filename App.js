@@ -2,6 +2,7 @@
 
 import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import AppNavigator from './src/navigation/AppNavigator';
 import { initI18n } from './src/i18n';
 import { View, Text } from 'react-native';
@@ -33,5 +34,9 @@ export default function App() {
   }
 
   // 이제 AppNavigator는 전역 스토어의 isPremiumUser 상태를 전달받습니다.
-  return <AppNavigator isPremiumUser={isPremiumUser} />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AppNavigator isPremiumUser={isPremiumUser} />
+    </GestureHandlerRootView>
+  );
 }

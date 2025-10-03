@@ -70,9 +70,6 @@ const GrowthAlbumCategoryView = ({ photos }) => {
         <Text style={styles.categoryTitle}>
           {t(`album.categories.${category.key}`, category.key.toUpperCase())}
         </Text>
-        <View style={styles.countBadge}>
-          <Text style={styles.countText}>{category.photos.length}</Text>
-        </View>
       </View>
       <FlatList
         data={category.photos}
@@ -126,19 +123,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryBeige 
   },
   categoryTitle: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.textDark },
-  countBadge: {
-    backgroundColor: Colors.textDark,
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    minWidth: 30,
-    alignItems: 'center',
-  },
-  countText: {
-    color: Colors.textLight,
-    fontSize: FontSizes.medium,
-    fontWeight: FontWeights.bold,
-  },
   photoGrid: { padding: 5 },
   photoThumbnailContainer: { flex: 1/3, aspectRatio: 1, margin: 5, borderRadius: 10, overflow: 'hidden', borderWidth: 1, borderColor: Colors.secondaryBrown + '80' },
   photoThumbnail: { width: '100%', height: '100%', resizeMode: 'cover' },
