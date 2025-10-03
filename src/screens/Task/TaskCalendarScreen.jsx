@@ -30,14 +30,29 @@ const TaskCalendarScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [tasksForSelectedDate, setTasksForSelectedDate] = useState([]);
 
-  // 임시 Task 데이터
-  const mockTasks = {
-    '2025-07-02': [
-      { id: 'a1', text: '장보기 준비', color: '#E9C39B' },
-      { id: 'a2', text: '우유구매 #2', color: '#F4C16E' },
-      { id: 'a3', text: '미팅 준비', color: '#C3A0FF' },
-      { id: 'a4', text: '개발 진행', color: '#8EA1FF' },
+  // 임시 Task 데이터 - useState로 변경
+  const [mockTasks, setMockTasks] = useState({
+    '2025-10-09': [
+      { id: 'a1', text: '장보기 준비', color: '#E9C39B', completed: false, isAlbumLinked: false },
+      { id: 'a2', text: '우유구매 #2', color: '#F4C16E', completed: false, isAlbumLinked: true },
+      { id: 'a3', text: '미팅 준비', color: '#C3A0FF', completed: false, isAlbumLinked: false },
+      { id: 'a4', text: '개발 진행', color: '#8EA1FF', completed: false, isAlbumLinked: true },
     ],
+    '2025-10-16': [
+      { id: 'b1', text: '프로젝트 마감', color: '#FFABAB', completed: false, isAlbumLinked: true },
+      { id: 'b2', text: '운동하기', color: '#A0FFC3', completed: false, isAlbumLinked: true },
+    ],
+  });
+
+  // Task 업데이트 함수
+  const updateTask = (dateString, taskId, updates) => {
+    setMockTasks(prevTasks => {
+      const dateTasks = prevTasks[dateString] || [];
+      const updatedTasks = dateTasks.map(task => 
+        task.id === taskId ? { ...task, ...updates } : task
+      );
+      return { ...prevTasks, [dateString]: updatedTasks };
+    });
   };
 
   // 날짜 탭 시 모달 열기
@@ -103,6 +118,7 @@ return (
         selectedDate={selectedDate}
         tasks={tasksForSelectedDate}
         onClose={() => setIsModalVisible(false)}
+        onTaskUpdate={(taskId, updates) => updateTask(selectedDate, taskId, updates)}
       />
     </Modal>
   </View>

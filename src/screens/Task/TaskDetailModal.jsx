@@ -18,8 +18,9 @@ import { useTranslation } from 'react-i18next';
 import TaskEditModal from './TaskEditModal';
 import TaskDeleteConfirmModal from './TaskDeleteConfirmModal';
 import TaskCompleteCoinModal from './TaskCompleteCoinModal';
+import AlbumPhotoPromptModal from './AlbumPhotoPromptModal';
 
-const TaskDetailModal = ({ selectedDate, tasks, onClose }) => {
+const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
   const navigation = useNavigation();
   const { t } = useTranslation();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -32,27 +33,27 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose }) => {
   const [isCoinModalVisible, setIsCoinModalVisible] = useState(false);
   const [completedTask, setCompletedTask] = useState(null); // 완료된 Task
 
+  const [isAlbumPromptVisible, setIsAlbumPromptVisible] = useState(false); // 성장앨범 안내 모달
+
   // Task 완료 체크 토글
   const toggleTaskCompletion = (id) => {
     const task = tasks.find(t => t.id === id);
     if (task && !task.completed) {
+      setCompletedTask(task);
+      
+      // 백엔드 업데이트 (현재는 부모 컴포넌트의 state 업데이트)
+      if (onTaskUpdate) {
+        onTaskUpdate(id, { completed: true });
+      }
+      
       // 성장앨범 연동이 체크되어 있으면 사진 촬영 모달 먼저 표시
       if (task.isAlbumLinked) {
-        // 사진 촬영 모달 표시 (추후 구현)
-        Alert.alert(t('album.photo_confirm_title'), t('album.photo_confirm_message'), [
-          { text: t('album.later'), onPress: () => showCoinModal(task) },
-          { text: t('album.take_photo'), onPress: () => {
-            // 사진 촬영 모달 표시
-            showPhotoModal(task);
-          }},
-        ]);
+        showPhotoModal(task);
       } else {
         // 일반 Task 완료 시 코인 모달 표시
         showCoinModal(task);
       }
     }
-    // 실제로는 백엔드 업데이트
-    // onTaskUpdated(updatedTasks); // 부모 컴포넌트에 업데이트된 Task 전달
   };
 
   const showCoinModal = (task) => {
@@ -61,10 +62,16 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose }) => {
   };
 
   const showPhotoModal = (task) => {
-    // 사진 촬영 모달 표시 (추후 구현)
-    Alert.alert('사진 촬영', '사진 촬영 기능을 구현하겠습니다.');
-    // 임시로 코인 모달 표시
-    showCoinModal(task);
+    // 성장앨범 안내 모달 표시
+    setIsAlbumPromptVisible(true);
+  };
+
+  const handlePhotoSave = (photoData) => {
+    // 사진 저장 후 모달 닫고 코인 모달 표시
+    setIsAlbumPromptVisible(false);
+    // 여기서 photoData를 백엔드에 저장
+    console.log('Photo saved:', photoData);
+    showCoinModal(completedTask);
   };
 
   // Task 추가 버튼 클릭
@@ -283,6 +290,13 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose }) => {
         }}
         taskText={completedTask?.text}
         earnedCoins={10}
+      />
+
+      {/* 성장앨범 안내 모달 */}
+      <AlbumPhotoPromptModal
+        visible={isAlbumPromptVisible}
+        onClose={() => setIsAlbumPromptVisible(false)}
+        onSave={handlePhotoSave}
       />
     </View>
   );
