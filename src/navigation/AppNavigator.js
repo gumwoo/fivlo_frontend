@@ -33,8 +33,9 @@ import TaskDetailModal from '../screens/Task/TaskDetailModal';
 import TaskCompleteCoinModal from '../screens/Task/TaskCompleteCoinModal';
 import TaskEditModal from '../screens/Task/TaskEditModal';
 import TaskDeleteConfirmModal from '../screens/Task/TaskDeleteConfirmModal';
-import CategorySettingModal from '../screens/Task/CategorySettingModal';
-import CategoryEditModal from '../screens/Task/CategoryEditModal';
+// ⚠️ 파일 이름은 유지하되, 컴포넌트 이름을 Screen으로 변경하여 임포트합니다.
+import CategorySettingScreen from '../screens/Task/CategorySettingModal';
+import CategoryEditScreen from '../screens/Task/CategoryEditModal';
 
 // 4. 포모도로
 import PomodoroScreen from '../screens/Pomodoro/PomodoroScreen';
@@ -180,24 +181,23 @@ const AppNavigator = () => {
 
         {/* Task */}
         <Stack.Screen name="TaskCalendar" component={TaskCalendarScreen} />
-        
-        {/* ⚠️ 이 부분의 옵션을 수정했습니다. */}
         <Stack.Screen 
           name="TaskDetailModal" 
           component={TaskDetailModal} 
           options={{ 
-            presentation: 'transparentModal', // 투명 모달로 변경
-            cardStyle: { backgroundColor: 'transparent' }, // 배경을 투명하게
-            gestureEnabled: true, // 아래로 쓸어내려 닫기 활성화
-            headerShown: false, // 기본 헤더는 숨김
+            presentation: 'transparentModal',
+            cardStyle: { backgroundColor: 'transparent' },
+            gestureEnabled: true,
+            headerShown: false,
           }} 
         />
-        
         <Stack.Screen name="TaskCompleteCoinModal" component={TaskCompleteCoinModal} options={{ presentation: 'modal' }} />
         <Stack.Screen name="TaskEditModal" component={TaskEditModal} options={{ presentation: 'modal' }} />
         <Stack.Screen name="TaskDeleteConfirmModal" component={TaskDeleteConfirmModal} options={{ presentation: 'modal' }} />
-        <Stack.Screen name="CategorySettingModal" component={CategorySettingModal} options={{ presentation: 'modal' }} />
-        <Stack.Screen name="CategoryEditModal" component={CategoryEditModal} options={{ presentation: 'modal' }} />
+        
+        {/* ⚠️ Category 모달들을 일반 화면으로 등록합니다. */}
+        <Stack.Screen name="CategorySetting" component={CategorySettingScreen} />
+        <Stack.Screen name="CategoryEdit" component={CategoryEditScreen} />
 
         {/* Pomodoro */}
         <Stack.Screen name="Pomodoro" component={PomodoroScreen} />
