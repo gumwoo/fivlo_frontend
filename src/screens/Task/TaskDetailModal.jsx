@@ -288,17 +288,18 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose }) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: Colors.primaryBeige,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalContent: {
-    flex: 1,
-    backgroundColor: Colors.textLight,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    paddingTop: 30,
-    paddingHorizontal: 25,
-    paddingBottom: 40,
-    marginTop: 100,
+    backgroundColor: Colors.primaryBeige,
+    borderRadius: 20,
+    padding: 30,
+    width: '85%',
+    maxHeight: '70%',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   modalDate: {
     fontSize: 20,
