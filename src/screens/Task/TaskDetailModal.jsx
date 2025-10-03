@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, Alert, FlatList, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 
@@ -216,11 +217,10 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose }) => {
   return (
     <View style={styles.overlay}>
       <View style={styles.modalContent}>
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <FontAwesome5 name="times" size={24} color={Colors.secondaryBrown} />
-        </TouchableOpacity>
-
-        <Text style={styles.modalDate}>{format(new Date(selectedDate), 'yyyy-MM-dd')}</Text>
+        {/* 날짜 표시 */}
+        <Text style={styles.modalDate}>
+          {format(new Date(selectedDate), 'M월 d일 (E)', { locale: ko })}
+        </Text>
 
         {tasks.length > 0 ? (
           <FlatList
@@ -236,19 +236,10 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose }) => {
           </View>
         )}
 
-        {/* 할 일 추가 입력창 (Task 미입력 날짜 클릭 시) */}
-        <View style={styles.addTaskInputContainer}>
-          <TextInput
-            style={styles.addTaskInput}
-            placeholder={t('task.add_task_placeholder')}
-            placeholderTextColor={Colors.secondaryBrown}
-            // 이 입력창에 직접 입력하는 대신, "+" 버튼 눌러 TaskEditModal로 이동
-            editable={false} // 직접 입력 비활성화
-          />
-          <TouchableOpacity style={styles.addTaskButton} onPress={handleAddTask}>
-            <FontAwesome5 name="plus" size={20} color={Colors.textLight} />
-          </TouchableOpacity>
-        </View>
+        {/* 할 일 추가 버튼 */}
+        <TouchableOpacity style={styles.addTaskButton} onPress={handleAddTask}>
+          <Text style={styles.addTaskButtonText}>+ {t('task.add_task_button')}</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Task 추가/수정 모달 */}
@@ -297,39 +288,28 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose }) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)', // 불투명 배경
+    backgroundColor: Colors.primaryBeige,
   },
   modalContent: {
+    flex: 1,
     backgroundColor: Colors.textLight,
-    borderRadius: 20,
-    padding: 25,
-    width: '90%',
-    maxHeight: '80%', // 모달 높이 제한
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 10,
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 15,
-    right: 15,
-    zIndex: 1,
-    padding: 5,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingTop: 30,
+    paddingHorizontal: 25,
+    paddingBottom: 40,
+    marginTop: 100,
   },
   modalDate: {
-    fontSize: FontSizes.large,
+    fontSize: 20,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    marginBottom: 20,
-    textAlign: 'center',
+    marginBottom: 30,
+    textAlign: 'left',
   },
   taskListContent: {
     flexGrow: 1,
-    paddingBottom: 10,
+    paddingBottom: 20,
   },
   swipeContainer: {
     marginBottom: 10,
@@ -430,30 +410,17 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.medium,
     color: Colors.secondaryBrown,
   },
-  addTaskInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 20,
+  addTaskButton: {
     backgroundColor: Colors.primaryBeige,
     borderRadius: 10,
-    paddingRight: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  addTaskInput: {
-    flex: 1,
     padding: 15,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  addTaskButtonText: {
     fontSize: FontSizes.medium,
     color: Colors.textDark,
-  },
-  addTaskButton: {
-    backgroundColor: Colors.accentApricot,
-    borderRadius: 8,
-    padding: 10,
+    fontWeight: FontWeights.medium,
   },
 });
 

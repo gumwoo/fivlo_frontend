@@ -183,6 +183,7 @@
     "title": "Tasks",
     "no_tasks": "No tasks.",
     "add_task_placeholder": "Enter a new task",
+    "add_task_button": "Add a task",
     "toggle_complete_info": "A coin popup will appear when completing a task.",
     "saved": "Task has been {{mode}}.",
     "saved_mode_add": "added",
