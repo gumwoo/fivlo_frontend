@@ -32,7 +32,7 @@ const PurposeSelectionScreen = () => {
   };
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <CharacterImage style={styles.obooniCharacter} />
         <Text style={styles.purposeQuestion}>

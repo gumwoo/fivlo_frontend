@@ -41,7 +41,7 @@ const GrowthAlbumScreen = () => {
   };
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('album.header')} showBackButton={true} />
 
       <View style={styles.contentContainer}>

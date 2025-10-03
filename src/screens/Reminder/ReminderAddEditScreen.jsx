@@ -100,7 +100,7 @@ const ReminderAddEditScreen = () => {
 
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={initialReminder ? t('reminder.edit') : t('reminder.new')} showBackButton={true} />
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
         <Text style={styles.sectionTitle}>{t('reminder.input_title')}</Text>

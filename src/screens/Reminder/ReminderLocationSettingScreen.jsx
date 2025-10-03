@@ -47,7 +47,7 @@ const ReminderLocationSettingScreen = () => {
   };
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('reminder.location_setting')} showBackButton={true} />
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
         <Text style={styles.sectionTitle}>{t('reminder.location_name_label')}</Text>

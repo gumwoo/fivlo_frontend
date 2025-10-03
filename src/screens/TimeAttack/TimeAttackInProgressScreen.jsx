@@ -149,7 +149,7 @@ const TimeAttackInProgressScreen = () => {
 
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('headers.time_attack')} showBackButton={true} />
       
       {/* --- 수정: ScrollView로 전체 콘텐츠를 감싸 화면 overflow 방지 --- */}

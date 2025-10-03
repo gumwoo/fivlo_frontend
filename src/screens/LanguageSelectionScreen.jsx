@@ -41,7 +41,7 @@ const LanguageSelectionScreen = () => {
   };
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <CharacterImage style={styles.obooniCharacter} />
         <Text style={styles.languageQuestion}>
@@ -87,17 +87,17 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.large,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    marginBottom: 30,
+    marginBottom: 40,
     textAlign: 'center',
     lineHeight: 30,
   },
   buttonContainer: {
-    width: '80%',
+    width: '90%',
     alignItems: 'center',
   },
   languageButton: {
-    width: '100%',
-    marginVertical: 8,
+    width: '90%',
+    marginVertical: 10,
   },
 });
 

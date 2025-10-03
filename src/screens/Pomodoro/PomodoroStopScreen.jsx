@@ -32,7 +32,7 @@ const PomodoroStopScreen = () => {
   };
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('pomodoro.header')} showBackButton={true} />
 
       <ScrollView contentContainerStyle={styles.contentContainer}> {/* ScrollView로 감싸기 */}

@@ -25,7 +25,7 @@ const PomodoroScreen = () => {
 
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('pomodoro.header')} showBackButton={true} />
 
       <View style={styles.contentContainer}>

@@ -36,7 +36,7 @@ const TimeAttackScreen = () => {
   };
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('headers.time_attack')} showBackButton={true} />
 
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>

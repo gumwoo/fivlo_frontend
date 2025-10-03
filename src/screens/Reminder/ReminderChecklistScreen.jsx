@@ -73,7 +73,7 @@ const ReminderChecklistScreen = () => {
   );
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={reminderTitle} showBackButton={true} />
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
         <Text style={styles.instructionText}>{t('reminder.checklist_question')}</Text>

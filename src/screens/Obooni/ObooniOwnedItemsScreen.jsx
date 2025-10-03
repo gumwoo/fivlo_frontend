@@ -45,7 +45,7 @@ const ObooniOwnedItemsScreen = ({ isPremiumUser }) => {
   );
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('obooni.owned_header')} showBackButton={true} />
       
       {ownedItems.length > 0 ? (

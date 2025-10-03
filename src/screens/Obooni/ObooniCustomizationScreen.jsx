@@ -30,7 +30,7 @@ const ObooniCustomizationScreen = () => { // isVisible, onClose prop 제거
   };
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       {/* Header를 사용하여 뒤로가기 버튼과 타이틀 제공 */}
       <Header title={t('obooni.customize_header')} showBackButton={true} />
 

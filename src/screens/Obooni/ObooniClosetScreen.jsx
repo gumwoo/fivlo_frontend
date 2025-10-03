@@ -79,7 +79,7 @@ const ObooniClosetScreen = ({ isPremiumUser }) => {
   };
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('obooni.closet_header')} showBackButton={true} />
 
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>

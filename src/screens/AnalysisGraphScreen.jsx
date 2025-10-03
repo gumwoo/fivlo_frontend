@@ -118,7 +118,7 @@ const AnalysisGraphScreen = () => {
   };
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('analysis.title')} showBackButton={true} />
 
       <View style={styles.tabContainer}>

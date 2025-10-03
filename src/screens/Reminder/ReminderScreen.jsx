@@ -114,7 +114,7 @@ const ReminderScreen = () => {
   };
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('reminder.title')} showBackButton={true} />
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
         {reminders.length > 0 ? (

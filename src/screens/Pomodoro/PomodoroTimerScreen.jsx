@@ -94,7 +94,7 @@ const PomodoroTimerScreen = () => {
   // --- 수정: 회전 애니메이션 interpolate 제거 ---
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       {/* 커스텀 헤더 */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>

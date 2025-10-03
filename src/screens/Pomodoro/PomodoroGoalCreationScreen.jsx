@@ -114,7 +114,7 @@ const PomodoroGoalCreationScreen = () => {
   );
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('pomodoro.create_header')} showBackButton={true} />
 
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>

@@ -93,7 +93,7 @@ const TaskCalendarScreen = () => {
   }
 
   return (
-    <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('task.title')} showBackButton={true} />
 
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
