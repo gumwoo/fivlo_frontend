@@ -1,30 +1,64 @@
 // src/screens/GrowthAlbumCategoryView.jsx
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import { useTranslation } from 'react-i18next';
+import useAlbumStore from '../../store/albumStore';
+import PhotoDetailModal from './PhotoDetailModal';
 
 const GrowthAlbumCategoryView = ({ photos }) => {
   const { t } = useTranslation();
+  const deletePhoto = useAlbumStore((state) => state.deletePhoto);
+  const updatePhoto = useAlbumStore((state) => state.updatePhoto);
+  
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const photosByCategory = useMemo(() => {
     const categoryMap = { 'daily': [] };
-    Object.values(photos).flat().forEach(photo => {
-      const categoryKey = photo.categoryKey || 'daily';
-      if (!categoryMap[categoryKey]) {
-        categoryMap[categoryKey] = [];
-      }
-      categoryMap[categoryKey].push(photo);
+    Object.entries(photos).forEach(([date, photoList]) => {
+      photoList.forEach(photo => {
+        const categoryKey = photo.categoryKey || 'daily';
+        if (!categoryMap[categoryKey]) {
+          categoryMap[categoryKey] = [];
+        }
+        categoryMap[categoryKey].push({ ...photo, date });
+      });
     });
     return categoryMap;
   }, [photos]);
 
-  const categories = Object.keys(photosByCategory).filter(key => photosByCategory[key].length > 0).map(key => ({ key, photos: photosByCategory[key] }));
+  const categories = Object.keys(photosByCategory)
+    .filter(key => photosByCategory[key].length > 0)
+    .map(key => ({ key, photos: photosByCategory[key] }));
+
+  const handlePhotoPress = (photo) => {
+    setSelectedPhoto(photo);
+    setSelectedDate(photo.date);
+    setIsModalVisible(true);
+  };
+
+  const handleDelete = (photoId) => {
+    if (selectedDate) {
+      deletePhoto(selectedDate, photoId);
+      setIsModalVisible(false);
+    }
+  };
+
+  const handleEdit = (photoId, newMemo) => {
+    if (selectedDate) {
+      updatePhoto(selectedDate, photoId, { memo: newMemo });
+    }
+  };
 
   const renderPhotoThumbnail = ({ item }) => (
-    <TouchableOpacity style={styles.photoThumbnailContainer}>
+    <TouchableOpacity 
+      style={styles.photoThumbnailContainer}
+      onPress={() => handlePhotoPress(item)}
+    >
       <Image source={{ uri: item.uri }} style={styles.photoThumbnail} />
       <Text style={styles.photoMemo} numberOfLines={1}>{item.memo}</Text>
     </TouchableOpacity>
@@ -33,7 +67,12 @@ const GrowthAlbumCategoryView = ({ photos }) => {
   const renderCategorySection = ({ item: category }) => (
     <View style={styles.categorySection}>
       <View style={styles.categoryHeader}>
-        <Text style={styles.categoryTitle}>{t(`task_calendar.categories.${category.key}`, category.key)}</Text>
+        <Text style={styles.categoryTitle}>
+          {t(`album.categories.${category.key}`, category.key.toUpperCase())}
+        </Text>
+        <View style={styles.countBadge}>
+          <Text style={styles.countText}>{category.photos.length}</Text>
+        </View>
       </View>
       <FlatList
         data={category.photos}
@@ -55,20 +94,51 @@ const GrowthAlbumCategoryView = ({ photos }) => {
   }
 
   return (
-    <FlatList
-      data={categories}
-      renderItem={renderCategorySection}
-      keyExtractor={item => item.key}
-      style={styles.container}
-    />
+    <>
+      <FlatList
+        data={categories}
+        renderItem={renderCategorySection}
+        keyExtractor={item => item.key}
+        style={styles.container}
+      />
+      
+      <PhotoDetailModal
+        visible={isModalVisible}
+        photo={selectedPhoto}
+        date={selectedDate}
+        onClose={() => setIsModalVisible(false)}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+      />
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1, width: '100%' },
   categorySection: { marginBottom: 20, backgroundColor: Colors.textLight, borderRadius: 15, overflow: 'hidden', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3, marginHorizontal: 5 },
-  categoryHeader: { paddingVertical: 12, paddingHorizontal: 15, backgroundColor: Colors.primaryBeige },
+  categoryHeader: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    paddingVertical: 12, 
+    paddingHorizontal: 15, 
+    backgroundColor: Colors.primaryBeige 
+  },
   categoryTitle: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.textDark },
+  countBadge: {
+    backgroundColor: Colors.textDark,
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    minWidth: 30,
+    alignItems: 'center',
+  },
+  countText: {
+    color: Colors.textLight,
+    fontSize: FontSizes.medium,
+    fontWeight: FontWeights.bold,
+  },
   photoGrid: { padding: 5 },
   photoThumbnailContainer: { flex: 1/3, aspectRatio: 1, margin: 5, borderRadius: 10, overflow: 'hidden', borderWidth: 1, borderColor: Colors.secondaryBrown + '80' },
   photoThumbnail: { width: '100%', height: '100%', resizeMode: 'cover' },

@@ -223,6 +223,13 @@
     "record_today": "Record today's moment!",
     "save_button": "Save",
     "upload_title": "Take or upload a photo",
+    "no_memo": "No memo",
+    "categories": {
+      "daily": "Daily",
+      "work": "Work",
+      "study": "Study",
+      "exercise": "Exercise"
+    },
     "preview": "Photo preview",
     "camera": "Take photo",
     "gallery": "Upload from gallery",

@@ -1,6 +1,6 @@
 // src/screens/GrowthAlbumScreen.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,7 @@ import { FontSizes, FontWeights } from '../../styles/Fonts';
 import PhotoUploadModal from './PhotoUploadModal';
 import GrowthAlbumCalendarView from './GrowthAlbumCalendarView';
 import GrowthAlbumCategoryView from './GrowthAlbumCategoryView';
+import useAlbumStore from '../../store/albumStore';
 
 const initialMockPhotos = {
   '2025-09-20': [
@@ -28,16 +29,23 @@ const GrowthAlbumScreen = () => {
   const { t } = useTranslation();
   const [activeView, setActiveView] = useState('calendar');
   const [isPhotoModalVisible, setIsPhotoModalVisible] = useState(false);
-  const [photos, setPhotos] = useState(initialMockPhotos);
+  
+  // albumStore 사용
+  const photos = useAlbumStore((state) => state.photos);
+  const addPhoto = useAlbumStore((state) => state.addPhoto);
+  const setInitialPhotos = useAlbumStore((state) => state.setInitialPhotos);
+
+  // 초기 데이터 설정
+  useEffect(() => {
+    if (Object.keys(photos).length === 0) {
+      setInitialPhotos(initialMockPhotos);
+    }
+  }, []);
 
   const handleSavePhoto = (newPhoto) => {
     const today = format(new Date(), 'yyyy-MM-dd');
     const newPhotoWithId = { ...newPhoto, id: `photo-${Date.now()}`, categoryKey: 'exercise' };
-
-    setPhotos(prevPhotos => {
-      const todayPhotos = prevPhotos[today] || [];
-      return { ...prevPhotos, [today]: [...todayPhotos, newPhotoWithId] };
-    });
+    addPhoto(today, newPhotoWithId);
   };
 
   return (

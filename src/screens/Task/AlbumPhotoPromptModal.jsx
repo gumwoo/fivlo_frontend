@@ -82,21 +82,35 @@ const AlbumPhotoPromptModal = ({ visible, onClose, onSave }) => {
             {t('album.record_moment', '지금 이 순간을 사진으로 남겨볼까요?')}
           </Text>
 
-          {/* 하얀 박스 1 : 안내 + 아이콘 */}
-          <View style={styles.panel}>
-            <Text style={styles.panelGuide}>
-              {t('album.photo_or_video', '사진을 업로드하거나\n클릭해서 촬영하세요')}
-            </Text>
-
-            <View style={styles.iconRow}>
-              <TouchableOpacity style={styles.iconTap} onPress={pickImage} activeOpacity={0.8}>
-                <FontAwesome5 name="image" size={65} color={Colors.textDark} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconTap} onPress={pickVideo} activeOpacity={0.8}>
-                <FontAwesome5 name="video" size={65} color={Colors.textDark} />
-              </TouchableOpacity>
+          {/* 사진/동영상 미리보기 또는 아이콘 */}
+          {imageUri || videoUri ? (
+            <View style={styles.panel}>
+              {imageUri && (
+                <Image source={{ uri: imageUri }} style={styles.previewImage} />
+              )}
+              {videoUri && (
+                <View style={styles.videoPreview}>
+                  <FontAwesome5 name="video" size={60} color={Colors.textDark} />
+                  <Text style={styles.videoText}>동영상 선택됨</Text>
+                </View>
+              )}
             </View>
-          </View>
+          ) : (
+            <View style={styles.panel}>
+              <Text style={styles.panelGuide}>
+                {t('album.photo_or_video', '사진을 업로드하거나\\n클릭해서 촬영하세요')}
+              </Text>
+          
+              <View style={styles.iconRow}>
+                <TouchableOpacity style={styles.iconTap} onPress={pickImage} activeOpacity={0.8}>
+                  <FontAwesome5 name="image" size={65} color={Colors.textDark} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.iconTap} onPress={pickVideo} activeOpacity={0.8}>
+                  <FontAwesome5 name="video" size={65} color={Colors.textDark} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
 
           {/* 메모 입력창 또는 플레이스홀더 */}
           {showMemoInput ? (

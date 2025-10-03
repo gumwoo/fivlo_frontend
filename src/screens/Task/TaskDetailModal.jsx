@@ -13,6 +13,7 @@ import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Button from '../../components/common/Button';
 import { useTranslation } from 'react-i18next';
+import useAlbumStore from '../../store/albumStore';
 
 // TaskEditModal, TaskDeleteConfirmModal, TaskCompleteCoinModal 임포트
 import TaskEditModal from './TaskEditModal';
@@ -23,6 +24,8 @@ import AlbumPhotoPromptModal from './AlbumPhotoPromptModal';
 const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const addPhoto = useAlbumStore((state) => state.addPhoto);
+  
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [editMode, setEditMode] = useState('add'); // 'add' 또는 'edit'
   const [currentEditingTask, setCurrentEditingTask] = useState(null); // 수정 중인 Task
@@ -69,8 +72,21 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
   const handlePhotoSave = (photoData) => {
     // 사진 저장 후 모달 닫고 코인 모달 표시
     setIsAlbumPromptVisible(false);
-    // 여기서 photoData를 백엔드에 저장
-    console.log('Photo saved:', photoData);
+    
+    // albumStore에 사진 추가
+    if (completedTask) {
+      const newPhoto = {
+        id: `photo-${Date.now()}`,
+        uri: photoData.uri,
+        memo: photoData.memo || '',
+        categoryKey: completedTask.categoryKey || 'daily',
+        type: photoData.type || 'image',
+      };
+      
+      addPhoto(selectedDate, newPhoto);
+      console.log('Photo saved to albumStore:', newPhoto);
+    }
+    
     showCoinModal(completedTask);
   };
 

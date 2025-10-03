@@ -223,6 +223,13 @@
     "record_today": "오늘의 순간을 기록해보세요!",
     "save_button": "저장하기",
     "upload_title": "사진 촬영 또는 업로드",
+    "no_memo": "메모가 없습니다",
+    "categories": {
+      "daily": "일상",
+      "work": "업무",
+      "study": "공부",
+      "exercise": "운동"
+    },
     "preview": "사진 미리보기",
     "camera": "사진 촬영",
     "gallery": "갤러리에서 업로드",
