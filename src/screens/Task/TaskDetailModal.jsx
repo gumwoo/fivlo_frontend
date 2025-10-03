@@ -222,19 +222,22 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose }) => {
           {format(new Date(selectedDate), 'M월 d일 (E)', { locale: ko })}
         </Text>
 
-        {tasks.length > 0 ? (
-          <FlatList
-            data={tasks}
-            renderItem={renderTaskItem}
-            keyExtractor={item => item.id}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.taskListContent}
-          />
-        ) : (
-          <View style={styles.noTaskContainer}>
-            <Text style={styles.noTaskText}>{t('task.no_tasks')}</Text>
-          </View>
-        )}
+        {/* 스크롤 가능한 Task 목록 */}
+        <View style={{ flex: 1 }}>
+          {tasks.length > 0 ? (
+            <FlatList
+              data={tasks}
+              renderItem={renderTaskItem}
+              keyExtractor={item => item.id}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.taskListContent}
+            />
+          ) : (
+            <View style={styles.noTaskContainer}>
+              <Text style={styles.noTaskText}>{t('task.no_tasks')}</Text>
+            </View>
+          )}
+        </View>
 
         {/* 할 일 추가 버튼 */}
         <TouchableOpacity style={styles.addTaskButton} onPress={handleAddTask}>
@@ -296,10 +299,16 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryBeige,
     borderRadius: 20,
     padding: 30,
-    width: '85%',
-    maxHeight: '70%',
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
+    width: '90%',
+    minHeight: '60%',
+    maxHeight: '80%',
+    borderWidth: 1.5,
+    borderColor: 'rgba(150, 150, 150, 0.3)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   modalDate: {
     fontSize: 20,
@@ -309,8 +318,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   taskListContent: {
-    flexGrow: 1,
-    paddingBottom: 20,
+    paddingBottom: 10,
   },
   swipeContainer: {
     marginBottom: 10,
@@ -412,11 +420,13 @@ const styles = StyleSheet.create({
     color: Colors.secondaryBrown,
   },
   addTaskButton: {
-    backgroundColor: Colors.primaryBeige,
+    backgroundColor: '#FFFCF5',
     borderRadius: 10,
     padding: 15,
     alignItems: 'center',
     marginTop: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0)',
   },
   addTaskButtonText: {
     fontSize: FontSizes.medium,
