@@ -41,7 +41,7 @@
     "feature_gps": "GPS location-based forgetfulness prevention system",
     "feature_dday": "D-Day goal concentration analysis",
     "feature_ai": "AI one-liner using concentration analysis data",
-    "feature_customization": "Automi customization and coin reward system",
+    "feature_customization": "Obuni customization and coin reward system",
     "preparing_message": "Oh~!! It's still being prepared."
   },
   "alerts": {

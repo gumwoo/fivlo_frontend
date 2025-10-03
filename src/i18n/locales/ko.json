@@ -41,7 +41,7 @@
     "feature_gps": "GPS 장소 기반 망각방지 시스템",
     "feature_dday": "D-Day 목표 집중도 분석",
     "feature_ai": "집중도 분석 데이터를 활용한 AI 한줄정",
-    "feature_customization": "오토미 커스터마이징 및 코인 보상시스템",
+    "feature_customization": "오분이 커스터마이징 및 코인 보상시스템",
     "preparing_message": "앗~!! 아직은 준비중입니다."
   },
   "alerts": {

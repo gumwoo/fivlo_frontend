@@ -42,7 +42,6 @@ const LanguageSelectionScreen = () => {
 
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top + 20 }]}>
-      <Header title="" showBackButton={false} />
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <CharacterImage style={styles.obooniCharacter} />
         <Text style={styles.languageQuestion}>
