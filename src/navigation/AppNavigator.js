@@ -180,7 +180,19 @@ const AppNavigator = () => {
 
         {/* Task */}
         <Stack.Screen name="TaskCalendar" component={TaskCalendarScreen} />
-        <Stack.Screen name="TaskDetailModal" component={TaskDetailModal} options={{ presentation: 'modal' }} />
+        
+        {/* ⚠️ 이 부분의 옵션을 수정했습니다. */}
+        <Stack.Screen 
+          name="TaskDetailModal" 
+          component={TaskDetailModal} 
+          options={{ 
+            presentation: 'transparentModal', // 투명 모달로 변경
+            cardStyle: { backgroundColor: 'transparent' }, // 배경을 투명하게
+            gestureEnabled: true, // 아래로 쓸어내려 닫기 활성화
+            headerShown: false, // 기본 헤더는 숨김
+          }} 
+        />
+        
         <Stack.Screen name="TaskCompleteCoinModal" component={TaskCompleteCoinModal} options={{ presentation: 'modal' }} />
         <Stack.Screen name="TaskEditModal" component={TaskEditModal} options={{ presentation: 'modal' }} />
         <Stack.Screen name="TaskDeleteConfirmModal" component={TaskDeleteConfirmModal} options={{ presentation: 'modal' }} />

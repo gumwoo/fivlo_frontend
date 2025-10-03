@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Alert, FlatList, Animated } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, Alert, FlatList, Animated, Pressable } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -12,30 +12,36 @@ import { FontSizes, FontWeights } from '../../styles/Fonts';
 import { useTranslation } from 'react-i18next';
 import useAlbumStore from '../../store/albumStore';
 
-// TaskEditModal, TaskDeleteConfirmModal, TaskCompleteCoinModal 임포트
+// 다른 Modal 임포트
 import TaskEditModal from './TaskEditModal';
 import TaskDeleteConfirmModal from './TaskDeleteConfirmModal';
 import TaskCompleteCoinModal from './TaskCompleteCoinModal';
 import AlbumPhotoPromptModal from './AlbumPhotoPromptModal';
 
-const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
+const TaskDetailModal = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const { t } = useTranslation();
   const addPhoto = useAlbumStore((state) => state.addPhoto);
   
+  const { selectedDate, tasks: initialTasks, onTaskUpdate } = route.params;
+
+  const [tasks, setTasks] = useState(initialTasks);
+
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [editMode, setEditMode] = useState('add'); // 'add' 또는 'edit'
-  const [currentEditingTask, setCurrentEditingTask] = useState(null); // 수정 중인 Task
+  const [editMode, setEditMode] = useState('add');
+  const [currentEditingTask, setCurrentEditingTask] = useState(null);
 
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
-  const [taskToDelete, setTaskToDelete] = useState(null); // 삭제할 Task
+  const [taskToDelete, setTaskToDelete] = useState(null);
   
   const [isCoinModalVisible, setIsCoinModalVisible] = useState(false);
-  const [completedTask, setCompletedTask] = useState(null); // 완료된 Task
+  const [completedTask, setCompletedTask] = useState(null);
 
-  const [isAlbumPromptVisible, setIsAlbumPromptVisible] = useState(false); // 성장앨범 안내 모달
+  const [isAlbumPromptVisible, setIsAlbumPromptVisible] = useState(false);
 
-  // Task 완료 체크 토글
+  const closeModal = () => navigation.goBack();
+
   const toggleTaskCompletion = (id) => {
     const task = tasks.find(t => t.id === id);
     if (task && !task.completed) {
@@ -45,6 +51,8 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
         onTaskUpdate(id, { completed: true });
       }
       
+      setTasks(currentTasks => currentTasks.map(t => t.id === id ? { ...t, completed: true } : t));
+
       if (task.isAlbumLinked) {
         showPhotoModal(task);
       } else {
@@ -75,7 +83,6 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
       };
       
       addPhoto(selectedDate, newPhoto);
-      console.log('Photo saved to albumStore:', newPhoto);
     }
     
     showCoinModal(completedTask);
@@ -106,7 +113,7 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
     }
     setIsDeleteConfirmModalVisible(false);
     setTaskToDelete(null);
-    onClose();
+    closeModal();
   };
 
   const onCancelDelete = () => {
@@ -117,10 +124,9 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
   const onTaskEditSave = (updatedTask) => {
     Alert.alert('Task', t('task.saved', { mode: t(editMode === 'add' ? 'task.saved_mode_add' : 'task.saved_mode_edit') }));
     setIsEditModalVisible(false);
-    onClose();
+    closeModal();
   };
 
-  // 스와이프 가능한 Task 항목 컴포넌트 (Swipeable 적용)
   const SwipeableTaskItem = ({ item }) => {
     const swipeableRef = useRef(null);
 
@@ -140,7 +146,8 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
               handleEditTask(item);
             }}
           >
-            <FontAwesome5 name="pen" size={18} color={Colors.textLight} />
+            {/* ⚠️ 아이콘 이름을 'pen'에서 'bars'로 변경했습니다. */}
+            <FontAwesome5 name="bars" size={18} color={Colors.textLight} />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.swipeAction, styles.deleteAction]}
@@ -178,7 +185,7 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
               onPress={() => toggleTaskCompletion(item.id)}
             >
               <Text style={item.completed ? styles.checkboxChecked : styles.checkboxUnchecked}>
-                {item.completed ? '✔' : '☐'}
+                {item.completed ? '✔' : ''}
               </Text>
             </TouchableOpacity>
           </View>
@@ -190,8 +197,8 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
   const renderTaskItem = ({ item }) => <SwipeableTaskItem item={item} />;
 
   return (
-    <View style={styles.overlay}>
-      <View style={styles.modalContent}>
+    <Pressable style={styles.overlay} onPress={closeModal}>
+      <Pressable style={styles.modalContent}>
         <Text style={styles.modalDate}>
           {format(new Date(selectedDate), 'M월 d일 (E)', { locale: ko })}
         </Text>
@@ -215,7 +222,7 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
         <TouchableOpacity style={styles.addTaskButton} onPress={handleAddTask}>
           <Text style={styles.addTaskButtonText}>+ {t('task.add_task_button')}</Text>
         </TouchableOpacity>
-      </View>
+      </Pressable>
 
       <Modal
         animationType="slide"
@@ -259,7 +266,7 @@ const TaskDetailModal = ({ selectedDate, tasks, onClose, onTaskUpdate }) => {
         onClose={() => setIsAlbumPromptVisible(false)}
         onSave={handlePhotoSave}
       />
-    </View>
+    </Pressable>
   );
 };
 
@@ -346,10 +353,10 @@ const styles = StyleSheet.create({
   checkboxChecked: {
     color: Colors.accentApricot,
     fontSize: 18,
+    fontWeight: 'bold',
   },
   checkboxUnchecked: {
     color: 'transparent',
-    fontSize: 18,
   },
   taskText: {
     fontSize: FontSizes.medium,

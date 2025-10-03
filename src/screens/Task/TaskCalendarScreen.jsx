@@ -1,16 +1,15 @@
-// src/screens/TaskCalendarScreen.jsx
+// src/screens/Task/TaskCalendarScreen.jsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native'; // useNavigation 임포트
 
 import Header from '../../components/common/Header';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
-
-import TaskDetailModal from './TaskDetailModal';
 
 // ── 캘린더 한국어 설정
 LocaleConfig.locales['ko'] = {
@@ -25,12 +24,11 @@ LocaleConfig.defaultLocale = 'ko';
 const TaskCalendarScreen = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const navigation = useNavigation(); // navigation 훅 사용
 
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [tasksForSelectedDate, setTasksForSelectedDate] = useState([]);
 
-  // 임시 Task 데이터 - useState로 변경
+  // 임시 Task 데이터
   const [mockTasks, setMockTasks] = useState({
     '2025-10-09': [
       { id: 'a1', text: '장보기 준비', color: '#E9C39B', completed: false, isAlbumLinked: false, categoryKey: 'daily' },
@@ -44,7 +42,7 @@ const TaskCalendarScreen = () => {
     ],
   });
 
-  // Task 업데이트 함수
+  // Task 업데이트 함수 (데이터 관리 방식에 따라 수정 필요)
   const updateTask = (dateString, taskId, updates) => {
     setMockTasks(prevTasks => {
       const dateTasks = prevTasks[dateString] || [];
@@ -55,89 +53,82 @@ const TaskCalendarScreen = () => {
     });
   };
 
-  // 날짜 탭 시 모달 열기
+  // 날짜 탭 시 모달 '화면'으로 이동
   const handleDayPress = (dateString) => {
     setSelectedDate(dateString);
-    setTasksForSelectedDate(mockTasks[dateString] || []);
-    setIsModalVisible(true);
+    const tasksForDate = mockTasks[dateString] || [];
+    // Modal을 직접 띄우는 대신, 설정된 모달 스타일의 화면으로 이동
+    navigation.navigate('TaskDetailModal', {
+      selectedDate: dateString,
+      tasks: tasksForDate,
+      onTaskUpdate: (taskId, updates) => updateTask(dateString, taskId, updates),
+    });
   };
 
-return (
-  <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
-    <Header title={t('task.title', 'TASK')} showBackButton />
+  return (
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
+      <Header title={t('task.title', 'TASK')} showBackButton />
 
-    {/* 달력 */}
-    <View style={styles.calendarWrapper}>
-      <Calendar
-        current={selectedDate}
-        enableSwipeMonths={true}
-        hideExtraDays={true}
-
-        dayComponent={({ date }) => {
-          const ds = date?.dateString;
-          const items = mockTasks[ds] || [];
-          return (
-            <TouchableOpacity
-              style={styles.dayCell}
-              onPress={() => ds && handleDayPress(ds)}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.dayNumber}>{date?.day}</Text>
-              {!!items.length && (
-                <View style={styles.tagsRow} pointerEvents="none">
-                  {items.map(it => (
-                    <View key={it.id} style={[styles.tagChip, { backgroundColor: it.color }]}>
-                      <Text numberOfLines={1} style={styles.tagText}>{it.text}</Text>
-                    </View>
-                  ))}
-                </View>
-              )}
-            </TouchableOpacity>
-          );
-        }}
-
-        theme={{
-          backgroundColor: Colors.primaryBeige,
-          calendarBackground: Colors.primaryBeige,
-          textSectionTitleColor: Colors.textDark,
-          dayTextColor: Colors.textDark,
-          todayTextColor: Colors.accentApricot,
-          arrowColor: Colors.secondaryBrown,
-          monthTextColor: Colors.textDark,
-          textMonthFontWeight: FontWeights.bold,
-          textMonthFontSize: 20,
-          textDayFontSize: 16,
-          textDayHeaderFontWeight: FontWeights.bold,
-        }}
-        
-        style={styles.calendar}
-      />
+      <View style={styles.calendarWrapper}>
+        <Calendar
+          current={selectedDate}
+          enableSwipeMonths={true}
+          hideExtraDays={true}
+          dayComponent={({ date }) => {
+            const ds = date?.dateString;
+            const items = mockTasks[ds] || [];
+            return (
+              <TouchableOpacity
+                style={styles.dayCell}
+                onPress={() => ds && handleDayPress(ds)}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.dayNumber}>{date?.day}</Text>
+                {!!items.length && (
+                  <View style={styles.tagsRow} pointerEvents="none">
+                    {items.map(it => (
+                      <View key={it.id} style={[styles.tagChip, { backgroundColor: it.color }]}>
+                        <Text numberOfLines={1} style={styles.tagText}>{it.text}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          }}
+          theme={{
+            backgroundColor: Colors.primaryBeige,
+            calendarBackground: Colors.primaryBeige,
+            textSectionTitleColor: Colors.textDark,
+            dayTextColor: Colors.textDark,
+            todayTextColor: Colors.accentApricot,
+            arrowColor: Colors.secondaryBrown,
+            monthTextColor: Colors.textDark,
+            textMonthFontWeight: FontWeights.bold,
+            textMonthFontSize: 20,
+            textDayFontSize: 16,
+            textDayHeaderFontWeight: FontWeights.bold,
+          }}
+          style={styles.calendar}
+        />
+      </View>
+      {/* 기존의 <Modal> ... <TaskDetailModal> ... </Modal> 코드를
+        위의 handleDayPress에서 navigation.navigate로 대체했으므로 삭제합니다.
+      */}
     </View>
-    <Modal transparent visible={isModalVisible} onRequestClose={() => setIsModalVisible(false)}>
-      <TaskDetailModal
-        selectedDate={selectedDate}
-        tasks={tasksForSelectedDate}
-        onClose={() => setIsModalVisible(false)}
-        onTaskUpdate={(taskId, updates) => updateTask(selectedDate, taskId, updates)}
-      />
-    </Modal>
-  </View>
-);
+  );
 };
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige },
-
   calendarWrapper: {
     flex: 1,
     justifyContent: 'flex-start',
     paddingTop: 15,
   },
-
   calendar: {
     width: '100%',
   },
-
   dayCell: { 
     alignItems: 'center', 
     paddingVertical: 10, 
