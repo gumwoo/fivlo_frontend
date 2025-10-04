@@ -1,8 +1,9 @@
 // src/screens/Task/CategorySettingModal.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
+// ⚠️ useFocusEffect를 추가로 임포트합니다.
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 
@@ -14,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 const CategorySettingScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const isFocused = useIsFocused();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
@@ -24,29 +24,34 @@ const CategorySettingScreen = () => {
     { name: '8월 국제무역사', color: '#F4C16E', id: 'cat3' },
   ]);
 
-  // ⚠️ 화면이 다시 포커스될 때, route.params의 변경을 감지하여 목록을 새로고침
-  useEffect(() => {
-    if (isFocused && route.params?.refresh) {
-      const { newCategory, deletedCategoryId, updatedCategory } = route.params;
+  // ⚠️ 화면이 포커스될 때마다 실행되는 Hook으로 변경하여 안정성을 높였습니다.
+  useFocusEffect(
+    useCallback(() => {
+      if (route.params?.refresh) {
+        const { newCategory, deletedCategoryId, updatedCategory } = route.params;
 
-      if (newCategory) {
-        setCategories(prev => [...prev, newCategory]);
-      } else if (deletedCategoryId) {
-        setCategories(prev => prev.filter(c => c.id !== deletedCategoryId));
-      } else if (updatedCategory) {
-        setCategories(prev => prev.map(c => c.id === updatedCategory.id ? updatedCategory : c));
+        setCategories(prev => {
+          let newCategories = [...prev];
+          if (newCategory) {
+            newCategories.push(newCategory);
+          } else if (deletedCategoryId) {
+            newCategories = prev.filter(c => c.id !== deletedCategoryId);
+          } else if (updatedCategory) {
+            newCategories = prev.map(c => c.id === updatedCategory.id ? updatedCategory : c);
+          }
+          return newCategories;
+        });
+
+        // 처리 후 파라미터를 초기화하여 중복 실행 방지
+        navigation.setParams({
+          refresh: false,
+          newCategory: null,
+          deletedCategoryId: null,
+          updatedCategory: null,
+        });
       }
-
-      // 처리 후 파라미터를 초기화하여 중복 실행 방지
-      navigation.setParams({ 
-        refresh: false, 
-        newCategory: null, 
-        deletedCategoryId: null, 
-        updatedCategory: null 
-      });
-    }
-  }, [isFocused, route.params, navigation]);
-
+    }, [route.params])
+  );
 
   const handleEditCategory = (category) => {
     navigation.navigate('CategoryEdit', { category });
@@ -88,7 +93,6 @@ const CategorySettingScreen = () => {
   );
 };
 
-// ⚠️ 시안과 동일하게 스타일 수정
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige },
   content: { flex: 1, paddingHorizontal: 20, paddingTop: 20 },

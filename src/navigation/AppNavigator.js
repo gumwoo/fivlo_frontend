@@ -37,13 +37,54 @@ import TaskDeleteConfirmModal from '../screens/Task/TaskDeleteConfirmModal';
 import CategorySettingScreen from '../screens/Task/CategorySettingModal';
 import CategoryEditScreen from '../screens/Task/CategoryEditModal';
 
-// ... (다른 화면 임포트는 생략) ...
+// 4. 포모도로
 import PomodoroScreen from '../screens/Pomodoro/PomodoroScreen';
+import PomodoroGoalCreationScreen from '../screens/Pomodoro/PomodoroGoalCreationScreen';
+import PomodoroTimerScreen from '../screens/Pomodoro/PomodoroTimerScreen';
+import PomodoroPauseScreen from '../screens/Pomodoro/PomodoroPauseScreen';
+import PomodoroResetConfirmModal from '../screens/Pomodoro/PomodoroResetConfirmModal';
+import PomodoroBreakChoiceScreen from '../screens/Pomodoro/PomodoroBreakChoiceScreen';
+import PomodoroCycleCompleteScreen from '../screens/Pomodoro/PomodoroCycleCompleteScreen';
+import PomodoroFinishScreen from '../screens/Pomodoro/PomodoroFinishScreen';
+import PomodoroStopScreen from '../screens/Pomodoro/PomodoroStopScreen';
+
+// 5. 타임어택
 import TimeAttackScreen from '../screens/TimeAttack/TimeAttackScreen';
+import TimeAttackGoalSettingScreen from '../screens/TimeAttack/TimeAttackGoalSettingScreen';
+import TimeAttackTimeInputModal from '../screens/TimeAttack/TimeAttackTimeInputModal';
+import TimeAttackAISubdivisionScreen from '../screens/TimeAttack/TimeAttackAISubdivisionScreen';
+import TimeAttackInProgressScreen from '../screens/TimeAttack/TimeAttackInProgressScreen';
+import TimeAttackCompleteScreen from '../screens/TimeAttack/TimeAttackCompleteScreen';
+
+// 6. 성장 앨범
 import GrowthAlbumScreen from '../screens/Album/GrowthAlbumScreen';
+import PhotoUploadModal from '../screens/Album/PhotoUploadModal';
+import GrowthAlbumCalendarView from '../screens/Album/GrowthAlbumCalendarView';
+import GrowthAlbumCategoryView from '../screens/Album/GrowthAlbumCategoryView';
+
+// 7. 망각방지 알림
 import ReminderScreen from '../screens/Reminder/ReminderScreen';
+import ReminderAddEditScreen from '../screens/Reminder/ReminderAddEditScreen';
+import ReminderTimeSettingModal from '../screens/Reminder/ReminderTimeSettingModal';
+import ReminderLocationSettingScreen from '../screens/Reminder/ReminderLocationSettingScreen';
+import ReminderChecklistScreen from '../screens/Reminder/ReminderChecklistScreen';
+import ReminderLocationAlertModal from '../screens/Reminder/ReminderLocationAlertModal';
+import ReminderCompleteCoinModal from '../screens/Reminder/ReminderCompleteCoinModal';
+
+// 8. 집중도 분석
 import AnalysisGraphScreen from '../screens/AnalysisGraphScreen';
+import DailyAnalysisView from '../screens/Analysis/DailyAnalysisView';
+import WeeklyAnalysisView from '../screens/Analysis/WeeklyAnalysisView';
+import MonthlyAnalysisView from '../screens/Analysis/MonthlyAnalysisView';
+import DDayAnalysisView from '../screens/Analysis/DDayAnalysisView';
+
+// 9. 오분이 커스터마이징
 import ObooniCustomizationScreen from '../screens/Obooni/ObooniCustomizationScreen';
+import ObooniClosetScreen from '../screens/Obooni/ObooniClosetScreen';
+import ObooniOwnedItemsScreen from '../screens/Obooni/ObooniOwnedItemsScreen';
+import ObooniShopScreen from '../screens/Obooni/ObooniShopScreen';
+
+// 10. 목표 세분화
 import RoutineSettingScreen from '../screens/RoutineSettingScreen';
 
 
@@ -136,7 +177,6 @@ const AppNavigator = () => {
         <Stack.Screen name="AnalysisGraph" component={AnalysisGraphScreen} />
         <Stack.Screen name="AccountManagement" component={AccountManagementScreen} />
         <Stack.Screen name="Pomodoro" component={PomodoroScreen} />
-        <Stack.Screen name="TimeAttack" component={TimeAttackScreen} />
         <Stack.Screen name="Reminder" component={ReminderScreen} />
         <Stack.Screen name="PremiumMembership" component={PremiumMembershipScreen} />
         <Stack.Screen name="Information" component={InformationScreen} />
@@ -158,6 +198,14 @@ const AppNavigator = () => {
         {/* ⚠️ Category 화면들을 일반 화면으로 등록 */}
         <Stack.Screen name="CategorySetting" component={CategorySettingScreen} />
         <Stack.Screen name="CategoryEdit" component={CategoryEditScreen} />
+
+        {/* TimeAttack */}
+        <Stack.Screen name="TimeAttack" component={TimeAttackScreen} />
+        <Stack.Screen name="TimeAttackGoalSettingScreen" component={TimeAttackGoalSettingScreen} />
+        <Stack.Screen name="TimeAttackTimeInputModal" component={TimeAttackTimeInputModal} options={{ presentation: 'modal' }} />
+        <Stack.Screen name="TimeAttackAISubdivisionScreen" component={TimeAttackAISubdivisionScreen} />
+        <Stack.Screen name="TimeAttackInProgress" component={TimeAttackInProgressScreen} />
+        <Stack.Screen name="TimeAttackComplete" component={TimeAttackCompleteScreen} />
 
         {/* 나머지 임시 화면 */}
         <Stack.Screen name="Report" component={TempScreen} />

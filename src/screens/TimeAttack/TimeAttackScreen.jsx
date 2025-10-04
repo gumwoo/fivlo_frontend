@@ -1,17 +1,14 @@
-// src/screens/TimeAttackScreen.jsx
+// src/screens/TimeAttack/TimeAttackScreen.jsx
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, TextInput, Modal } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-// 공통 스타일 및 컴포넌트 임포트
-import { GlobalStyles } from '../../styles/GlobalStyles';
-import { Colors } from '../../styles/color'; // <-- 사용자님 파일명에 맞춰 'color'로 수정!
-import { FontSizes, FontWeights } from '../../styles/Fonts'; // <-- 사용자님 파일명에 맞춰 'Fonts'로 수정!
+import { Colors } from '../../styles/color';
+import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
-import Button from '../../components/common/Button';
-import CharacterImage from '../../components/common/CharacterImage';
 import { useTranslation } from 'react-i18next';
 
 const TimeAttackScreen = () => {
@@ -19,125 +16,94 @@ const TimeAttackScreen = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
-  const [customGoal, setCustomGoal] = useState(''); // 사용자 맞춤 목표
+  const [goals, setGoals] = useState([
+    { id: 'g1', text: '외출 준비' },
+    { id: 'g2', text: '식사 준비' },
+    { id: 'g3', text: '집 정리하기' },
+  ]);
+  const [editingGoalId, setEditingGoalId] = useState(null);
 
-  // AI 추천 목표 (임시 데이터)
-  const aiRecommendedGoals = [
-    { id: 'ai_1', text: '방 정리' },
-    { id: 'ai_2', text: '운동하기' },
-    { id: 'ai_3', text: '책 읽기' },
-  ];
-
-  // AI 추천 목표 선택 또는 사용자 맞춤 목표 입력
   const handleSelectGoal = (goalText) => {
-    Alert.alert(t('time_attack.select_goal_title'), t('time_attack.select_goal_message', { goal: goalText }));
-    // 다음 화면으로 이동하여 시간 설정
-    navigation.navigate('TimeAttackGoalSetting', { selectedGoal: goalText });
+    navigation.navigate('TimeAttackGoalSettingScreen', { selectedGoal: goalText });
+  };
+
+  const handleAddGoal = () => {
+    const newId = `new-${Date.now()}`;
+    setGoals([...goals, { id: newId, text: '' }]);
+    setEditingGoalId(newId);
+  };
+
+  const handleUpdateGoalText = (id, text) => {
+    setGoals(goals.map(goal => (goal.id === id ? { ...goal, text } : goal)));
+  };
+
+  const handleDeleteGoal = (id) => {
+    setGoals(goals.filter(goal => goal.id !== id));
+  };
+  
+  const renderGoalItem = ({ item }) => {
+    const isEditing = editingGoalId === item.id;
+
+    if (isEditing) {
+      return (
+        <View style={styles.goalItemEditing}>
+          <TextInput
+            style={styles.itemInput}
+            value={item.text}
+            onChangeText={(text) => handleUpdateGoalText(item.id, text)}
+            autoFocus
+            onBlur={() => setEditingGoalId(null)}
+          />
+        </View>
+      );
+    }
+
+    return (
+      <TouchableOpacity style={styles.goalItem} onPress={() => handleSelectGoal(item.text)}>
+        <Text style={styles.itemText}>{item.text}</Text>
+        <View style={styles.itemActions}>
+          <TouchableOpacity onPress={() => setEditingGoalId(item.id)} style={styles.iconButton}>
+            <FontAwesome5 name="pen" size={16} color={Colors.secondaryBrown} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleDeleteGoal(item.id)} style={styles.iconButton}>
+            <FontAwesome5 name="times" size={18} color={Colors.secondaryBrown} />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('headers.time_attack')} showBackButton={true} />
-
-      <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
-        <Text style={styles.sectionTitle}>{t('time_attack.question_goal')}</Text>
-
-        {/* AI 추천 목표 */}
-        <View style={styles.aiGoalsContainer}>
-          {aiRecommendedGoals.map(goal => (
-            <TouchableOpacity 
-              key={goal.id} 
-              style={styles.aiGoalButton}
-              onPress={() => handleSelectGoal(goal.text)}
-            >
-              <Text style={styles.aiGoalButtonText}>{goal.text}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* 사용자 맞춤 설정 칸 */}
-        <Text style={styles.sectionTitle}>{t('time_attack.manual_setup')}</Text>
-        <TextInput
-          style={styles.customGoalInput}
-          placeholder={t('time_attack.input_placeholder')}
-          placeholderTextColor={Colors.secondaryBrown}
-          value={customGoal}
-          onChangeText={setCustomGoal}
-        />
-
-        {/* 시작하기 버튼 */}
-        <Button
-          title={t('time_attack.start')}
-          onPress={() => handleSelectGoal(customGoal || t('time_attack.default_goal'))} // 맞춤 목표 없으면 기본 목표로
-          style={styles.startButton}
-          disabled={!customGoal && !aiRecommendedGoals.length} // 둘 다 없으면 비활성화
-        />
-      </ScrollView>
+      <Text style={styles.title}>{t('time_attack.question_goal')}</Text>
+      <FlatList
+        data={goals}
+        renderItem={renderGoalItem}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.listContainer}
+        ListFooterComponent={
+          <TouchableOpacity style={styles.addGoalButton} onPress={handleAddGoal}>
+            <Text style={styles.addGoalText}>기타 목적 추가하기</Text>
+          </TouchableOpacity>
+        }
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    backgroundColor: Colors.primaryBeige,
-  },
-  scrollViewContentContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    alignItems: 'center',
-    paddingTop: 10,
-  },
-  sectionTitle: {
-    fontSize: FontSizes.large,
-    fontWeight: FontWeights.bold,
-    color: Colors.textDark,
-    marginTop: 25,
-    marginBottom: 15,
-    width: '100%',
-    textAlign: 'left',
-  },
-  aiGoalsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    width: '100%',
-    marginBottom: 20,
-  },
-  aiGoalButton: {
-    backgroundColor: Colors.textLight,
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    marginRight: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  aiGoalButtonText: {
-    fontSize: FontSizes.medium,
-    color: Colors.textDark,
-  },
-  customGoalInput: {
-    width: '100%',
-    backgroundColor: Colors.textLight,
-    borderRadius: 10,
-    padding: 15,
-    fontSize: FontSizes.medium,
-    color: Colors.textDark,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-    marginBottom: 30,
-  },
-  startButton: {
-    width: '100%',
-  },
+  screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige },
+  title: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.textDark, marginHorizontal: 60, marginTop: 30, marginBottom: 30 },
+  listContainer: { paddingHorizontal: 30 },
+  goalItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.lightGray, borderRadius: 10, padding: 20, marginBottom: 30, justifyContent: 'space-between' },
+  goalItemEditing: { backgroundColor: Colors.lightGray, borderRadius: 10, padding: 5, marginBottom: 15 },
+  itemText: { fontSize: FontSizes.medium, fontWeight: FontWeights.bold, color: Colors.textDark, textAlign: 'center', justifyContent: 'center' },
+  itemInput: { fontSize: FontSizes.medium, color: Colors.textDark, padding: 15 },
+  itemActions: { flexDirection: 'row' },
+  iconButton: { padding: 5, marginLeft: 15 },
+  addGoalButton: { backgroundColor: Colors.lightGray, borderRadius: 10, padding: 15, alignItems: 'center', marginTop: 200, marginBottom: 30 },
+  addGoalText: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.secondaryBrown, },
 });
 
 export default TimeAttackScreen;

@@ -55,7 +55,7 @@
   "time_attack": {
     "select_goal_title": "목표 선택",
     "select_goal_message": "\"{{goal}}\" 목표로 타임어택을 시작합니다.",
-    "question_goal": "타임어택을 위한 목표는 무엇인가요?",
+    "question_goal": "타임어택 사용 목적이 무엇인가요?",
     "manual_setup": "직접 설정",
     "input_placeholder": "직접 입력하기",
     "start": "시작하기",

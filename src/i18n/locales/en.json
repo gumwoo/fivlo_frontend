@@ -55,7 +55,7 @@
   "time_attack": {
     "select_goal_title": "Select goal",
     "select_goal_message": "Start Time Attack with \"{{goal}}\" goal.",
-    "question_goal": "What is your goal for Time Attack?",
+    "question_goal": "What is the purpose of using Time Attack?",
     "manual_setup": "Manual setup",
     "input_placeholder": "Type your goal",
     "start": "Start",

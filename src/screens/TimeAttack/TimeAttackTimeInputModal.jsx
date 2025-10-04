@@ -33,7 +33,7 @@ const TimeAttackTimeInputModal = () => {
     }
     // goBack() 시 이전 화면에 값을 전달하는 방법 (React Navigation 5+ 권장 방식)
     navigation.navigate({
-      name: 'TimeAttackGoalSetting', // 돌아갈 화면의 이름
+      name: 'TimeAttackGoalSettingScreen', // 돌아갈 화면의 이름
       params: { selectedMinutes: minutes.toString().padStart(2, '0') }, // 전달할 값
       merge: true, // 기존 params와 병합
     });
