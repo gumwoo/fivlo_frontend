@@ -95,6 +95,57 @@ import { FontSizes, FontWeights } from '../styles/Fonts';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+// Pomodoro Stack Navigator
+const PomodoroStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="PomodoroMain" component={PomodoroScreen} />
+    <Stack.Screen name="PomodoroGoalCreation" component={PomodoroGoalCreationScreen} />
+    <Stack.Screen name="PomodoroTimer" component={PomodoroTimerScreen} />
+    <Stack.Screen name="PomodoroPause" component={PomodoroPauseScreen} />
+    <Stack.Screen name="PomodoroResetConfirmModal" component={PomodoroResetConfirmModal} options={{ presentation: 'modal' }} />
+    <Stack.Screen name="PomodoroBreakChoice" component={PomodoroBreakChoiceScreen} />
+    <Stack.Screen name="PomodoroCycleComplete" component={PomodoroCycleCompleteScreen} />
+    <Stack.Screen name="PomodoroFinish" component={PomodoroFinishScreen} />
+    <Stack.Screen name="PomodoroStop" component={PomodoroStopScreen} />
+  </Stack.Navigator>
+);
+
+// Reminder Stack Navigator
+const ReminderStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="ReminderMain" component={ReminderScreen} />
+    <Stack.Screen name="ReminderAddEdit" component={ReminderAddEditScreen} />
+    <Stack.Screen name="ReminderChecklist" component={ReminderChecklistScreen} />
+    <Stack.Screen name="ReminderLocationSetting" component={ReminderLocationSettingScreen} />
+  </Stack.Navigator>
+);
+
+// RoutineSetting Stack Navigator
+const RoutineStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="RoutineMain" component={RoutineSettingScreen} />
+  </Stack.Navigator>
+);
+
+// AnalysisGraph Stack Navigator
+const AnalysisStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="AnalysisMain" component={AnalysisGraphScreen} />
+  </Stack.Navigator>
+);
+
+// TimeAttack Stack Navigator
+const TimeAttackStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="TimeAttackMain" component={TimeAttackScreen} />
+    <Stack.Screen name="TimeAttackGoalSettingScreen" component={TimeAttackGoalSettingScreen} />
+    <Stack.Screen name="TimeAttackTimeInputModal" component={TimeAttackTimeInputModal} options={{ presentation: 'modal' }} />
+    <Stack.Screen name="TimeAttackAISubdivisionScreen" component={TimeAttackAISubdivisionScreen} />
+    <Stack.Screen name="TimeAttackInProgress" component={TimeAttackInProgressScreen} />
+    <Stack.Screen name="TimeAttackComplete" component={TimeAttackCompleteScreen} />
+  </Stack.Navigator>
+);
+
 const TempScreen = ({ route }) => (
   <View style={{ flex: 1, backgroundColor: Colors.primaryBeige, justifyContent: 'center', alignItems: 'center' }}>
     <Header title={route.name} showBackButton={true} />
@@ -135,11 +186,15 @@ const MainTabNavigator = () => {
           position: 'absolute',
           bottom: 0,
           height: 80,
+          paddingHorizontal: 0,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -3 },
           shadowOpacity: 0.1,
           shadowRadius: 5,
           elevation: 5,
+        },
+        tabBarItemStyle: {
+          justifyContent: 'center',
         },
         tabBarLabelStyle: {
           fontSize: FontSizes.small,
@@ -152,6 +207,13 @@ const MainTabNavigator = () => {
       <Tab.Screen name="GrowthAlbumTab" component={GrowthAlbumScreen} options={{ tabBarLabel: t('tabs.growth_album') }} />
       <Tab.Screen name="FeaturesTab" component={FeaturesScreen} options={{ tabBarLabel: t('tabs.features') }} />
       <Tab.Screen name="SettingsTab" component={SettingsScreen} options={{ tabBarLabel: t('tabs.settings') }} />
+      
+      {/* 숨겨진 탭들 - 기능에서 사용 */}
+      <Tab.Screen name="PomodoroTab" component={PomodoroStack} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="ReminderTab" component={ReminderStack} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="TimeAttackTab" component={TimeAttackStack} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="RoutineTab" component={RoutineStack} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="AnalysisTab" component={AnalysisStack} options={{ tabBarButton: () => null }} />
     </Tab.Navigator>
   );
 };
@@ -173,11 +235,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Main" component={MainTabNavigator} />
         
         {/* 기능별 전체 화면 */}
-        <Stack.Screen name="RoutineSetting" component={RoutineSettingScreen} />
-        <Stack.Screen name="AnalysisGraph" component={AnalysisGraphScreen} />
         <Stack.Screen name="AccountManagement" component={AccountManagementScreen} />
-        <Stack.Screen name="Pomodoro" component={PomodoroScreen} />
-        <Stack.Screen name="Reminder" component={ReminderScreen} />
         <Stack.Screen name="PremiumMembership" component={PremiumMembershipScreen} />
         <Stack.Screen name="Information" component={InformationScreen} />
         
@@ -198,14 +256,6 @@ const AppNavigator = () => {
         {/* ⚠️ Category 화면들을 일반 화면으로 등록 */}
         <Stack.Screen name="CategorySetting" component={CategorySettingScreen} />
         <Stack.Screen name="CategoryEdit" component={CategoryEditScreen} />
-
-        {/* TimeAttack */}
-        <Stack.Screen name="TimeAttack" component={TimeAttackScreen} />
-        <Stack.Screen name="TimeAttackGoalSettingScreen" component={TimeAttackGoalSettingScreen} />
-        <Stack.Screen name="TimeAttackTimeInputModal" component={TimeAttackTimeInputModal} options={{ presentation: 'modal' }} />
-        <Stack.Screen name="TimeAttackAISubdivisionScreen" component={TimeAttackAISubdivisionScreen} />
-        <Stack.Screen name="TimeAttackInProgress" component={TimeAttackInProgressScreen} />
-        <Stack.Screen name="TimeAttackComplete" component={TimeAttackCompleteScreen} />
 
         {/* 나머지 임시 화면 */}
         <Stack.Screen name="Report" component={TempScreen} />

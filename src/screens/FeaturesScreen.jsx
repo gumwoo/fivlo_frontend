@@ -24,8 +24,17 @@ const FeaturesScreen = () => {
   ];
 
   const handleFeaturePress = (screenName) => {
-    if (screenName === 'GrowthAlbumTab') {
-      navigation.navigate('Main', { screen: screenName });
+    const tabMapping = {
+      'Pomodoro': 'PomodoroTab',
+      'Reminder': 'ReminderTab',
+      'TimeAttack': 'TimeAttackTab',
+      'RoutineSetting': 'RoutineTab',
+      'AnalysisGraph': 'AnalysisTab',
+      'GrowthAlbumTab': 'GrowthAlbumTab'
+    };
+    
+    if (tabMapping[screenName]) {
+      navigation.navigate('Main', { screen: tabMapping[screenName] });
     } else {
       navigation.navigate(screenName);
     }
