@@ -1,7 +1,8 @@
 // src/screens/Task/CategoryEditModal.jsx
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Alert } from 'react-native';
+// ⚠️ ScrollView를 import 구문에 추가했습니다.
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Alert, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -35,13 +36,20 @@ const CategoryEditScreen = () => {
       Alert.alert(t('reminder.location_required_title'), '카테고리 내용을 입력해주세요.');
       return;
     }
-    const newCategoryData = { name: categoryName, color: selectedColor };
-    // ... 실제 저장 API 호출 로직 ...
 
-    // ⚠️ 저장 후, 이전 화면으로 돌아가면서 'refresh' 신호와 새 카테고리 정보를 보냅니다.
-    navigation.navigate('CategorySetting', { 
-      refresh: true,
-      newCategory: newCategoryData,
+    const categoryData = { 
+      id: initialCategory?.id || `new-${Date.now()}`,
+      name: categoryName, 
+      color: selectedColor 
+    };
+
+    navigation.navigate({
+      name: 'CategorySetting',
+      params: { 
+        refresh: true, 
+        [mode === 'add' ? 'newCategory' : 'updatedCategory']: categoryData 
+      },
+      merge: true,
     });
   };
 
@@ -51,8 +59,11 @@ const CategoryEditScreen = () => {
       { 
         text: '삭제', 
         style: 'destructive', 
-        // ⚠️ 삭제 후에도 이전 화면에 새로고침 신호를 보냅니다.
-        onPress: () => navigation.navigate('CategorySetting', { refresh: true })
+        onPress: () => navigation.navigate({
+          name: 'CategorySetting',
+          params: { refresh: true, deletedCategoryId: initialCategory.id },
+          merge: true,
+        })
       },
     ]);
   };
@@ -71,7 +82,11 @@ const CategoryEditScreen = () => {
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={'TASK'} showBackButton={true} />
-      <View style={styles.content}>
+      <ScrollView 
+        style={styles.content}
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'space-between' }}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.cardContainer}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>{t('task.category_input_label')}</Text>
@@ -95,21 +110,23 @@ const CategoryEditScreen = () => {
             keyExtractor={item => item}
             numColumns={5}
             contentContainerStyle={styles.colorGrid}
+            scrollEnabled={false}
           />
         </View>
-      </View>
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <Text style={styles.saveButtonText}>{t('task.save')}</Text>
-        </TouchableOpacity>
-      </View>
+
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+            <Text style={styles.saveButtonText}>{t('task.save')}</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige },
-  content: { flex: 1, padding: 20 },
+  content: { flex: 1, paddingHorizontal: 20, paddingTop: 20 },
   cardContainer: {
     backgroundColor: Colors.textLight,
     borderRadius: 15,
@@ -143,7 +160,7 @@ const styles = StyleSheet.create({
   },
   label: { fontSize: FontSizes.medium, fontWeight: FontWeights.bold, color: Colors.textDark, marginTop: 25, marginBottom: 10 },
   colorGrid: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
   colorOption: {
     width: 50,
@@ -154,10 +171,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    paddingTop: 10,
-    backgroundColor: Colors.primaryBeige,
+    paddingVertical: 20,
   },
   saveButton: {
     backgroundColor: '#FFD700',

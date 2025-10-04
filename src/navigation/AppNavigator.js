@@ -25,7 +25,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import Header from '../components/common/Header';
 import AccountManagementScreen from '../screens/AccountManagementScreen';
 import InformationScreen from '../screens/InformationScreen';
-import PremiumMembershipScreen from '../screens/PremiumMembershipScreen'; // 계정 관리
+import PremiumMembershipScreen from '../screens/PremiumMembershipScreen';
 
 // 3. Task (할 일)
 import TaskCalendarScreen from '../screens/Task/TaskCalendarScreen';
@@ -37,54 +37,13 @@ import TaskDeleteConfirmModal from '../screens/Task/TaskDeleteConfirmModal';
 import CategorySettingScreen from '../screens/Task/CategorySettingModal';
 import CategoryEditScreen from '../screens/Task/CategoryEditModal';
 
-// 4. 포모도로
+// ... (다른 화면 임포트는 생략) ...
 import PomodoroScreen from '../screens/Pomodoro/PomodoroScreen';
-import PomodoroGoalCreationScreen from '../screens/Pomodoro/PomodoroGoalCreationScreen';
-import PomodoroTimerScreen from '../screens/Pomodoro/PomodoroTimerScreen';
-import PomodoroPauseScreen from '../screens/Pomodoro/PomodoroPauseScreen';
-import PomodoroResetConfirmModal from '../screens/Pomodoro/PomodoroResetConfirmModal';
-import PomodoroBreakChoiceScreen from '../screens/Pomodoro/PomodoroBreakChoiceScreen';
-import PomodoroCycleCompleteScreen from '../screens/Pomodoro/PomodoroCycleCompleteScreen';
-import PomodoroFinishScreen from '../screens/Pomodoro/PomodoroFinishScreen';
-import PomodoroStopScreen from '../screens/Pomodoro/PomodoroStopScreen';
-
-// 5. 타임어택
 import TimeAttackScreen from '../screens/TimeAttack/TimeAttackScreen';
-import TimeAttackGoalSettingScreen from '../screens/TimeAttack/TimeAttackGoalSettingScreen';
-import TimeAttackTimeInputModal from '../screens/TimeAttack/TimeAttackTimeInputModal';
-import TimeAttackAISubdivisionScreen from '../screens/TimeAttack/TimeAttackAISubdivisionScreen';
-import TimeAttackInProgressScreen from '../screens/TimeAttack/TimeAttackInProgressScreen';
-import TimeAttackCompleteScreen from '../screens/TimeAttack/TimeAttackCompleteScreen';
-
-// 6. 성장 앨범
 import GrowthAlbumScreen from '../screens/Album/GrowthAlbumScreen';
-import PhotoUploadModal from '../screens/Album/PhotoUploadModal';
-import GrowthAlbumCalendarView from '../screens/Album/GrowthAlbumCalendarView';
-import GrowthAlbumCategoryView from '../screens/Album/GrowthAlbumCategoryView';
-
-// 7. 망각방지 알림
 import ReminderScreen from '../screens/Reminder/ReminderScreen';
-import ReminderAddEditScreen from '../screens/Reminder/ReminderAddEditScreen';
-import ReminderTimeSettingModal from '../screens/Reminder/ReminderTimeSettingModal';
-import ReminderLocationSettingScreen from '../screens/Reminder/ReminderLocationSettingScreen';
-import ReminderChecklistScreen from '../screens/Reminder/ReminderChecklistScreen';
-import ReminderLocationAlertModal from '../screens/Reminder/ReminderLocationAlertModal';
-import ReminderCompleteCoinModal from '../screens/Reminder/ReminderCompleteCoinModal';
-
-// 8. 집중도 분석
 import AnalysisGraphScreen from '../screens/AnalysisGraphScreen';
-import DailyAnalysisView from '../screens/Analysis/DailyAnalysisView';
-import WeeklyAnalysisView from '../screens/Analysis/WeeklyAnalysisView';
-import MonthlyAnalysisView from '../screens/Analysis/MonthlyAnalysisView';
-import DDayAnalysisView from '../screens/Analysis/DDayAnalysisView';
-
-// 9. 오분이 커스터마이징
 import ObooniCustomizationScreen from '../screens/Obooni/ObooniCustomizationScreen';
-import ObooniClosetScreen from '../screens/Obooni/ObooniClosetScreen';
-import ObooniOwnedItemsScreen from '../screens/Obooni/ObooniOwnedItemsScreen';
-import ObooniShopScreen from '../screens/Obooni/ObooniShopScreen';
-
-// 10. 목표 세분화
 import RoutineSettingScreen from '../screens/RoutineSettingScreen';
 
 
@@ -96,11 +55,9 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const TempScreen = ({ route }) => (
-  <View style={{ flex: 1, backgroundColor: Colors.primaryBeige }}>
+  <View style={{ flex: 1, backgroundColor: Colors.primaryBeige, justifyContent: 'center', alignItems: 'center' }}>
     <Header title={route.name} showBackButton={true} />
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: FontSizes.large }}>{route.name} Screen</Text>
-    </View>
+    <Text style={{ fontSize: FontSizes.large }}>{route.name} Screen</Text>
   </View>
 );
 
@@ -174,12 +131,17 @@ const AppNavigator = () => {
         {/* 메인 탭 진입 */}
         <Stack.Screen name="Main" component={MainTabNavigator} />
         
-        {/* 기능별 전체 화면 (모달 포함) */}
+        {/* 기능별 전체 화면 */}
         <Stack.Screen name="RoutineSetting" component={RoutineSettingScreen} />
         <Stack.Screen name="AnalysisGraph" component={AnalysisGraphScreen} />
         <Stack.Screen name="AccountManagement" component={AccountManagementScreen} />
-
-        {/* Task */}
+        <Stack.Screen name="Pomodoro" component={PomodoroScreen} />
+        <Stack.Screen name="TimeAttack" component={TimeAttackScreen} />
+        <Stack.Screen name="Reminder" component={ReminderScreen} />
+        <Stack.Screen name="PremiumMembership" component={PremiumMembershipScreen} />
+        <Stack.Screen name="Information" component={InformationScreen} />
+        
+        {/* Task 관련 화면들 */}
         <Stack.Screen name="TaskCalendar" component={TaskCalendarScreen} />
         <Stack.Screen 
           name="TaskDetailModal" 
@@ -191,56 +153,13 @@ const AppNavigator = () => {
             headerShown: false,
           }} 
         />
-        <Stack.Screen name="TaskCompleteCoinModal" component={TaskCompleteCoinModal} options={{ presentation: 'modal' }} />
         <Stack.Screen name="TaskEditModal" component={TaskEditModal} options={{ presentation: 'modal' }} />
-        <Stack.Screen name="TaskDeleteConfirmModal" component={TaskDeleteConfirmModal} options={{ presentation: 'modal' }} />
         
-        {/* ⚠️ Category 모달들을 일반 화면으로 등록합니다. */}
+        {/* ⚠️ Category 화면들을 일반 화면으로 등록 */}
         <Stack.Screen name="CategorySetting" component={CategorySettingScreen} />
         <Stack.Screen name="CategoryEdit" component={CategoryEditScreen} />
 
-        {/* Pomodoro */}
-        <Stack.Screen name="Pomodoro" component={PomodoroScreen} />
-        <Stack.Screen name="PomodoroGoalCreation" component={PomodoroGoalCreationScreen} />
-        <Stack.Screen name="PomodoroTimer" component={PomodoroTimerScreen} />
-        <Stack.Screen name="PomodoroPause" component={PomodoroPauseScreen} />
-        <Stack.Screen name="PomodoroResetConfirmModal" component={PomodoroResetConfirmModal} options={{ presentation: 'modal' }} />
-        <Stack.Screen name="PomodoroBreakChoice" component={PomodoroBreakChoiceScreen} />
-        <Stack.Screen name="PomodoroCycleComplete" component={PomodoroCycleCompleteScreen} />
-        <Stack.Screen name="PomodoroFinish" component={PomodoroFinishScreen} />
-        <Stack.Screen name="PomodoroStop" component={PomodoroStopScreen} />
-
-        {/* TimeAttack */}
-        <Stack.Screen name="TimeAttack" component={TimeAttackScreen} />
-        <Stack.Screen name="TimeAttackGoalSetting" component={TimeAttackGoalSettingScreen} />
-        <Stack.Screen name="TimeAttackTimeInputModal" component={TimeAttackTimeInputModal} options={{ presentation: 'modal' }} />
-        <Stack.Screen name="TimeAttackAISubdivision" component={TimeAttackAISubdivisionScreen} />
-        <Stack.Screen name="TimeAttackInProgress" component={TimeAttackInProgressScreen} />
-        <Stack.Screen name="TimeAttackComplete" component={TimeAttackCompleteScreen} />
-
-        {/* Growth Album */}
-        <Stack.Screen name="PhotoUploadModal" component={PhotoUploadModal} options={{ presentation: 'modal' }} />
-        <Stack.Screen name="GrowthAlbumCalendarView" component={GrowthAlbumCalendarView} />
-        <Stack.Screen name="GrowthAlbumCategoryView" component={GrowthAlbumCategoryView} />
-
-        {/* Reminder */}
-        <Stack.Screen name="Reminder" component={ReminderScreen} />
-        <Stack.Screen name="ReminderAddEdit" component={ReminderAddEditScreen} />
-        <Stack.Screen name="ReminderTimeSettingModal" component={ReminderTimeSettingModal} options={{ presentation: 'modal' }} />
-        <Stack.Screen name="ReminderLocationSetting" component={ReminderLocationSettingScreen} />
-        <Stack.Screen name="ReminderChecklist" component={ReminderChecklistScreen} />
-        <Stack.Screen name="ReminderLocationAlertModal" component={ReminderLocationAlertModal} options={{ presentation: 'modal' }} />
-        <Stack.Screen name="ReminderCompleteCoinModal" component={ReminderCompleteCoinModal} options={{ presentation: 'modal' }} />
-
-        {/* Obooni Customization */}
-        <Stack.Screen name="ObooniCustomization" component={ObooniCustomizationScreen} options={{ presentation: 'modal' }} />
-        <Stack.Screen name="ObooniCloset" component={ObooniClosetScreen} />
-        <Stack.Screen name="ObooniOwnedItems" component={ObooniOwnedItemsScreen} />
-        <Stack.Screen name="ObooniShop" component={ObooniShopScreen} />
-
-        <Stack.Screen name="ProfileSettings" component={TempScreen} />
-        <Stack.Screen name="PremiumMembership" component={PremiumMembershipScreen} />
-        <Stack.Screen name="Information" component={InformationScreen} />
+        {/* 나머지 임시 화면 */}
         <Stack.Screen name="Report" component={TempScreen} />
 
       </Stack.Navigator>

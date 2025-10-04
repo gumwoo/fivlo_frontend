@@ -23,23 +23,29 @@ const CategorySettingScreen = () => {
     { name: '창업팀', color: '#F5E6CC', id: 'cat2' },
     { name: '8월 국제무역사', color: '#F4C16E', id: 'cat3' },
   ]);
-  
-  // ⚠️ 화면이 다시 포커스될 때, 'refresh' 파라미터가 있으면 목록을 새로고침하는 로직
+
+  // ⚠️ 화면이 다시 포커스될 때, route.params의 변경을 감지하여 목록을 새로고침
   useEffect(() => {
     if (isFocused && route.params?.refresh) {
-      // 실제 앱에서는 여기서 백엔드 API를 다시 호출하여 최신 데이터를 가져옵니다.
-      // 지금은 임시로 새로운 아이템을 추가하여 테스트합니다.
-      const newCategory = { 
-        name: route.params.newCategory?.name || `새 항목 ${Math.floor(Math.random() * 100)}`,
-        color: route.params.newCategory?.color || '#A0FFC3',
-        id: `cat${Date.now()}` 
-      };
-      setCategories(prev => [...prev, newCategory]);
+      const { newCategory, deletedCategoryId, updatedCategory } = route.params;
 
-      // refresh 파라미터를 다시 false로 바꿔서 중복 실행을 방지합니다.
-      navigation.setParams({ refresh: false, newCategory: null });
+      if (newCategory) {
+        setCategories(prev => [...prev, newCategory]);
+      } else if (deletedCategoryId) {
+        setCategories(prev => prev.filter(c => c.id !== deletedCategoryId));
+      } else if (updatedCategory) {
+        setCategories(prev => prev.map(c => c.id === updatedCategory.id ? updatedCategory : c));
+      }
+
+      // 처리 후 파라미터를 초기화하여 중복 실행 방지
+      navigation.setParams({ 
+        refresh: false, 
+        newCategory: null, 
+        deletedCategoryId: null, 
+        updatedCategory: null 
+      });
     }
-  }, [isFocused, route.params?.refresh]);
+  }, [isFocused, route.params, navigation]);
 
 
   const handleEditCategory = (category) => {
@@ -51,13 +57,13 @@ const CategorySettingScreen = () => {
   };
 
   const renderCategoryItem = ({ item }) => (
-    <View style={styles.categoryItem}>
+    <TouchableOpacity onPress={() => handleEditCategory(item)} style={styles.categoryItem}>
       <View style={[styles.categoryColorBox, { backgroundColor: item.color }]} />
       <Text style={styles.categoryName}>{item.name}</Text>
-      <TouchableOpacity onPress={() => handleEditCategory(item)} style={styles.dragIcon}>
+      <View style={styles.dragIcon}>
         <FontAwesome5 name="bars" size={20} color={Colors.secondaryBrown} />
-      </TouchableOpacity>
-    </View>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -82,9 +88,10 @@ const CategorySettingScreen = () => {
   );
 };
 
+// ⚠️ 시안과 동일하게 스타일 수정
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige },
-  content: { flex: 1, padding: 20 },
+  content: { flex: 1, paddingHorizontal: 20, paddingTop: 20 },
   listContainer: {
     backgroundColor: Colors.textLight,
     borderRadius: 15,
@@ -103,8 +110,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 10,
     marginBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0,0,0,0.05)',
   },
   listTitle: {
     fontSize: FontSizes.large,
@@ -118,6 +123,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 18,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
   },
   categoryColorBox: {
     width: 24,
