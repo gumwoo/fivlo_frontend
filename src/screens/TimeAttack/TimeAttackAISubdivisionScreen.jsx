@@ -54,7 +54,7 @@ const TimeAttackAISubdivisionScreen = () => {
 
   const handleStartAttack = () => {
     if (tasks.some(task => !task.text.trim())) {
-      Alert.alert('알림', '내용이 비어있는 항목이 있습니다.');
+      Alert.alert(t('time_attack_ai.alert_title'), t('time_attack_ai.empty_content_message'));
       return;
     }
     navigation.navigate('TimeAttackInProgress', { selectedGoal, subdividedTasks: tasks });
@@ -70,7 +70,7 @@ const TimeAttackAISubdivisionScreen = () => {
             value={item.text}
             onChangeText={(text) => handleUpdateTask(item.id, { text })}
             autoFocus
-            placeholder="내용 입력"
+            placeholder={t('time_attack_ai.input_content_placeholder')}
           />
           <View style={styles.timeInputContainer}>
             <TextInput
@@ -80,10 +80,10 @@ const TimeAttackAISubdivisionScreen = () => {
               keyboardType="number-pad"
               maxLength={3}
             />
-            <Text style={styles.timeUnit}>분</Text>
+            <Text style={styles.timeUnit}>{t('time_attack_ai.minute_unit')}</Text>
           </View>
           <TouchableOpacity onPress={() => setEditingTaskId(null)} style={styles.doneButton}>
-            <Text style={styles.doneButtonText}>완료</Text>
+            <Text style={styles.doneButtonText}>{t('time_attack_ai.complete_button')}</Text>
           </TouchableOpacity>
         </View>
       );
@@ -92,7 +92,7 @@ const TimeAttackAISubdivisionScreen = () => {
     return (
       <TouchableOpacity style={styles.taskItem} onLongPress={() => setEditingTaskId(item.id)}>
         <Text style={styles.taskText}>{item.text}</Text>
-        <Text style={styles.taskTime}>- {item.time}분</Text>
+        <Text style={styles.taskTime}>- {item.time}{t('time_attack_ai.minute_unit')}</Text>
         <TouchableOpacity onPress={() => handleDeleteTask(item.id)} style={styles.deleteButton}>
           <FontAwesome5 name="times" size={16} color={Colors.secondaryBrown} />
         </TouchableOpacity>
@@ -109,7 +109,7 @@ const TimeAttackAISubdivisionScreen = () => {
         </View>
       ) : (
         <>
-          <Text style={styles.title}>오분이가 당신을 위한 {totalMinutes}분 타임어택을 만들었어요!</Text>
+          <Text style={styles.title}>{t('time_attack_ai.ai_message', { totalMinutes })}</Text>
           <FlatList
             data={tasks}
             renderItem={renderTaskItem}
@@ -123,7 +123,7 @@ const TimeAttackAISubdivisionScreen = () => {
           />
           <View style={styles.footer}>
             <Button
-              title="타임어택 시작"
+              title={t('time_attack_ai.start_attack')}
               onPress={handleStartAttack}
               style={styles.startButton}
               textStyle={styles.startButtonText}

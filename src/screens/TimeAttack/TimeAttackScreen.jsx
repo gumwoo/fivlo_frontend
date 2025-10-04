@@ -84,7 +84,7 @@ const TimeAttackScreen = () => {
         contentContainerStyle={styles.listContainer}
         ListFooterComponent={
           <TouchableOpacity style={styles.addGoalButton} onPress={handleAddGoal}>
-            <Text style={styles.addGoalText}>기타 목적 추가하기</Text>
+            <Text style={styles.addGoalText}>{t('time_attack.add_other_goal')}</Text>
           </TouchableOpacity>
         }
       />

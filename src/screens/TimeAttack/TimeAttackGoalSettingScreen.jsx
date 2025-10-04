@@ -46,10 +46,10 @@ const TimeAttackGoalSettingScreen = () => {
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('headers.time_attack')} showBackButton={true} />
       <View style={styles.content}>
-        <Text style={styles.questionText}>몇 분안에 마쳐야 하나요?</Text>
+        <Text style={styles.questionText}>{t('time_attack.question_time')}</Text>
         <View style={styles.timerDisplayContainer}>
           <Text style={styles.timerText}>{formatTimeForDisplay()}</Text>
-          <Text style={styles.minuteText}>분</Text>
+          <Text style={styles.minuteText}>{t('time_attack.minute_label')}</Text>
         </View>
       </View>
       <View style={styles.bottomContainer}>
