@@ -1,7 +1,7 @@
 // src/screens/TimeAttack/TimeAttackGoalSettingScreen.jsx
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -19,15 +19,14 @@ const TimeAttackGoalSettingScreen = () => {
   const { t } = useTranslation();
   const { selectedGoal } = route.params;
 
-  const [time, setTime] = useState({ h: 0, m: 40, s: 0 });
+  const [time, setTime] = useState({ h: 0, m: 0, s: 0 });
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const totalSeconds = time.h * 3600 + time.m * 60 + time.s;
   const totalMinutes = Math.floor(totalSeconds / 60);
 
   const formatTimeForDisplay = () => {
-    const displayMinutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-    const displaySeconds = (totalSeconds % 60).toString().padStart(2, '0');
-    return `${displayMinutes}:${displaySeconds}`;
+    return `${String(totalMinutes).padStart(2, '0')}`;
   };
 
   const handleStartAttack = () => {
@@ -47,13 +46,26 @@ const TimeAttackGoalSettingScreen = () => {
       <Header title={t('headers.time_attack')} showBackButton={true} />
       <View style={styles.content}>
         <Text style={styles.questionText}>{t('time_attack.question_time')}</Text>
-        <View style={styles.timerDisplayContainer}>
+        <TouchableOpacity 
+          style={styles.timerDisplayContainer}
+          onPress={() => setShowTimePicker(true)}
+          activeOpacity={0.7}
+        >
           <Text style={styles.timerText}>{formatTimeForDisplay()}</Text>
           <Text style={styles.minuteText}>{t('time_attack.minute_label')}</Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.bottomContainer}>
-        <TimePicker time={time} setTime={setTime} />
+        {showTimePicker && (
+          <>
+            <TimePicker time={time} setTime={setTime} />
+            <Button
+              title={t('common.ok')}
+              onPress={() => setShowTimePicker(false)}
+              style={styles.confirmButton}
+            />
+          </>
+        )}
         <Button
           title={t('common.start')}
           onPress={handleStartAttack}
@@ -85,6 +97,12 @@ const styles = StyleSheet.create({
   bottomContainer: {
     paddingBottom: 20,
     backgroundColor: Colors.primaryBeige
+  },
+  confirmButton: {
+    backgroundColor: Colors.secondaryBrown,
+    marginHorizontal: 20,
+    marginBottom: 10,
+    borderRadius: 10,
   },
   startButton: {
     backgroundColor: '#FFD700', // 노란색
