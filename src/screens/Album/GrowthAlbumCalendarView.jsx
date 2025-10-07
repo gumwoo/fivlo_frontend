@@ -134,25 +134,25 @@ const GrowthAlbumCalendarView = ({ photos }) => {
         markedDates={markedDates}
         style={styles.calendar}
         dayComponent={renderDay}
-        // --- ✨ 폰트 크기 조정을 위한 theme 속성 추가 ✨ ---
+        // --- ✨ 수정된 부분 시작 ✨ ---
         theme={{
-          'stylesheet.calendar.header': {
-            week: {
-              marginTop: 12,
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-            },
-            dayHeader: {
-              fontSize: FontSizes.medium, // 요일 폰트 크기
-              color: Colors.secondaryBrown,
-              fontWeight: FontWeights.medium,
-            },
-          },
-          arrowColor: Colors.secondaryBrown,
+          // 월 폰트 스타일
           monthTextColor: Colors.textDark,
-          textMonthFontSize: FontSizes.large, // 월 폰트 크기
+          textMonthFontSize: FontSizes.large,
           textMonthFontWeight: FontWeights.bold,
+
+          // 요일(일,월,화...) 폰트 스타일
+          textSectionTitleColor: Colors.secondaryBrown,
+          textDayHeaderFontSize: FontSizes.medium,
+          textDayHeaderFontWeight: FontWeights.medium,
+
+          // 기타 색상 설정
+          arrowColor: Colors.secondaryBrown,
+          todayTextColor: Colors.accentApricot,
+          dayTextColor: Colors.textDark,
+          textDisabledColor: '#d9e1e8',
         }}
+        // --- ✨ 수정된 부분 끝 ✨ ---
       />
 
       <PhotoDetailModal
@@ -169,16 +169,15 @@ const GrowthAlbumCalendarView = ({ photos }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // 화면 전체를 차지하도록
     width: '100%',
     alignItems: 'center',
-    paddingHorizontal: 10, // 좌우 여백 추가
+    paddingHorizontal: 15, // 캘린더 좌우 여백
   },
   calendar: {
     width: '100%',
+    paddingBottom: 10,
     backgroundColor: Colors.textLight,
     borderRadius: 15,
-    padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -186,14 +185,14 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   dayContainer: {
-    flex: 1,
-    height: 90, // 세로 비율을 늘림
+    flex: 1, // 가로 공간을 꽉 채우도록 수정
+    height: 80, // 세로 높이를 적절하게 조절
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 2,
+    margin: 1,
   },
   dayText: {
-    fontSize: FontSizes.medium, // 날짜 폰트 크기 증가
+    fontSize: FontSizes.medium, // 날짜 폰트 크기를 키움
     color: Colors.textDark,
     fontWeight: FontWeights.medium,
   },
