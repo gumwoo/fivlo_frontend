@@ -186,23 +186,25 @@ const MainTabNavigator = () => {
           position: 'absolute',
           bottom: 0,
           height: 80,
-          // --- 수정된 부분 ---
-          left: 0, 
-          right: 0,
-          // ------------------
+          paddingHorizontal: 0,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -3 },
           shadowOpacity: 0.1,
           shadowRadius: 5,
           elevation: 5,
         },
+        // 각 탭 버튼이 동일한 너비를 차지하도록 설정하여 아이콘과 텍스트가 균일하게 배치됩니다.
         tabBarItemStyle: {
+          flex: 1,
           justifyContent: 'center',
+          alignItems: 'center',
         },
+        // 라벨을 중앙 정렬하고 음수 마진을 제거해 아래로 치우치는 현상을 수정합니다.
         tabBarLabelStyle: {
           fontSize: FontSizes.small,
           fontWeight: FontWeights.medium,
-          marginTop: -5,
+          marginTop: 0,
+          textAlign: 'center',
         },
       })}
     >
@@ -262,7 +264,6 @@ const AppNavigator = () => {
 
         {/* 나머지 임시 화면 */}
         <Stack.Screen name="Report" component={TempScreen} />
-
       </Stack.Navigator>
     </NavigationContainer>
   );
