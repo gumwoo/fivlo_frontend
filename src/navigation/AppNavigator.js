@@ -1,5 +1,3 @@
-// src/navigation/AppNavigator.js
-
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -186,7 +184,6 @@ const MainTabNavigator = () => {
           position: 'absolute',
           bottom: 0,
           height: 80,
-          paddingHorizontal: 0,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -3 },
           shadowOpacity: 0.1,
