@@ -1,7 +1,14 @@
 // src/components/common/PremiumPreparingModal.jsx
 
 import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  Image,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
@@ -16,21 +23,25 @@ const PremiumPreparingModal = ({ visible, onClose }) => {
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
-        <View style={styles.modalContainer}>
-          {/* 오분이 이미지 */}
-          <Image 
-            source={require('../../../assets/기본오분이.png')}
-            style={styles.characterImage}
-            resizeMode="contain"
-          />
-          
-          {/* 메시지 */}
-          <Text style={styles.message}>
-            {t('premium.preparing_message')}
-          </Text>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.overlay}>
+          <TouchableWithoutFeedback onPress={() => {}}>
+            <View style={styles.modalContainer}>
+              {/* 오분이 이미지 */}
+              <Image
+                source={require('../../../assets/기본오분이.png')}
+                style={styles.characterImage}
+                resizeMode="contain"
+              />
+
+              {/* 메시지 */}
+              <Text style={styles.message}>
+                {t('premium.preparing_message')}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -52,10 +63,7 @@ const styles = StyleSheet.create({
     maxWidth: 300,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,

@@ -10,10 +10,10 @@ import {
   TouchableOpacity,
   TextInput,
   ScrollView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import { Video } from 'expo-av';
@@ -55,74 +55,78 @@ const PhotoDetailModal = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
-        <View style={styles.modalContent}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {/* 날짜 */}
-            <Text style={styles.dateText}>{formattedDate}</Text>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.overlay}>
+          <TouchableWithoutFeedback onPress={() => {}}>
+            <View style={styles.modalContent}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {/* 날짜 */}
+                <Text style={styles.dateText}>{formattedDate}</Text>
 
-            {/* 사진 또는 동영상 */}
-            <View style={styles.imageContainer}>
-              {photo.type === 'video' ? (
-                <Video
-                  source={{ uri: photo.uri }}
-                  style={styles.media}
-                  useNativeControls
-                  resizeMode="contain"
-                  isLooping
-                />
-              ) : (
-                <Image source={{ uri: photo.uri }} style={styles.media} />
-              )}
+                {/* 사진 또는 동영상 */}
+                <View style={styles.imageContainer}>
+                  {photo.type === 'video' ? (
+                    <Video
+                      source={{ uri: photo.uri }}
+                      style={styles.media}
+                      useNativeControls
+                      resizeMode="contain"
+                      isLooping
+                    />
+                  ) : (
+                    <Image source={{ uri: photo.uri }} style={styles.media} />
+                  )}
+                </View>
+
+                {/* MEMO 섹션 */}
+                <View style={styles.memoSection}>
+                  <Text style={styles.memoLabel}>MEMO</Text>
+                  {isEditing ? (
+                    <TextInput
+                      style={styles.memoInput}
+                      value={memo}
+                      onChangeText={setMemo}
+                      multiline
+                      placeholder={t('album.memo_placeholder')}
+                      placeholderTextColor={Colors.secondaryBrown}
+                    />
+                  ) : (
+                    <Text style={styles.memoText}>
+                      {photo.memo || t('album.no_memo')}
+                    </Text>
+                  )}
+                </View>
+
+                {/* 버튼들 */}
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity
+                    style={[styles.button, styles.deleteButton]}
+                    onPress={handleDelete}
+                  >
+                    <Text style={styles.buttonText}>삭제</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.button, styles.editButton]}
+                    onPress={handleEdit}
+                  >
+                    <Text style={styles.buttonText}>
+                      {isEditing ? '저장' : '수정'}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[styles.button, styles.confirmButton]}
+                    onPress={onClose}
+                  >
+                    <Text style={styles.buttonText}>확인</Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
             </View>
-
-            {/* MEMO 섹션 */}
-            <View style={styles.memoSection}>
-              <Text style={styles.memoLabel}>MEMO</Text>
-              {isEditing ? (
-                <TextInput
-                  style={styles.memoInput}
-                  value={memo}
-                  onChangeText={setMemo}
-                  multiline
-                  placeholder={t('album.memo_placeholder')}
-                  placeholderTextColor={Colors.secondaryBrown}
-                />
-              ) : (
-                <Text style={styles.memoText}>
-                  {photo.memo || t('album.no_memo')}
-                </Text>
-              )}
-            </View>
-
-            {/* 버튼들 */}
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, styles.deleteButton]}
-                onPress={handleDelete}
-              >
-                <Text style={styles.buttonText}>삭제</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.button, styles.editButton]}
-                onPress={handleEdit}
-              >
-                <Text style={styles.buttonText}>
-                  {isEditing ? '저장' : '수정'}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.button, styles.confirmButton]}
-                onPress={onClose}
-              >
-                <Text style={styles.buttonText}>확인</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };

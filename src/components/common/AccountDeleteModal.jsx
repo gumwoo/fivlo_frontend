@@ -1,10 +1,18 @@
 // src/components/common/AccountDeleteModal.jsx
 
 import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Image } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import { Colors } from '../../styles/color';
-import { FontSizes, FontWeights } from '../../styles/Fonts';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  Image,
+  TouchableWithoutFeedback,
+} from 'react-native';
+  import { useTranslation } from 'react-i18next';
+  import { Colors } from '../../styles/color';
+  import { FontSizes, FontWeights } from '../../styles/Fonts';
 
 const AccountDeleteModal = ({ visible, onCancel, onConfirm }) => {
   const { t } = useTranslation();
@@ -16,52 +24,56 @@ const AccountDeleteModal = ({ visible, onCancel, onConfirm }) => {
       animationType="fade"
       onRequestClose={onCancel}
     >
-      <View style={styles.overlay}>
-        <View style={styles.modalContainer}>
-          {/* 오분이 이미지 */}
-          <Image 
-            source={require('../../../assets/놀란 오분이.png')}
-            style={styles.characterImage}
-            resizeMode="contain"
-          />
-          
-          {/* 제목 */}
-          <Text style={styles.title}>
-            {t('account.delete_confirm_title')}
-          </Text>
-          
-          {/* 메시지 */}
-          <Text style={styles.message}>
-            {t('account.delete_confirm_message')}
-          </Text>
-          
-          {/* 부제목 */}
-          <Text style={styles.subMessage}>
-            {t('account.delete_confirm_submessage')}
-          </Text>
-          
-          {/* 버튼 컨테이너 */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity 
-              style={styles.cancelButton} 
-              onPress={onCancel}
-            >
-              <Text style={styles.cancelButtonText}>
-                {t('account.cancel')}
+      <TouchableWithoutFeedback onPress={onCancel}>
+        <View style={styles.overlay}>
+          <TouchableWithoutFeedback onPress={() => {}}>
+            <View style={styles.modalContainer}>
+              {/* 오분이 이미지 */}
+              <Image
+                source={require('../../../assets/놀란 오분이.png')}
+                style={styles.characterImage}
+                resizeMode="contain"
+              />
+
+              {/* 제목 */}
+              <Text style={styles.title}>
+                {t('account.delete_confirm_title')}
               </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={styles.deleteButton} 
-              onPress={onConfirm}
-            >
-              <Text style={styles.deleteButtonText}>
-                {t('account.delete')}
+
+              {/* 메시지 */}
+              <Text style={styles.message}>
+                {t('account.delete_confirm_message')}
               </Text>
-            </TouchableOpacity>
-          </View>
+
+              {/* 부제목 */}
+              <Text style={styles.subMessage}>
+                {t('account.delete_confirm_submessage')}
+              </Text>
+
+              {/* 버튼 컨테이너 */}
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={onCancel}
+                >
+                  <Text style={styles.cancelButtonText}>
+                    {t('account.cancel')}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={onConfirm}
+                >
+                  <Text style={styles.deleteButtonText}>
+                    {t('account.delete')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -83,10 +95,7 @@ const styles = StyleSheet.create({
     maxWidth: 350,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
