@@ -1,16 +1,19 @@
 // src/screens/HomeScreen.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ScrollView, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { format, addDays, subDays } from 'date-fns';
-import { ko } from 'date-fns/locale/ko';
+import { ko } from 'date-fns/locale';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
 import Button from '../components/common/Button';
+
+const STORAGE_PREFIX = 'fivlo:tasks:'; // 날짜별 저장 키 prefix
 
 const HomeScreen = ({ isPremiumUser }) => {
   const navigation = useNavigation();
@@ -22,39 +25,78 @@ const HomeScreen = ({ isPremiumUser }) => {
   const [coins, setCoins] = useState(1234);
   const [showCoinGrantModal, setShowCoinGrantModal] = useState(false);
 
-  const mockTasks = [
-    { id: '1', text: t('task_calendar.sample_tasks.water'), completed: false, category: t('home.categories.daily'), color: Colors.primaryBeige },
+  // 모달 중복 방지: "모두 완료" 상태로의 전이를 감지
+  const prevAllCompletedRef = useRef(false);
+
+  const createMockTasks = useCallback(() => ([
+    { id: '1', text: t('task_calendar.sample_tasks.water'),           completed: false, category: t('home.categories.daily'),   color: Colors.primaryBeige },
     { id: '2', text: t('task_calendar.sample_tasks.morning_exercise'), completed: false, category: t('home.categories.exercise'), color: '#FFABAB' },
-    { id: '3', text: t('task_calendar.sample_tasks.app_dev'), completed: false, category: t('home.categories.reading'), color: '#99DDFF' },
-    { id: '4', text: t('task_calendar.sample_tasks.app_dev'), completed: true, category: t('home.categories.study'), color: '#A0FFC3' },
-  ];
+    { id: '3', text: t('task_calendar.sample_tasks.app_dev'),          completed: false, category: t('home.categories.reading'),  color: '#99DDFF' },
+    // 필요 시 더 추가 가능
+  ]), [t]);
 
-  useEffect(() => {
-    setTasks(mockTasks.slice(0, 3));
-  }, [currentDate]);
+  const dateKey = format(currentDate, 'yyyy-MM-dd');
+  const storageKey = `${STORAGE_PREFIX}${dateKey}`;
 
+  // 날짜 변경/언어 변경 시 해당 날짜의 태스크 불러오기
   useEffect(() => {
-    if (tasks.length > 0 && tasks.every(task => task.completed)) {
-      setTimeout(() => setShowCoinGrantModal(true), 500);
-    }
-  }, [tasks]);
+    const load = async () => {
+      try {
+        const raw = await AsyncStorage.getItem(storageKey);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          setTasks(parsed.tasks ?? []);
+          // 저장된 상태 기준으로 "이전 모두 완료" 값 갱신
+          prevAllCompletedRef.current = (parsed.tasks ?? []).length > 0 && (parsed.tasks ?? []).every(tk => tk.completed);
+        } else {
+          const init = createMockTasks();
+          setTasks(init);
+          prevAllCompletedRef.current = false;
+          await AsyncStorage.setItem(storageKey, JSON.stringify({ tasks: init }));
+        }
+      } catch (e) {
+        // 로딩 실패 시라도 앱이 동작하도록 샘플 세팅
+        const fallback = createMockTasks();
+        setTasks(fallback);
+        prevAllCompletedRef.current = false;
+      }
+    };
+    load();
+  }, [storageKey, createMockTasks]);
+
+  // 태스크 변경 시 저장
+  useEffect(() => {
+    const save = async () => {
+      try {
+        await AsyncStorage.setItem(storageKey, JSON.stringify({ tasks }));
+      } catch (e) {
+        // 저장 실패는 조용히 무시(필요 시 로깅)
+      }
+    };
+    save();
+  }, [tasks, storageKey]);
 
   const goToPreviousDay = () => setCurrentDate(subDays(currentDate, 1));
-  const goToNextDay = () => setCurrentDate(addDays(currentDate, 1));
+  const goToNextDay     = () => setCurrentDate(addDays(currentDate, 1));
 
   const toggleTaskCompletion = (id) => {
-    setTasks(prev =>
-      prev.map(task => (task.id === id ? { ...task, completed: !task.completed } : task))
-    );
+    setTasks(prev => {
+      const next = prev.map(task => (task.id === id ? { ...task, completed: !task.completed } : task));
+      // 전이 감지: 이전에 모두 완료가 아니었는데, 토글 후 모두 완료가 되면 모달 노출
+      const wasAllCompleted = prevAllCompletedRef.current;
+      const isAllCompleted = next.length > 0 && next.every(tk => tk.completed);
+      if (!wasAllCompleted && isAllCompleted) {
+        setTimeout(() => setShowCoinGrantModal(true), 200);
+      }
+      prevAllCompletedRef.current = isAllCompleted;
+      return next;
+    });
   };
 
   const handleGoToTaskCalendar = () => navigation.navigate('TaskCalendar');
-
-  const handleObooniPress = () =>
-    navigation.navigate('ObooniCustomization', { isPremiumUser });
+  const handleObooniPress = () => navigation.navigate('ObooniCustomization', { isPremiumUser });
 
   const renderTaskItem = ({ item }) => (
-    // 아이템 전체를 눌러도 체크 토글
     <TouchableOpacity
       style={styles.taskItem}
       activeOpacity={0.7}
@@ -161,10 +203,9 @@ const styles = StyleSheet.create({
 
   obooniCharacter: { width: 250, height: 250, marginVertical: 20, resizeMode: 'contain' },
 
-  // 🔧 카드: 흰색 → 반투명 회색
   taskListContainer: {
     width: '90%',
-    backgroundColor: 'rgba(0,0,0,0.06)',  // 반투명 회색
+    backgroundColor: 'rgba(0,0,0,0.06)',
     borderRadius: 16,
     padding: 20,
     marginBottom: 20,
