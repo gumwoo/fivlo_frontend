@@ -186,8 +186,10 @@ const MainTabNavigator = () => {
           position: 'absolute',
           bottom: 0,
           height: 80,
-          left: 0, 
+          // --- ✨ 수정된 부분 시작 ✨ ---
+          left: 0,
           right: 0,
+          // --- ✨ 수정된 부분 끝 ✨ ---
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -3 },
           shadowOpacity: 0.1,
