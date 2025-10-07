@@ -1,7 +1,8 @@
 // src/screens/Album/GrowthAlbumCalendarView.jsx
 
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+// --- ✨ Dimensions API 임포트 ---
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { format } from 'date-fns';
 
@@ -11,6 +12,12 @@ import { useTranslation } from 'react-i18next';
 import useAlbumStore from '../../store/albumStore';
 import PhotoDetailModal from './PhotoDetailModal';
 import { Video } from 'expo-av';
+
+// --- ✨ 화면 너비 계산 ---
+const { width: screenWidth } = Dimensions.get('window');
+const calendarPadding = 20; // 캘린더 좌우 여백
+const calendarWidth = screenWidth - (calendarPadding * 2);
+const dayContainerSize = (calendarWidth / 7) - 6; // 7일, 좌우 마진 고려
 
 // 한국어 달력 설정
 LocaleConfig.locales['ko'] = {
@@ -90,7 +97,6 @@ const GrowthAlbumCalendarView = ({ photos }) => {
         disabled={isDisabled}
       >
         {dayPhotos.length > 0 ? (
-          // 사진이 있으면 첫 번째 사진/동영상을 표시
           <TouchableOpacity
             style={styles.fullDayImageContainer}
             onPress={() => handlePhotoPress(dayPhotos[0], dateString)}
@@ -112,7 +118,6 @@ const GrowthAlbumCalendarView = ({ photos }) => {
             )}
           </TouchableOpacity>
         ) : (
-          // 사진이 없으면 날짜만 표시
           <Text
             style={[
               styles.dayText,
@@ -134,25 +139,18 @@ const GrowthAlbumCalendarView = ({ photos }) => {
         markedDates={markedDates}
         style={styles.calendar}
         dayComponent={renderDay}
-        // --- ✨ 수정된 부분 시작 ✨ ---
         theme={{
-          // 월 폰트 스타일
           monthTextColor: Colors.textDark,
-          textMonthFontSize: FontSizes.large,
+          textMonthFontSize: FontSizes.large + 2,
           textMonthFontWeight: FontWeights.bold,
-
-          // 요일(일,월,화...) 폰트 스타일
           textSectionTitleColor: Colors.secondaryBrown,
           textDayHeaderFontSize: FontSizes.medium,
           textDayHeaderFontWeight: FontWeights.medium,
-
-          // 기타 색상 설정
           arrowColor: Colors.secondaryBrown,
           todayTextColor: Colors.accentApricot,
           dayTextColor: Colors.textDark,
           textDisabledColor: '#d9e1e8',
         }}
-        // --- ✨ 수정된 부분 끝 ✨ ---
       />
 
       <PhotoDetailModal
@@ -171,13 +169,13 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     alignItems: 'center',
-    paddingHorizontal: 15, // 캘린더 좌우 여백
+    paddingHorizontal: calendarPadding, // 좌우 여백
   },
   calendar: {
     width: '100%',
-    paddingBottom: 10,
     backgroundColor: Colors.textLight,
     borderRadius: 15,
+    padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -185,14 +183,14 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   dayContainer: {
-    flex: 1, // 가로 공간을 꽉 채우도록 수정
-    height: 80, // 세로 높이를 적절하게 조절
+    width: dayContainerSize, // 계산된 너비 적용
+    height: dayContainerSize + 10, // 비율에 맞게 높이 조절
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 1,
+    margin: 3,
   },
   dayText: {
-    fontSize: FontSizes.medium, // 날짜 폰트 크기를 키움
+    fontSize: FontSizes.medium, // 폰트 크기 증가
     color: Colors.textDark,
     fontWeight: FontWeights.medium,
   },
