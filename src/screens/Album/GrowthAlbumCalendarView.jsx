@@ -134,6 +134,25 @@ const GrowthAlbumCalendarView = ({ photos }) => {
         markedDates={markedDates}
         style={styles.calendar}
         dayComponent={renderDay}
+        // --- ✨ 폰트 크기 조정을 위한 theme 속성 추가 ✨ ---
+        theme={{
+          'stylesheet.calendar.header': {
+            week: {
+              marginTop: 12,
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+            },
+            dayHeader: {
+              fontSize: FontSizes.medium, // 요일 폰트 크기
+              color: Colors.secondaryBrown,
+              fontWeight: FontWeights.medium,
+            },
+          },
+          arrowColor: Colors.secondaryBrown,
+          monthTextColor: Colors.textDark,
+          textMonthFontSize: FontSizes.large, // 월 폰트 크기
+          textMonthFontWeight: FontWeights.bold,
+        }}
       />
 
       <PhotoDetailModal
@@ -149,30 +168,32 @@ const GrowthAlbumCalendarView = ({ photos }) => {
 };
 
 const styles = StyleSheet.create({
-  // --- ✨ 수정된 부분 시작 ✨ ---
-  // flex: 1 속성을 제거하여 내용만큼만 높이를 차지하도록 변경
-  container: { width: '100%', alignItems: 'center' },
+  container: {
+    flex: 1, // 화면 전체를 차지하도록
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: 10, // 좌우 여백 추가
+  },
   calendar: {
     width: '100%',
-    // height: '90%' 속성을 제거하여 캘린더 높이가 자동으로 조절되도록 변경
-    // --- ✨ 수정된 부분 끝 ✨ ---
-    borderRadius: 15,
     backgroundColor: Colors.textLight,
+    borderRadius: 15,
+    padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-    marginBottom: 20,
   },
   dayContainer: {
-    width: 50,
-    height: 60,
+    flex: 1,
+    height: 90, // 세로 비율을 늘림
     alignItems: 'center',
     justifyContent: 'center',
+    margin: 2,
   },
   dayText: {
-    fontSize: FontSizes.small,
+    fontSize: FontSizes.medium, // 날짜 폰트 크기 증가
     color: Colors.textDark,
     fontWeight: FontWeights.medium,
   },
@@ -184,7 +205,7 @@ const styles = StyleSheet.create({
     color: '#d9e1e8',
   },
   fullDayImageContainer: {
-    width: '90%',
+    width: '100%',
     height: '100%',
     borderRadius: 8,
     overflow: 'hidden',
