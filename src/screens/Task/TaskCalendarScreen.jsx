@@ -1,15 +1,22 @@
 // src/screens/Task/TaskCalendarScreen.jsx
+
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import { useNavigation } from '@react-navigation/native'; // useNavigation 임포트
+import { useNavigation } from '@react-navigation/native';
 
 import Header from '../../components/common/Header';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
+import useTaskStore from '../../store/taskStore';
 
 // ── 캘린더 한국어 설정
 LocaleConfig.locales['ko'] = {
@@ -24,40 +31,18 @@ LocaleConfig.defaultLocale = 'ko';
 const TaskCalendarScreen = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const navigation = useNavigation(); // navigation 훅 사용
+  const navigation = useNavigation();
 
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
 
-  // 임시 Task 데이터
-  const [mockTasks, setMockTasks] = useState({
-    '2025-10-09': [
-      { id: 'a1', text: '장보기 준비', color: '#E9C39B', completed: false, isAlbumLinked: false, categoryKey: 'daily' },
-      { id: 'a2', text: '우유구매 #2', color: '#F4C16E', completed: false, isAlbumLinked: true, categoryKey: 'daily' },
-      { id: 'a3', text: '미팅 준비', color: '#C3A0FF', completed: false, isAlbumLinked: false, categoryKey: 'work' },
-      { id: 'a4', text: '개발 진행', color: '#8EA1FF', completed: false, isAlbumLinked: true, categoryKey: 'study' },
-    ],
-    '2025-10-16': [
-      { id: 'b1', text: '프로젝트 마감', color: '#FFABAB', completed: false, isAlbumLinked: true, categoryKey: 'work' },
-      { id: 'b2', text: '운동하기', color: '#A0FFC3', completed: false, isAlbumLinked: true, categoryKey: 'exercise' },
-    ],
-  });
+  // 전역 스토어에서 tasks와 updateTask 함수 가져오기
+  const tasks = useTaskStore((state) => state.tasks);
+  const updateTask = useTaskStore((state) => state.updateTask);
 
-  // Task 업데이트 함수 (데이터 관리 방식에 따라 수정 필요)
-  const updateTask = (dateString, taskId, updates) => {
-    setMockTasks(prevTasks => {
-      const dateTasks = prevTasks[dateString] || [];
-      const updatedTasks = dateTasks.map(task => 
-        task.id === taskId ? { ...task, ...updates } : task
-      );
-      return { ...prevTasks, [dateString]: updatedTasks };
-    });
-  };
-
-  // 날짜 탭 시 모달 '화면'으로 이동
+  // 날짜 탭 시 상세 모달 화면으로 이동
   const handleDayPress = (dateString) => {
     setSelectedDate(dateString);
-    const tasksForDate = mockTasks[dateString] || [];
-    // Modal을 직접 띄우는 대신, 설정된 모달 스타일의 화면으로 이동
+    const tasksForDate = tasks[dateString] || [];
     navigation.navigate('TaskDetailModal', {
       selectedDate: dateString,
       tasks: tasksForDate,
@@ -72,11 +57,11 @@ const TaskCalendarScreen = () => {
       <View style={styles.calendarWrapper}>
         <Calendar
           current={selectedDate}
-          enableSwipeMonths={true}
-          hideExtraDays={true}
+          enableSwipeMonths
+          hideExtraDays
           dayComponent={({ date }) => {
             const ds = date?.dateString;
-            const items = mockTasks[ds] || [];
+            const items = tasks[ds] || [];
             return (
               <TouchableOpacity
                 style={styles.dayCell}
@@ -86,9 +71,14 @@ const TaskCalendarScreen = () => {
                 <Text style={styles.dayNumber}>{date?.day}</Text>
                 {!!items.length && (
                   <View style={styles.tagsRow} pointerEvents="none">
-                    {items.map(it => (
-                      <View key={it.id} style={[styles.tagChip, { backgroundColor: it.color }]}>
-                        <Text numberOfLines={1} style={styles.tagText}>{it.text}</Text>
+                    {items.map((it) => (
+                      <View
+                        key={it.id}
+                        style={[styles.tagChip, { backgroundColor: it.color }]}
+                      >
+                        <Text numberOfLines={1} style={styles.tagText}>
+                          {it.text}
+                        </Text>
                       </View>
                     ))}
                   </View>
@@ -112,9 +102,6 @@ const TaskCalendarScreen = () => {
           style={styles.calendar}
         />
       </View>
-      {/* 기존의 <Modal> ... <TaskDetailModal> ... </Modal> 코드를
-        위의 handleDayPress에서 navigation.navigate로 대체했으므로 삭제합니다.
-      */}
     </View>
   );
 };
@@ -129,20 +116,34 @@ const styles = StyleSheet.create({
   calendar: {
     width: '100%',
   },
-  dayCell: { 
-    alignItems: 'center', 
-    paddingVertical: 10, 
+  dayCell: {
+    alignItems: 'center',
+    paddingVertical: 10,
     minHeight: 100,
   },
-  dayNumber: { 
-    fontSize: 19, 
-    color: Colors.textDark, 
+  dayNumber: {
+    fontSize: 19,
+    color: Colors.textDark,
     marginBottom: 6,
     fontWeight: FontWeights.bold,
   },
-  tagsRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', rowGap: 4 },
-  tagChip: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, marginHorizontal: 2 },
-  tagText: { fontSize: 10, color: '#222', maxWidth: 68 },
+  tagsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    rowGap: 4,
+  },
+  tagChip: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+    marginHorizontal: 2,
+  },
+  tagText: {
+    fontSize: 10,
+    color: '#222',
+    maxWidth: 68,
+  },
 });
 
 export default TaskCalendarScreen;
