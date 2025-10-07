@@ -149,11 +149,12 @@ const GrowthAlbumCalendarView = ({ photos }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, width: '100%', alignItems: 'center' },
+  // --- ✨ 수정된 부분 시작 ✨ ---
+  // flex: 1 속성을 제거하여 내용만큼만 높이를 차지하도록 변경
+  container: { width: '100%', alignItems: 'center' },
   calendar: {
-    // --- ✨ 수정된 부분 시작 ✨ ---
-    width: '100%', // 전체 너비 사용
-    // height 속성 제거하여 자동 높이 조절
+    width: '100%',
+    // height: '90%' 속성을 제거하여 캘린더 높이가 자동으로 조절되도록 변경
     // --- ✨ 수정된 부분 끝 ✨ ---
     borderRadius: 15,
     backgroundColor: Colors.textLight,
@@ -165,13 +166,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   dayContainer: {
-    // --- ✨ 수정된 부분 시작 ✨ ---
-    flex: 1, // 가로 공간을 균등하게 차지
-    height: 80, // 세로 길이를 늘려 비율 조정
-    // --- ✨ 수정된 부분 끝 ✨ ---
+    width: 50,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 2, // 날짜 셀 사이의 간격
   },
   dayText: {
     fontSize: FontSizes.small,
@@ -186,8 +184,8 @@ const styles = StyleSheet.create({
     color: '#d9e1e8',
   },
   fullDayImageContainer: {
-    width: '100%', // 셀 너비 전체 사용
-    height: '100%', // 셀 높이 전체 사용
+    width: '90%',
+    height: '100%',
     borderRadius: 8,
     overflow: 'hidden',
   },
