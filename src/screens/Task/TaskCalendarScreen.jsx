@@ -1,0 +1,148 @@
+// src/screens/Task/TaskCalendarScreen.jsx
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import { useNavigation } from '@react-navigation/native'; // useNavigation 임포트
+
+import Header from '../../components/common/Header';
+import { Colors } from '../../styles/color';
+import { FontSizes, FontWeights } from '../../styles/Fonts';
+
+// ── 캘린더 한국어 설정
+LocaleConfig.locales['ko'] = {
+  monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+  monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+  dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'],
+  dayNamesShort: ['일','월','화','수','목','금','토'],
+  today: '오늘',
+};
+LocaleConfig.defaultLocale = 'ko';
+
+const TaskCalendarScreen = () => {
+  const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const navigation = useNavigation(); // navigation 훅 사용
+
+  const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
+
+  // 임시 Task 데이터
+  const [mockTasks, setMockTasks] = useState({
+    '2025-10-09': [
+      { id: 'a1', text: '장보기 준비', color: '#E9C39B', completed: false, isAlbumLinked: false, categoryKey: 'daily' },
+      { id: 'a2', text: '우유구매 #2', color: '#F4C16E', completed: false, isAlbumLinked: true, categoryKey: 'daily' },
+      { id: 'a3', text: '미팅 준비', color: '#C3A0FF', completed: false, isAlbumLinked: false, categoryKey: 'work' },
+      { id: 'a4', text: '개발 진행', color: '#8EA1FF', completed: false, isAlbumLinked: true, categoryKey: 'study' },
+    ],
+    '2025-10-16': [
+      { id: 'b1', text: '프로젝트 마감', color: '#FFABAB', completed: false, isAlbumLinked: true, categoryKey: 'work' },
+      { id: 'b2', text: '운동하기', color: '#A0FFC3', completed: false, isAlbumLinked: true, categoryKey: 'exercise' },
+    ],
+  });
+
+  // Task 업데이트 함수 (데이터 관리 방식에 따라 수정 필요)
+  const updateTask = (dateString, taskId, updates) => {
+    setMockTasks(prevTasks => {
+      const dateTasks = prevTasks[dateString] || [];
+      const updatedTasks = dateTasks.map(task => 
+        task.id === taskId ? { ...task, ...updates } : task
+      );
+      return { ...prevTasks, [dateString]: updatedTasks };
+    });
+  };
+
+  // 날짜 탭 시 모달 '화면'으로 이동
+  const handleDayPress = (dateString) => {
+    setSelectedDate(dateString);
+    const tasksForDate = mockTasks[dateString] || [];
+    // Modal을 직접 띄우는 대신, 설정된 모달 스타일의 화면으로 이동
+    navigation.navigate('TaskDetailModal', {
+      selectedDate: dateString,
+      tasks: tasksForDate,
+      onTaskUpdate: (taskId, updates) => updateTask(dateString, taskId, updates),
+    });
+  };
+
+  return (
+    <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
+      <Header title={t('task.title', 'TASK')} showBackButton />
+
+      <View style={styles.calendarWrapper}>
+        <Calendar
+          current={selectedDate}
+          enableSwipeMonths={true}
+          hideExtraDays={true}
+          dayComponent={({ date }) => {
+            const ds = date?.dateString;
+            const items = mockTasks[ds] || [];
+            return (
+              <TouchableOpacity
+                style={styles.dayCell}
+                onPress={() => ds && handleDayPress(ds)}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.dayNumber}>{date?.day}</Text>
+                {!!items.length && (
+                  <View style={styles.tagsRow} pointerEvents="none">
+                    {items.map(it => (
+                      <View key={it.id} style={[styles.tagChip, { backgroundColor: it.color }]}>
+                        <Text numberOfLines={1} style={styles.tagText}>{it.text}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          }}
+          theme={{
+            backgroundColor: Colors.primaryBeige,
+            calendarBackground: Colors.primaryBeige,
+            textSectionTitleColor: Colors.textDark,
+            dayTextColor: Colors.textDark,
+            todayTextColor: Colors.accentApricot,
+            arrowColor: Colors.secondaryBrown,
+            monthTextColor: Colors.textDark,
+            textMonthFontWeight: FontWeights.bold,
+            textMonthFontSize: 20,
+            textDayFontSize: 16,
+            textDayHeaderFontWeight: FontWeights.bold,
+          }}
+          style={styles.calendar}
+        />
+      </View>
+      {/* 기존의 <Modal> ... <TaskDetailModal> ... </Modal> 코드를
+        위의 handleDayPress에서 navigation.navigate로 대체했으므로 삭제합니다.
+      */}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige },
+  calendarWrapper: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    paddingTop: 15,
+  },
+  calendar: {
+    width: '100%',
+  },
+  dayCell: { 
+    alignItems: 'center', 
+    paddingVertical: 10, 
+    minHeight: 100,
+  },
+  dayNumber: { 
+    fontSize: 19, 
+    color: Colors.textDark, 
+    marginBottom: 6,
+    fontWeight: FontWeights.bold,
+  },
+  tagsRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', rowGap: 4 },
+  tagChip: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 8, marginHorizontal: 2 },
+  tagText: { fontSize: 10, color: '#222', maxWidth: 68 },
+});
+
+export default TaskCalendarScreen;
