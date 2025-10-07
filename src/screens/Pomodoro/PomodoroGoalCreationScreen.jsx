@@ -1,25 +1,22 @@
-// src/screens/PomodoroGoalCreationScreen.jsx
+// src/screens/Pomodoro/PomodoroGoalCreationScreen.jsx
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, Modal, FlatList } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { FontAwesome5 } from '@expo/vector-icons'; // 아이콘 사용
+import { FontAwesome5 } from '@expo/vector-icons';
 
-// 공통 스타일 및 컴포넌트 임포트
-import { GlobalStyles } from '../../styles/GlobalStyles';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
-import Button from '../../components/common/Button';
 import { useTranslation } from 'react-i18next';
 
-// 포모도로 목표 색상 팔레트 (5열 4행, 총 20개)
+// --- ✨ Figma 디자인에 맞춘 새로운 색상 팔레트 ---
 const COLOR_PALETTE = [
-  '#000000', '#F5F5DC', '#D2B48C', '#8B4513', '#654321', // 1행
-  '#FFF8DC', '#FFA500', '#FF8C00', '#FFB6C1', '#FF0000', // 2행 (주황색이 7번째)
-  '#F0FFF0', '#90EE90', '#98FB98', '#B0E0E6', '#AFEEEE', // 3행
-  '#E6E6FA', '#9370DB', '#FF00FF', '#0000FF', '#000080', // 4행
+  '#000000', '#D0C8B9', '#A89987', '#806F5D', '#584C3E',
+  '#F5E6CC', '#F4C16E', '#F19F47', '#E3A1A0', '#D66565',
+  '#E6F5E3', '#BBE3B8', '#99D194', '#C9EAF0', '#A8D8E3',
+  '#DAD3EC', '#A999D4', '#B97FC9', '#8DB3E2', '#5989C8',
 ];
 
 const PomodoroGoalCreationScreen = () => {
@@ -28,11 +25,10 @@ const PomodoroGoalCreationScreen = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
-  const [goalText, setGoalText] = useState(''); // 목표 텍스트
-  const [selectedColor, setSelectedColor] = useState(COLOR_PALETTE[6]); // 주황색이 기본 선택 (7번째)
-  const [showColorPicker, setShowColorPicker] = useState(false); // 색상 선택기 모달 표시 여부
+  const [goalText, setGoalText] = useState('');
+  const [selectedColor, setSelectedColor] = useState(COLOR_PALETTE[0]);
+  const [showColorPicker, setShowColorPicker] = useState(false);
 
-  // 기존 목표 목록
   const [goals, setGoals] = useState([
     { id: 'g1', text: t('pomodoro_goals.study'), color: '#FFD1DC' },
     { id: 'g2', text: t('pomodoro_goals.exercise'), color: '#FFDD99' },
@@ -40,27 +36,13 @@ const PomodoroGoalCreationScreen = () => {
     { id: 'g4', text: t('pomodoro_goals.organize'), color: '#ABFFFF' },
     { id: 'g5', text: t('pomodoro_goals.exam_study'), color: '#D1B5FF' },
   ]);
-
-  // 새 목표 추가 처리
-  useEffect(() => {
-    if (route.params?.newGoal) {
-      setGoals(prevGoals => {
-        if (!prevGoals.some(goal => goal.id === route.params.newGoal.id)) {
-          return [...prevGoals, route.params.newGoal];
-        }
-        return prevGoals;
-      });
-      navigation.setParams({ newGoal: undefined });
-    }
-  }, [route.params?.newGoal]);
-
-  // "완료" 버튼 클릭 핸들러
-  const handleComplete = () => {
+  
+  // --- ✨ 새 목표 추가 로직 수정 ---
+  const handleAddGoal = () => {
     if (!goalText.trim()) {
       Alert.alert(t('reminder.location_required_title'), t('pomodoro.create_goal_placeholder'));
       return;
     }
-    // 목표와 색상을 저장하고 목표 목록에 추가
     const newGoal = {
       id: Date.now().toString(),
       text: goalText,
@@ -68,20 +50,13 @@ const PomodoroGoalCreationScreen = () => {
     };
     setGoals(prevGoals => [...prevGoals, newGoal]);
     setGoalText(''); // 입력 필드 초기화
-    setSelectedColor(COLOR_PALETTE[6]); // 색상 초기화 (주황색)
+    setSelectedColor(COLOR_PALETTE[0]); // 색상 초기화
   };
 
-  // 색상 설정 버튼 클릭 핸들러
-  const handleColorSetting = () => {
-    setShowColorPicker(true);
-  };
-
-  // 목표 선택 및 포모도로 시작
   const handleSelectGoal = (goal) => {
     navigation.navigate('PomodoroTimer', { selectedGoal: goal });
   };
 
-  // 목표 삭제 핸들러
   const handleDeleteGoal = (goalId) => {
     Alert.alert(
       '목표 삭제',
@@ -97,7 +72,7 @@ const PomodoroGoalCreationScreen = () => {
     );
   };
 
-  // 목표 아이템 렌더링
+  // --- ✨ 기존 목표 리스트 아이템 UI 수정 ---
   const renderGoalItem = ({ item }) => (
     <TouchableOpacity
       style={styles.goalItem}
@@ -108,7 +83,7 @@ const PomodoroGoalCreationScreen = () => {
         style={styles.deleteButton}
         onPress={() => handleDeleteGoal(item.id)}
       >
-        <FontAwesome5 name="times" size={16} color={Colors.textDark} />
+        <Text style={styles.deleteButtonText}>×</Text>
       </TouchableOpacity>
     </TouchableOpacity>
   );
@@ -117,21 +92,19 @@ const PomodoroGoalCreationScreen = () => {
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('pomodoro.create_header')} showBackButton={true} />
 
-      <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
+      <ScrollView contentContainerStyle={styles.scrollViewContentContainer} keyboardShouldPersistTaps="handled">
         <Text style={styles.sectionTitle}>{t('pomodoro.what_focus')}</Text>
         
         {/* 기존 목표 목록 */}
-        {goals.length > 0 && (
-          <FlatList
-            data={goals}
-            renderItem={renderGoalItem}
-            keyExtractor={item => item.id}
-            scrollEnabled={false}
-            contentContainerStyle={styles.goalListContent}
-          />
-        )}
+        <FlatList
+          data={goals}
+          renderItem={renderGoalItem}
+          keyExtractor={item => item.id}
+          scrollEnabled={false}
+          contentContainerStyle={styles.goalListContent}
+        />
 
-        {/* 목표 작성 섹션 */}
+        {/* --- ✨ 목표 작성 섹션을 별도 카드로 분리 --- */}
         <View style={styles.createSection}>
           <Text style={styles.createSectionTitle}>{t('pomodoro.create_goal_label')}</Text>
           <TextInput
@@ -141,18 +114,13 @@ const PomodoroGoalCreationScreen = () => {
             value={goalText}
             onChangeText={setGoalText}
             multiline={true}
-            numberOfLines={3}
-            textAlignVertical="top"
           />
-
-          {/* 색상 설정 칸 */}
-          <TouchableOpacity style={styles.colorSettingButton} onPress={handleColorSetting}>
+          <TouchableOpacity style={styles.colorSettingButton} onPress={() => setShowColorPicker(true)}>
             <Text style={styles.colorSettingButtonText}>집중 그래프 색상 설정</Text>
           </TouchableOpacity>
-
-          {/* 완료 버튼 */}
-          <TouchableOpacity style={styles.completeButton} onPress={handleComplete}>
-            <Text style={styles.completeButtonText}>완료</Text>
+          {/* 새 목표 추가 버튼 */}
+          <TouchableOpacity style={styles.addButton} onPress={handleAddGoal}>
+             <Text style={styles.addButtonText}>저장</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -166,30 +134,20 @@ const PomodoroGoalCreationScreen = () => {
       >
         <View style={styles.colorPickerOverlay}>
           <View style={styles.colorPickerContent}>
-            <View style={styles.colorPickerHeader}>
-              <Text style={styles.colorPickerTitle}>색상 설정</Text>
-              <View style={styles.colorIndicator}>
-                <Text style={styles.colorIndicatorText}>7</Text>
-              </View>
-            </View>
-            
+            <Text style={styles.colorPickerTitle}>색상 설정</Text>
             <View style={styles.colorGrid}>
               {COLOR_PALETTE.map((color, index) => (
                 <TouchableOpacity
                   key={index}
-                  style={[
-                    styles.colorItem,
-                    { backgroundColor: color },
-                    selectedColor === color && styles.selectedColorItem
-                  ]}
-                  onPress={() => {
-                    setSelectedColor(color);
-                    setShowColorPicker(false);
-                  }}
-                />
+                  style={[styles.colorItem, { backgroundColor: color }]}
+                  onPress={() => setSelectedColor(color)}
+                >
+                  {selectedColor === color && (
+                    <FontAwesome5 name="check" size={18} color={Colors.textLight} />
+                  )}
+                </TouchableOpacity>
               ))}
             </View>
-            
             <TouchableOpacity 
               style={styles.completeButton} 
               onPress={() => setShowColorPicker(false)}
@@ -203,6 +161,7 @@ const PomodoroGoalCreationScreen = () => {
   );
 };
 
+// --- ✨ Figma 디자인에 맞춰 스타일 전면 수정 ---
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
@@ -211,8 +170,6 @@ const styles = StyleSheet.create({
   scrollViewContentContainer: {
     paddingHorizontal: 20,
     paddingBottom: 40,
-    alignItems: 'center',
-    paddingTop: 10,
   },
   sectionTitle: {
     fontSize: FontSizes.large,
@@ -221,118 +178,76 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 20,
     width: '100%',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   goalListContent: {
     width: '100%',
-    marginBottom: 20,
   },
   goalItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: Colors.primaryBeige,
-    borderRadius: 10,
-    paddingVertical: 15,
+    borderRadius: 12,
+    paddingVertical: 18,
     paddingHorizontal: 15,
     marginBottom: 10,
     borderWidth: 1,
     borderColor: Colors.secondaryBrown,
-    width: '100%',
   },
   goalText: {
     fontSize: FontSizes.medium,
     color: Colors.textDark,
-    flex: 1,
   },
   deleteButton: {
-    padding: 5,
+    paddingHorizontal: 5,
+  },
+  deleteButtonText: {
+    fontSize: 24,
+    color: Colors.secondaryBrown,
   },
   createSection: {
-    width: '100%',
-    marginTop: 20,
+    marginTop: 30,
+    backgroundColor: Colors.primaryBeige, // 배경과 동일하게
   },
   createSectionTitle: {
     fontSize: FontSizes.large,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    marginBottom: 10,
-    width: '100%',
-    textAlign: 'left',
+    marginBottom: 15,
   },
   goalInput: {
     width: '100%',
     backgroundColor: Colors.textLight,
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 15,
     fontSize: FontSizes.medium,
     color: Colors.textDark,
     minHeight: 100,
     textAlignVertical: 'top',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  colorDisplayButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: Colors.textLight,
-    borderRadius: 10,
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  selectedColorPreview: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginRight: 15,
-    borderWidth: 1,
-    borderColor: Colors.secondaryBrown,
+    marginBottom: 10,
   },
   colorSettingButton: {
     backgroundColor: Colors.textLight,
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    marginTop: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    borderRadius: 12,
+    padding: 15,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   colorSettingButtonText: {
     fontSize: FontSizes.medium,
     color: Colors.textDark,
-    fontWeight: FontWeights.medium,
   },
-  completeButton: {
-    backgroundColor: '#FFD700', // 노란색
-    paddingVertical: 12,
-    borderRadius: 10,
+  addButton: {
+    backgroundColor: Colors.accentApricot,
+    borderRadius: 12,
+    padding: 15,
     alignItems: 'center',
-    marginTop: 15,
   },
-  completeButtonText: {
-    color: Colors.textLight,
-    fontSize: FontSizes.large,
-    fontWeight: FontWeights.bold,
-  },
-  colorButtonText: {
+  addButtonText: {
     fontSize: FontSizes.medium,
-    color: Colors.textDark,
-  },
-  saveButton: {
-    marginTop: 40,
-    width: '100%',
+    color: Colors.textLight,
+    fontWeight: FontWeights.bold,
   },
   // 색상 선택 모달 스타일
   colorPickerOverlay: {
@@ -347,59 +262,37 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 40,
   },
-  colorPickerHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
   colorPickerTitle: {
     fontSize: FontSizes.large,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    marginRight: 15,
-  },
-  colorIndicator: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: Colors.textDark,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  colorIndicatorText: {
-    color: Colors.textLight,
-    fontSize: FontSizes.small,
-    fontWeight: FontWeights.bold,
+    marginBottom: 20,
+    textAlign: 'center',
   },
   colorGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginBottom: 20,
-    paddingHorizontal: 20,
   },
   colorItem: {
     width: 50,
     height: 50,
     borderRadius: 8,
-    marginBottom: 15,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  selectedColorItem: {
-    borderColor: '#007AFF', // 파란색 테두리
-    borderWidth: 3,
+    margin: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   completeButton: {
-    backgroundColor: '#FFD700', // 노란색
+    backgroundColor: '#FFD700',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
   },
   completeButtonText: {
-    color: Colors.textLight,
     fontSize: FontSizes.large,
     fontWeight: FontWeights.bold,
+    color: Colors.textDark,
   },
 });
 
