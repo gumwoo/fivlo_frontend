@@ -33,7 +33,6 @@ import TaskDetailModal from '../screens/Task/TaskDetailModal';
 import TaskCompleteCoinModal from '../screens/Task/TaskCompleteCoinModal';
 import TaskEditModal from '../screens/Task/TaskEditModal';
 import TaskDeleteConfirmModal from '../screens/Task/TaskDeleteConfirmModal';
-// ⚠️ 파일 이름은 유지하되, 컴포넌트 이름을 Screen으로 변경하여 임포트합니다.
 import CategorySettingScreen from '../screens/Task/CategorySettingModal';
 import CategoryEditScreen from '../screens/Task/CategoryEditModal';
 
