@@ -1,210 +1,270 @@
-// src/screens/Album/GrowthAlbumCalendarView.jsx
+// src/navigation/AppNavigator.js
 
-import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
-import { format } from 'date-fns';
-
-import { Colors } from '../../styles/color';
-import { FontSizes, FontWeights } from '../../styles/Fonts';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
-import useAlbumStore from '../../store/albumStore';
-import PhotoDetailModal from './PhotoDetailModal';
-import { Video } from 'expo-av';
 
-// 한국어 달력 설정
-LocaleConfig.locales['ko'] = {
-  monthNames: [
-    '1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'
-  ],
-  monthNamesShort: [
-    '1.','2.','3.','4.','5.','6.','7.','8.','9.','10.','11.','12.'
-  ],
-  dayNames: [
-    '일요일','월요일','화요일','수요일','목요일','금요일','토요일'
-  ],
-  dayNamesShort: ['일','월','화','수','목','금','토'],
-  today: '오늘',
-};
-LocaleConfig.defaultLocale = 'ko';
+// --- 화면 컴포넌트 전체 임포트 ---
 
-const GrowthAlbumCalendarView = ({ photos }) => {
+// 1. 온보딩 및 인증
+import OnboardingScreen from '../screens/OnboardingScreen';
+import AuthChoiceScreen from '../screens/Auth/AuthChoiceScreen';
+import EmailSignUpScreen from '../screens/Auth/EmailSignUpScreen';
+import EmailLoginScreen from '../screens/Auth/EmailLoginScreen';
+import PurposeSelectionScreen from '../screens/PurposeSelectionScreen';
+import LanguageSelectionScreen from '../screens/LanguageSelectionScreen';
+
+// 2. 메인 탭 화면
+import HomeScreen from '../screens/HomeScreen';
+import FeaturesScreen from '../screens/FeaturesScreen';
+import SettingsScreen from '../screens/SettingsScreen';
+import Header from '../components/common/Header';
+import AccountManagementScreen from '../screens/AccountManagementScreen';
+import InformationScreen from '../screens/InformationScreen';
+import PremiumMembershipScreen from '../screens/PremiumMembershipScreen';
+
+// 3. Task (할 일)
+import TaskCalendarScreen from '../screens/Task/TaskCalendarScreen';
+import TaskDetailModal from '../screens/Task/TaskDetailModal';
+import TaskCompleteCoinModal from '../screens/Task/TaskCompleteCoinModal';
+import TaskEditModal from '../screens/Task/TaskEditModal';
+import TaskDeleteConfirmModal from '../screens/Task/TaskDeleteConfirmModal';
+import CategorySettingScreen from '../screens/Task/CategorySettingModal';
+import CategoryEditScreen from '../screens/Task/CategoryEditModal';
+
+// 4. 포모도로
+import PomodoroScreen from '../screens/Pomodoro/PomodoroScreen';
+import PomodoroGoalCreationScreen from '../screens/Pomodoro/PomodoroGoalCreationScreen';
+import PomodoroTimerScreen from '../screens/Pomodoro/PomodoroTimerScreen';
+import PomodoroPauseScreen from '../screens/Pomodoro/PomodoroPauseScreen';
+import PomodoroResetConfirmModal from '../screens/Pomodoro/PomodoroResetConfirmModal';
+import PomodoroBreakChoiceScreen from '../screens/Pomodoro/PomodoroBreakChoiceScreen';
+import PomodoroCycleCompleteScreen from '../screens/Pomodoro/PomodoroCycleCompleteScreen';
+import PomodoroFinishScreen from '../screens/Pomodoro/PomodoroFinishScreen';
+import PomodoroStopScreen from '../screens/Pomodoro/PomodoroStopScreen';
+
+// 5. 타임어택
+import TimeAttackScreen from '../screens/TimeAttack/TimeAttackScreen';
+import TimeAttackGoalSettingScreen from '../screens/TimeAttack/TimeAttackGoalSettingScreen';
+import TimeAttackTimeInputModal from '../screens/TimeAttack/TimeAttackTimeInputModal';
+import TimeAttackAISubdivisionScreen from '../screens/TimeAttack/TimeAttackAISubdivisionScreen';
+import TimeAttackInProgressScreen from '../screens/TimeAttack/TimeAttackInProgressScreen';
+import TimeAttackCompleteScreen from '../screens/TimeAttack/TimeAttackCompleteScreen';
+
+// 6. 성장 앨범
+import GrowthAlbumScreen from '../screens/Album/GrowthAlbumScreen';
+import PhotoUploadModal from '../screens/Album/PhotoUploadModal';
+import GrowthAlbumCalendarView from '../screens/Album/GrowthAlbumCalendarView';
+import GrowthAlbumCategoryView from '../screens/Album/GrowthAlbumCategoryView';
+
+// 7. 망각방지 알림
+import ReminderScreen from '../screens/Reminder/ReminderScreen';
+import ReminderAddEditScreen from '../screens/Reminder/ReminderAddEditScreen';
+import ReminderTimeSettingModal from '../screens/Reminder/ReminderTimeSettingModal';
+import ReminderLocationSettingScreen from '../screens/Reminder/ReminderLocationSettingScreen';
+import ReminderChecklistScreen from '../screens/Reminder/ReminderChecklistScreen';
+import ReminderLocationAlertModal from '../screens/Reminder/ReminderLocationAlertModal';
+import ReminderCompleteCoinModal from '../screens/Reminder/ReminderCompleteCoinModal';
+
+// 8. 집중도 분석
+import AnalysisGraphScreen from '../screens/AnalysisGraphScreen';
+import DailyAnalysisView from '../screens/Analysis/DailyAnalysisView';
+import WeeklyAnalysisView from '../screens/Analysis/WeeklyAnalysisView';
+import MonthlyAnalysisView from '../screens/Analysis/MonthlyAnalysisView';
+import DDayAnalysisView from '../screens/Analysis/DDayAnalysisView';
+
+// 9. 오분이 커스터마이징
+import ObooniCustomizationScreen from '../screens/Obooni/ObooniCustomizationScreen';
+import ObooniClosetScreen from '../screens/Obooni/ObooniClosetScreen';
+import ObooniOwnedItemsScreen from '../screens/Obooni/ObooniOwnedItemsScreen';
+import ObooniShopScreen from '../screens/Obooni/ObooniShopScreen';
+
+// 10. 목표 세분화
+import RoutineSettingScreen from '../screens/RoutineSettingScreen';
+
+
+// 스타일 임포트
+import { Colors } from '../styles/color';
+import { FontSizes, FontWeights } from '../styles/Fonts';
+
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+// Pomodoro Stack Navigator
+const PomodoroStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="PomodoroMain" component={PomodoroScreen} />
+    <Stack.Screen name="PomodoroGoalCreation" component={PomodoroGoalCreationScreen} />
+    <Stack.Screen name="PomodoroTimer" component={PomodoroTimerScreen} />
+    <Stack.Screen name="PomodoroPause" component={PomodoroPauseScreen} />
+    <Stack.Screen name="PomodoroResetConfirmModal" component={PomodoroResetConfirmModal} options={{ presentation: 'modal' }} />
+    <Stack.Screen name="PomodoroBreakChoice" component={PomodoroBreakChoiceScreen} />
+    <Stack.Screen name="PomodoroCycleComplete" component={PomodoroCycleCompleteScreen} />
+    <Stack.Screen name="PomodoroFinish" component={PomodoroFinishScreen} />
+    <Stack.Screen name="PomodoroStop" component={PomodoroStopScreen} />
+  </Stack.Navigator>
+);
+
+// Reminder Stack Navigator
+const ReminderStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="ReminderMain" component={ReminderScreen} />
+    <Stack.Screen name="ReminderAddEdit" component={ReminderAddEditScreen} />
+    <Stack.Screen name="ReminderChecklist" component={ReminderChecklistScreen} />
+    <Stack.Screen name="ReminderLocationSetting" component={ReminderLocationSettingScreen} />
+  </Stack.Navigator>
+);
+
+// RoutineSetting Stack Navigator
+const RoutineStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="RoutineMain" component={RoutineSettingScreen} />
+  </Stack.Navigator>
+);
+
+// AnalysisGraph Stack Navigator
+const AnalysisStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="AnalysisMain" component={AnalysisGraphScreen} />
+  </Stack.Navigator>
+);
+
+// TimeAttack Stack Navigator
+const TimeAttackStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="TimeAttackMain" component={TimeAttackScreen} />
+    <Stack.Screen name="TimeAttackGoalSettingScreen" component={TimeAttackGoalSettingScreen} />
+    <Stack.Screen name="TimeAttackTimeInputModal" component={TimeAttackTimeInputModal} options={{ presentation: 'modal' }} />
+    <Stack.Screen name="TimeAttackAISubdivisionScreen" component={TimeAttackAISubdivisionScreen} />
+    <Stack.Screen name="TimeAttackInProgress" component={TimeAttackInProgressScreen} />
+    <Stack.Screen name="TimeAttackComplete" component={TimeAttackCompleteScreen} />
+  </Stack.Navigator>
+);
+
+const TempScreen = ({ route }) => (
+  <View style={{ flex: 1, backgroundColor: Colors.primaryBeige, justifyContent: 'center', alignItems: 'center' }}>
+    <Header title={route.name} showBackButton={true} />
+    <Text style={{ fontSize: FontSizes.large }}>{route.name} Screen</Text>
+  </View>
+);
+
+// 메인 탭 내비게이터 (하단 탭바)
+const MainTabNavigator = () => {
   const { t } = useTranslation();
-  const deletePhoto = useAlbumStore((state) => state.deletePhoto);
-  const updatePhoto = useAlbumStore((state) => state.updatePhoto);
-
-  const [selectedDate, setSelectedDate] = useState(
-    format(new Date(), 'yyyy-MM-dd')
-  );
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  // 날짜별 표시
-  const markedDates = useMemo(() => {
-    const marks = {};
-    Object.keys(photos).forEach((dateString) => {
-      marks[dateString] = { marked: true };
-    });
-    marks[selectedDate] = {
-      ...marks[selectedDate],
-      selected: true,
-      selectedColor: Colors.accentApricot,
-    };
-    return marks;
-  }, [photos, selectedDate]);
-
-  const onDayPress = (day) => {
-    setSelectedDate(day.dateString);
-  };
-
-  const handlePhotoPress = (photo, date) => {
-    setSelectedPhoto(photo);
-    setSelectedDate(date);
-    setIsModalVisible(true);
-  };
-
-  const handleDelete = (photoId) => {
-    if (selectedDate) {
-      deletePhoto(selectedDate, photoId);
-      setIsModalVisible(false);
-    }
-  };
-
-  const handleEdit = (photoId, newMemo) => {
-    if (selectedDate) {
-      updatePhoto(selectedDate, photoId, { memo: newMemo });
-    }
-  };
-
-  // 달력 셀 렌더링
-  const renderDay = ({ date, state }) => {
-    const dateString = date.dateString;
-    const dayPhotos = photos[dateString] || [];
-    const isSelected = dateString === selectedDate;
-    const isDisabled = state === 'disabled';
-
-    return (
-      <TouchableOpacity
-        style={styles.dayContainer}
-        onPress={() => !isDisabled && onDayPress(date)}
-        disabled={isDisabled}
-      >
-        {dayPhotos.length > 0 ? (
-          <TouchableOpacity
-            style={styles.fullDayImageContainer}
-            onPress={() => handlePhotoPress(dayPhotos[0], dateString)}
-          >
-            {dayPhotos[0].type === 'video' ? (
-              <Video
-                source={{ uri: dayPhotos[0].uri }}
-                style={styles.fullDayImage}
-                resizeMode="cover"
-                shouldPlay={false}
-                isLooping={false}
-                useNativeControls={false}
-              />
-            ) : (
-              <Image
-                source={{ uri: dayPhotos[0].uri }}
-                style={styles.fullDayImage}
-              />
-            )}
-          </TouchableOpacity>
-        ) : (
-          <Text
-            style={[
-              styles.dayText,
-              isSelected && styles.dayTextSelected,
-              isDisabled && styles.dayTextDisabled,
-            ]}
-          >
-            {date.day}
-          </Text>
-        )}
-      </TouchableOpacity>
-    );
-  };
-
   return (
-    <View style={styles.container}>
-      <Calendar
-        onDayPress={onDayPress}
-        markedDates={markedDates}
-        style={styles.calendar}
-        dayComponent={renderDay}
-        theme={{
-          // 폰트 크기 원래대로 복원
-          textMonthFontSize: FontSizes.large,
-          textDayHeaderFontSize: FontSizes.small,
-          // 기본 색상 설정
-          monthTextColor: Colors.textDark,
-          textMonthFontWeight: FontWeights.bold,
-          textSectionTitleColor: Colors.secondaryBrown,
-          arrowColor: Colors.secondaryBrown,
-          todayTextColor: Colors.accentApricot,
-        }}
-      />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
 
-      <PhotoDetailModal
-        visible={isModalVisible}
-        photo={selectedPhoto}
-        date={selectedDate}
-        onClose={() => setIsModalVisible(false)}
-        onDelete={handleDelete}
-        onEdit={handleEdit}
-      />
-    </View>
+          if (route.name === 'HomeTab') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'GrowthAlbumTab') {
+            iconName = focused ? 'image' : 'image-outline';
+          } else if (route.name === 'FeaturesTab') {
+            iconName = focused ? 'grid' : 'grid-outline';
+          } else if (route.name === 'SettingsTab') {
+            iconName = focused ? 'settings' : 'settings-outline';
+          } else {
+            iconName = 'help-circle-outline';
+          }
+
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: Colors.accentApricot,
+        tabBarInactiveTintColor: Colors.secondaryBrown,
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: Colors.primaryBeige,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          position: 'absolute',
+          bottom: 0,
+          height: 80,
+          // --- ✨ 수정된 부분 시작 ✨ ---
+          left: 0,
+          right: 0,
+          // --- ✨ 수정된 부분 끝 ✨ ---
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -3 },
+          shadowOpacity: 0.1,
+          shadowRadius: 5,
+          elevation: 5,
+        },
+        tabBarItemStyle: {
+          justifyContent: 'center',
+        },
+        tabBarLabelStyle: {
+          fontSize: FontSizes.small,
+          fontWeight: FontWeights.medium,
+          marginTop: -5,
+        },
+      })}
+    >
+      <Tab.Screen name="HomeTab" component={HomeScreen} options={{ tabBarLabel: t('tabs.home') }} />
+      <Tab.Screen name="GrowthAlbumTab" component={GrowthAlbumScreen} options={{ tabBarLabel: t('tabs.growth_album') }} />
+      <Tab.Screen name="FeaturesTab" component={FeaturesScreen} options={{ tabBarLabel: t('tabs.features') }} />
+      <Tab.Screen name="SettingsTab" component={SettingsScreen} options={{ tabBarLabel: t('tabs.settings') }} />
+      
+      {/* 숨겨진 탭들 - 기능에서 사용 */}
+      <Tab.Screen name="PomodoroTab" component={PomodoroStack} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="ReminderTab" component={ReminderStack} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="TimeAttackTab" component={TimeAttackStack} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="RoutineTab" component={RoutineStack} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="AnalysisTab" component={AnalysisStack} options={{ tabBarButton: () => null }} />
+    </Tab.Navigator>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    paddingHorizontal: 15, // 좌우 여백
-  },
-  calendar: {
-    width: '100%',
-    backgroundColor: Colors.textLight,
-    borderRadius: 15,
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  // --- ✨ 핵심 수정 부분 ✨ ---
-  // dayComponent를 사용하지 않을 때의 라이브러리 기본 스타일과 유사하게 복원하여 안정성 확보
-  dayContainer: {
-    width: 48,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dayText: {
-    fontSize: FontSizes.small, // 폰트 크기 원복
-    color: Colors.textDark,
-    fontWeight: FontWeights.medium,
-  },
-  dayTextSelected: {
-    color: Colors.accentApricot,
-    fontWeight: FontWeights.bold,
-  },
-  dayTextDisabled: {
-    color: '#d9e1e8',
-  },
-  fullDayImageContainer: {
-    width: '90%',
-    height: '90%',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  fullDayImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-});
+// 앱 전체 스택 내비게이터
+const AppNavigator = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Onboarding" screenOptions={{ headerShown: false }}>
+        {/* 온보딩 및 인증 플로우 */}
+        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+        <Stack.Screen name="AuthChoice" component={AuthChoiceScreen} />
+        <Stack.Screen name="EmailSignUp" component={EmailSignUpScreen} />
+        <Stack.Screen name="EmailLogin" component={EmailLoginScreen} />
+        <Stack.Screen name="LanguageSelection" component={LanguageSelectionScreen} />
+        <Stack.Screen name="PurposeSelection" component={PurposeSelectionScreen} />
+        
+        {/* 메인 탭 진입 */}
+        <Stack.Screen name="Main" component={MainTabNavigator} />
+        
+        {/* 기능별 전체 화면 */}
+        <Stack.Screen name="AccountManagement" component={AccountManagementScreen} />
+        <Stack.Screen name="PremiumMembership" component={PremiumMembershipScreen} />
+        <Stack.Screen name="Information" component={InformationScreen} />
+        
+        {/* Task 관련 화면들 */}
+        <Stack.Screen name="TaskCalendar" component={TaskCalendarScreen} />
+        <Stack.Screen 
+          name="TaskDetailModal" 
+          component={TaskDetailModal} 
+          options={{ 
+            presentation: 'transparentModal',
+            cardStyle: { backgroundColor: 'transparent' },
+            gestureEnabled: true,
+            headerShown: false,
+          }} 
+        />
+        <Stack.Screen name="TaskEditModal" component={TaskEditModal} options={{ presentation: 'modal' }} />
+        
+        {/* ⚠️ Category 화면들을 일반 화면으로 등록 */}
+        <Stack.Screen name="CategorySetting" component={CategorySettingScreen} />
+        <Stack.Screen name="CategoryEdit" component={CategoryEditScreen} />
 
-export default GrowthAlbumCalendarView;
+        {/* 나머지 임시 화면 */}
+        <Stack.Screen name="Report" component={TempScreen} />
+
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default AppNavigator;
