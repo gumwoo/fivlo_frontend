@@ -178,14 +178,17 @@ const MainTabNavigator = () => {
         tabBarActiveTintColor: Colors.accentApricot,
         tabBarInactiveTintColor: Colors.secondaryBrown,
         headerShown: false,
+        
+        // 👇 이전에 글자를 숨겼던 이 줄을 제거하거나 주석 처리합니다.
+        // tabBarShowLabel: false, 
+        
         tabBarStyle: {
           backgroundColor: Colors.primaryBeige,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           position: 'absolute',
           bottom: 0,
-          height: 80,
-          // 탭바가 화면 너비를 꽉 채우도록 설정
+          height: 90, 
           left: 0,
           right: 0,
           shadowColor: '#000',
@@ -195,24 +198,28 @@ const MainTabNavigator = () => {
           elevation: 5,
         },
         tabBarItemStyle: {
-          // ✨ 수정: width를 25%로 명시하여 정확히 4등분하고, flex: 1 대신 width를 주어 안정성 확보
-          width: '25%', // 4개 항목이므로 100% / 4 = 25%
+           paddingTop: 10,
+           paddingBottom: 10, 
+          
           justifyContent: 'center',
-          paddingBottom: 15, 
+          width: '25%',
+          paddingHorizontal: 48,
         },
+        // 👇 텍스트 라벨의 스타일을 다시 활성화하여 아이콘 아래에 표시되도록 합니다.
         tabBarLabelStyle: {
           fontSize: FontSizes.small,
           fontWeight: FontWeights.medium,
-          marginTop: -5,
+          marginTop: 5, // 아이콘과 텍스트 사이의 간격을 좁혀줍니다.
         },
       })}
     >
+      {/* Tab.Screen 목록은 그대로 유지 */}
       <Tab.Screen name="HomeTab" component={HomeScreen} options={{ tabBarLabel: t('tabs.home') }} />
       <Tab.Screen name="GrowthAlbumTab" component={GrowthAlbumScreen} options={{ tabBarLabel: t('tabs.growth_album') }} />
       <Tab.Screen name="FeaturesTab" component={FeaturesScreen} options={{ tabBarLabel: t('tabs.features') }} />
       <Tab.Screen name="SettingsTab" component={SettingsScreen} options={{ tabBarLabel: t('tabs.settings') }} />
       
-      {/* 숨겨진 탭들 - 기능에서 사용 */}
+      {/* 숨겨진 탭들 */}
       <Tab.Screen name="PomodoroTab" component={PomodoroStack} options={{ tabBarButton: () => null }} />
       <Tab.Screen name="ReminderTab" component={ReminderStack} options={{ tabBarButton: () => null }} />
       <Tab.Screen name="TimeAttackTab" component={TimeAttackStack} options={{ tabBarButton: () => null }} />
@@ -221,6 +228,7 @@ const MainTabNavigator = () => {
     </Tab.Navigator>
   );
 };
+
 
 // 앱 전체 스택 내비게이터
 const AppNavigator = () => {
