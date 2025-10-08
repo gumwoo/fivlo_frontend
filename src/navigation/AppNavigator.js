@@ -1,5 +1,3 @@
-// src/navigation/AppNavigator.js
-
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -196,7 +194,10 @@ const MainTabNavigator = () => {
           elevation: 5,
         },
         tabBarItemStyle: {
+          // ✨ 수정: flex: 1과 paddingBottom: 15를 적용하여 공간을 균등하게 나누고 수직 위치를 조정합니다.
+          flex: 1,
           justifyContent: 'center',
+          paddingBottom: 15, 
         },
         tabBarLabelStyle: {
           fontSize: FontSizes.small,
