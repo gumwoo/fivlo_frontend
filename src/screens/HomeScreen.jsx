@@ -1,3 +1,5 @@
+// src/screens/HomeScreen.jsx
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ScrollView, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -192,10 +194,9 @@ const styles = StyleSheet.create({
   },
   dateNavigationContainer: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    width: '100%', // ✨ 수정: 90% -> 100%
+    width: '100%', 
     paddingVertical: 15, 
-    // marginTop: 20, -> 삭제 (paddingTop: 30으로 대체)
-    marginBottom: 20, // ✨ 추가: 오분이와의 간격 확보
+    marginBottom: 20, // 오분이와의 간격 확보
   },
   dateNavButton: { paddingHorizontal: 15, paddingVertical: 5 },
   dateNavButtonText: { fontSize: FontSizes.extraLarge, fontWeight: FontWeights.bold, color: Colors.secondaryBrown },
@@ -203,9 +204,9 @@ const styles = StyleSheet.create({
 
   coinDisplayContainer: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end',
-    width: '100%', // ✨ 수정: 90% -> 100%
+    width: '100%', 
     paddingVertical: 8, 
-    paddingHorizontal: 20, // ✨ 수정: 내부적으로 여백을 주어 중앙 콘텐츠의 여백과 통일
+    paddingHorizontal: 20, 
     marginBottom: 10,
     backgroundColor: Colors.textLight, 
     borderRadius: 15, 
@@ -214,18 +215,17 @@ const styles = StyleSheet.create({
   },
   coinText: { fontSize: FontSizes.medium, fontWeight: FontWeights.bold, color: Colors.textDark, marginRight: 5 },
 
-  obooniWrapper: { // ✨ 추가: 오분이 캐릭터를 감싸는 Wrapper로 마진을 조정
-    marginBottom: 40, // 아래쪽 일정 목록과의 간격 조정
+  obooniWrapper: { 
+    marginBottom: 40, 
   },
   obooniCharacter: { 
     width: 250, 
     height: 250, 
     resizeMode: 'contain',
-    // marginVertical: 20 -> obooniWrapper로 이동 및 수정
   },
 
   taskListContainer: {
-    width: '100%', // ✨ 수정: 90% -> 100%
+    width: '100%', 
     backgroundColor: 'rgba(0,0,0,0.06)',
     borderRadius: 16,
     padding: 20,
