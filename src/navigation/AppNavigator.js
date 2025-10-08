@@ -178,14 +178,17 @@ const MainTabNavigator = () => {
         tabBarActiveTintColor: Colors.accentApricot,
         tabBarInactiveTintColor: Colors.secondaryBrown,
         headerShown: false,
+        
+        // 👇 [핵심 수정 1] 탭바 텍스트 라벨을 완전히 숨깁니다. (시안과 동일하게 아이콘만 표시)
+        tabBarShowLabel: false, 
+        
         tabBarStyle: {
           backgroundColor: Colors.primaryBeige,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
           position: 'absolute',
           bottom: 0,
-          height: 80,
-          // 탭바가 화면 너비를 꽉 채우도록 설정
+          height: 60, // 👈 [핵심 수정 2] 탭바 높이를 80에서 60으로 줄여 비율을 맞춥니다.
           left: 0,
           right: 0,
           shadowColor: '#000',
@@ -195,18 +198,21 @@ const MainTabNavigator = () => {
           elevation: 5,
         },
         tabBarItemStyle: {
-          // ✨ 수정: width를 25%로 명시하여 정확히 4등분하고, flex: 1 대신 width를 주어 안정성 확보
-          width: '25%', // 4개 항목이므로 100% / 4 = 25%
+          // 텍스트를 숨겨서 아이콘이 중앙에 오도록 기본값(paddingBottom: 0)을 유지합니다.
           justifyContent: 'center',
-          paddingBottom: 15, 
+          width: '25%', 
         },
-        tabBarLabelStyle: {
+        // tabBarLabelStyle은 tabBarShowLabel: false 덕분에 동작하지 않아 삭제하거나 주석 처리해도 무방합니다.
+        /*
+        tabBarLabelStyle: { 
           fontSize: FontSizes.small,
           fontWeight: FontWeights.medium,
           marginTop: -5,
         },
+        */
       })}
     >
+      {/* ... (Tab.Screen 목록은 동일하게 유지) */}
       <Tab.Screen name="HomeTab" component={HomeScreen} options={{ tabBarLabel: t('tabs.home') }} />
       <Tab.Screen name="GrowthAlbumTab" component={GrowthAlbumScreen} options={{ tabBarLabel: t('tabs.growth_album') }} />
       <Tab.Screen name="FeaturesTab" component={FeaturesScreen} options={{ tabBarLabel: t('tabs.features') }} />
