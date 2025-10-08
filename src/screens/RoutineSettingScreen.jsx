@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  ActivityIndicator, Modal
+  ActivityIndicator, Modal, Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -54,7 +54,7 @@ const RoutineSettingScreen = () => {
 
   const handleGenerate = () => {
     if (!goal.trim()) {
-      alert(t('core.routine.required_goal', '목표를 입력해 주세요.'));
+      Alert.alert(t('core.routine.required_title'), t('core.routine.required_goal'));
       return;
     }
     setLoadingAI(true);
@@ -75,7 +75,7 @@ const RoutineSettingScreen = () => {
   const toggleContinuous = () => { setIsContinuous(v => !v); setUsePeriod(false); };
 
   return (
-    <View style={[styles.screen, { paddingTop: insets.top + 12 }]}>
+    <View style={[styles.screen, { paddingTop: insets.top }]}> 
       <Header title={t('core.routine.header', '목표 세분화')} showBackButton />
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -92,9 +92,7 @@ const RoutineSettingScreen = () => {
         />
 
         {/* 목표 달성기간 */}
-        <Text style={[styles.sectionTitle, { marginTop: 24 }]}>
-          {t('core.routine.target_period_label', '목표 달성기간')}
-        </Text>
+        <Text style={styles.sectionTitleBottomGap}>{t('core.routine.target_period_label', '목표 달성기간')}</Text>
 
         <CheckRow
           label={t('core.routine.set_period', '달성 기간 설정')}
@@ -126,9 +124,9 @@ const RoutineSettingScreen = () => {
         />
 
         <Button
-          title={t('core.routine.generate', '맞춤일정 생성하기')}
+          title={t('core.routine.generate', 'AI 맞춤일정 생성하기')}
           onPress={handleGenerate}
-          style={{ marginTop: 14 }}
+          style={styles.generateButton}
         />
 
         {loadingAI && (
@@ -186,33 +184,73 @@ const RoutineSettingScreen = () => {
 
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: Colors.primaryBeige },
-  content: { paddingHorizontal: 20, paddingBottom: 40 },
-  sectionTitle: {
-    fontSize: FontSizes.large, fontWeight: FontWeights.bold,
-    color: Colors.textDark, marginBottom: 20,
+  content: { 
+    paddingHorizontal: 20, 
+    paddingBottom: 100, // 하단 탭바 여백 확보
+    paddingTop: 20, // ✨ 수정: 상단 여백을 확보하여 제목이 붙지 않도록 조정
   },
-  inputBox: { minHeight: 100, textAlignVertical: 'top' },
+  sectionTitle: { // '목표 입력' 제목에 사용
+    fontSize: FontSizes.large, 
+    fontWeight: FontWeights.bold,
+    color: Colors.textDark, 
+    marginTop: 0, 
+    marginBottom: 10, // Input과의 간격
+  },
+  sectionTitleBottomGap: { // '목표 달성기간' 제목에 사용
+    fontSize: FontSizes.large, 
+    fontWeight: FontWeights.bold,
+    color: Colors.textDark, 
+    marginTop: 35, // ✨ 수정: 위 섹션 (Input Box)과 충분한 간격 확보
+    marginBottom: 10, // 아래 체크박스와의 간격 
+  },
+  inputBox: { 
+    minHeight: 100, 
+    textAlignVertical: 'top',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    alignSelf: 'stretch',
+    width: '100%', 
+  },
 
   /* 체크박스 라인 */
-  checkRow: { flexDirection: 'row', alignItems: 'center', marginTop: 14 },
+  checkRow: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginTop: 10, // ✨ 수정: 체크박스 항목 간 세로 간격 10pt
+    marginBottom: 5,
+  },
   checkBox: {
-    width: 22, height: 22, borderRadius: 4,
-    borderWidth: 2, borderColor: Colors.secondaryBrown,
-    alignItems: 'center', justifyContent: 'center',
-    marginRight: 10, backgroundColor: 'transparent',
+    width: 24, 
+    height: 24, 
+    borderRadius: 6,
+    borderWidth: 2, 
+    borderColor: Colors.secondaryBrown,
+    alignItems: 'center', 
+    justifyContent: 'center',
+    marginRight: 15,
+    backgroundColor: 'transparent',
   },
   checkBoxChecked: { borderColor: Colors.accentApricot, backgroundColor: 'rgba(255, 186, 130, 0.35)' },
-  checkDot: { width: 10, height: 10, borderRadius: 2, backgroundColor: Colors.accentApricot },
+  checkDot: { width: 12, height: 12, borderRadius: 3, backgroundColor: Colors.accentApricot },
   checkLabel: { fontSize: FontSizes.medium, color: Colors.textDark },
 
   /* 년/월/일 칩 */
-  ymdRow: { flexDirection: 'row', gap: 10, marginTop: 12 },
+  ymdRow: { 
+    flexDirection: 'row', 
+    gap: 10, 
+    marginTop: 15, 
+    marginBottom: 15
+  },
   chip: {
     flex: 1, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 12,
     backgroundColor: 'rgba(0,0,0,0.06)', borderWidth: 1, borderColor: 'rgba(0,0,0,0.08)',
   },
-  chipTitle: { fontSize: 12, color: Colors.secondaryBrown, marginBottom: 4 },
-  chipValue: { fontSize: 18, fontWeight: '700', color: Colors.textDark, textAlign: 'right' },
+  chipTitle: { fontSize: FontSizes.small, color: Colors.secondaryBrown, marginBottom: 4 },
+  chipValue: { fontSize: FontSizes.medium + 2, fontWeight: '700', color: Colors.textDark, textAlign: 'right' },
+  
+  generateButton: { 
+    marginTop: 40, // ✨ 수정: 버튼 상단 여백을 충분히 확보
+  },
 
   /* 로딩 */
   loading: { alignItems: 'center', marginTop: 28 },
