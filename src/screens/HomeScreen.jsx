@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.primaryBeige },
   scrollViewContentContainer: { 
     alignItems: 'center', 
-    paddingTop: 30, // ✨ 수정: 상단 여백 추가 (전체 콘텐츠를 아래로 내림)
+    paddingTop: 50, // ✨ 수정: 상단 여백 추가 (전체 콘텐츠를 아래로 내림)
     paddingBottom: 100,
     paddingHorizontal: 20, // ✨ 수정: 모든 중앙 콘텐츠에 좌우 여백 일괄 적용
   },

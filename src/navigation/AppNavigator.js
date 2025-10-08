@@ -179,8 +179,8 @@ const MainTabNavigator = () => {
         tabBarInactiveTintColor: Colors.secondaryBrown,
         headerShown: false,
         
-        // 👇 [핵심 수정 1] 탭바 텍스트 라벨을 완전히 숨깁니다. (시안과 동일하게 아이콘만 표시)
-        tabBarShowLabel: false, 
+        // 👇 이전에 글자를 숨겼던 이 줄을 제거하거나 주석 처리합니다.
+        // tabBarShowLabel: false, 
         
         tabBarStyle: {
           backgroundColor: Colors.primaryBeige,
@@ -188,7 +188,7 @@ const MainTabNavigator = () => {
           borderTopRightRadius: 20,
           position: 'absolute',
           bottom: 0,
-          height: 60, // 👈 [핵심 수정 2] 탭바 높이를 80에서 60으로 줄여 비율을 맞춥니다.
+          height: 90, 
           left: 0,
           right: 0,
           shadowColor: '#000',
@@ -198,27 +198,28 @@ const MainTabNavigator = () => {
           elevation: 5,
         },
         tabBarItemStyle: {
-          // 텍스트를 숨겨서 아이콘이 중앙에 오도록 기본값(paddingBottom: 0)을 유지합니다.
+           paddingTop: 10,
+           paddingBottom: 10, 
+          
           justifyContent: 'center',
-          width: '25%', 
+          width: '25%',
+          paddingHorizontal: 48,
         },
-        // tabBarLabelStyle은 tabBarShowLabel: false 덕분에 동작하지 않아 삭제하거나 주석 처리해도 무방합니다.
-        /*
-        tabBarLabelStyle: { 
+        // 👇 텍스트 라벨의 스타일을 다시 활성화하여 아이콘 아래에 표시되도록 합니다.
+        tabBarLabelStyle: {
           fontSize: FontSizes.small,
           fontWeight: FontWeights.medium,
-          marginTop: -5,
+          marginTop: 5, // 아이콘과 텍스트 사이의 간격을 좁혀줍니다.
         },
-        */
       })}
     >
-      {/* ... (Tab.Screen 목록은 동일하게 유지) */}
+      {/* Tab.Screen 목록은 그대로 유지 */}
       <Tab.Screen name="HomeTab" component={HomeScreen} options={{ tabBarLabel: t('tabs.home') }} />
       <Tab.Screen name="GrowthAlbumTab" component={GrowthAlbumScreen} options={{ tabBarLabel: t('tabs.growth_album') }} />
       <Tab.Screen name="FeaturesTab" component={FeaturesScreen} options={{ tabBarLabel: t('tabs.features') }} />
       <Tab.Screen name="SettingsTab" component={SettingsScreen} options={{ tabBarLabel: t('tabs.settings') }} />
       
-      {/* 숨겨진 탭들 - 기능에서 사용 */}
+      {/* 숨겨진 탭들 */}
       <Tab.Screen name="PomodoroTab" component={PomodoroStack} options={{ tabBarButton: () => null }} />
       <Tab.Screen name="ReminderTab" component={ReminderStack} options={{ tabBarButton: () => null }} />
       <Tab.Screen name="TimeAttackTab" component={TimeAttackStack} options={{ tabBarButton: () => null }} />
@@ -227,6 +228,7 @@ const MainTabNavigator = () => {
     </Tab.Navigator>
   );
 };
+
 
 // 앱 전체 스택 내비게이터
 const AppNavigator = () => {
