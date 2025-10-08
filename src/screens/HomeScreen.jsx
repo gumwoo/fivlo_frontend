@@ -1,4 +1,5 @@
 // src/screens/HomeScreen.jsx
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ScrollView, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -137,7 +138,7 @@ const HomeScreen = ({ isPremiumUser }) => {
           </View>
         )}
 
-        <TouchableOpacity onPress={handleObooniPress}>
+        <TouchableOpacity onPress={handleObooniPress} style={styles.obooniWrapper}>
           <Image source={require('../../assets/기본오분이.png')} style={styles.obooniCharacter} />
         </TouchableOpacity>
 
@@ -185,10 +186,17 @@ const HomeScreen = ({ isPremiumUser }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.primaryBeige },
-  scrollViewContentContainer: { alignItems: 'center', paddingBottom: 100 },
+  scrollViewContentContainer: { 
+    alignItems: 'center', 
+    paddingTop: 30, // ✨ 수정: 상단 여백 추가 (전체 콘텐츠를 아래로 내림)
+    paddingBottom: 100,
+    paddingHorizontal: 20, // ✨ 수정: 모든 중앙 콘텐츠에 좌우 여백 일괄 적용
+  },
   dateNavigationContainer: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    width: '90%', paddingVertical: 15, marginTop: 20,
+    width: '100%', 
+    paddingVertical: 15, 
+    marginBottom: 20, // 오분이와의 간격 확보
   },
   dateNavButton: { paddingHorizontal: 15, paddingVertical: 5 },
   dateNavButtonText: { fontSize: FontSizes.extraLarge, fontWeight: FontWeights.bold, color: Colors.secondaryBrown },
@@ -196,15 +204,28 @@ const styles = StyleSheet.create({
 
   coinDisplayContainer: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end',
-    width: '90%', paddingVertical: 8, paddingHorizontal: 15, marginBottom: 10,
-    backgroundColor: Colors.textLight, borderRadius: 15, elevation: 2,
+    width: '100%', 
+    paddingVertical: 8, 
+    paddingHorizontal: 20, 
+    marginBottom: 10,
+    backgroundColor: Colors.textLight, 
+    borderRadius: 15, 
+    elevation: 2,
+    alignSelf: 'center',
   },
   coinText: { fontSize: FontSizes.medium, fontWeight: FontWeights.bold, color: Colors.textDark, marginRight: 5 },
 
-  obooniCharacter: { width: 250, height: 250, marginVertical: 20, resizeMode: 'contain' },
+  obooniWrapper: { 
+    marginBottom: 40, 
+  },
+  obooniCharacter: { 
+    width: 250, 
+    height: 250, 
+    resizeMode: 'contain',
+  },
 
   taskListContainer: {
-    width: '90%',
+    width: '100%', 
     backgroundColor: 'rgba(0,0,0,0.06)',
     borderRadius: 16,
     padding: 20,

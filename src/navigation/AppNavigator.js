@@ -185,10 +185,9 @@ const MainTabNavigator = () => {
           position: 'absolute',
           bottom: 0,
           height: 80,
-          // --- ✨ 수정된 부분 시작 ✨ ---
+          // 탭바가 화면 너비를 꽉 채우도록 설정
           left: 0,
           right: 0,
-          // --- ✨ 수정된 부분 끝 ✨ ---
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -3 },
           shadowOpacity: 0.1,
@@ -196,7 +195,10 @@ const MainTabNavigator = () => {
           elevation: 5,
         },
         tabBarItemStyle: {
+          // ✨ 수정: width를 25%로 명시하여 정확히 4등분하고, flex: 1 대신 width를 주어 안정성 확보
+          width: '25%', // 4개 항목이므로 100% / 4 = 25%
           justifyContent: 'center',
+          paddingBottom: 15, 
         },
         tabBarLabelStyle: {
           fontSize: FontSizes.small,
