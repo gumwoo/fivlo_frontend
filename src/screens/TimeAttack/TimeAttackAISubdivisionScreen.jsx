@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   doneButton: { backgroundColor: '#FFD700', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8 },
   doneButtonText: { color: Colors.textDark, fontWeight: 'bold' },
   footer: { padding: 20, backgroundColor: Colors.primaryBeige },
-  startButton: { backgroundColor: '#FFD700', borderRadius: 10, paddingVertical: 15 },
+  startButton: { backgroundColor: '#FFD700', borderRadius: 10, paddingVertical: 15, marginBottom:80 },
   startButtonText: { color: Colors.textDark, fontSize: FontSizes.large, fontWeight: 'bold' },
 });
 

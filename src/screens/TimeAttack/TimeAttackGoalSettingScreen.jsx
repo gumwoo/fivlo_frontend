@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   timerText: { fontSize: 48, fontWeight: 'bold', color: Colors.textDark },
   minuteText: { fontSize: 32, fontWeight: 'bold', color: Colors.textDark, marginLeft: 10, marginTop: 5 },
   bottomContainer: {
-    paddingBottom: 20,
+    paddingBottom: 83,
     backgroundColor: Colors.primaryBeige
   },
   startButton: {
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: 15,
     marginHorizontal: 0, 
+    marginTop: 0,
   },
   startButtonText: { color: Colors.textDark, fontSize: FontSizes.large, fontWeight: 'bold' },
 
