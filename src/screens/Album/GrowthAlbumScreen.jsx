@@ -73,6 +73,9 @@ const GrowthAlbumScreen = () => {
         ) : (
           <GrowthAlbumCategoryView photos={photos} />
         )}
+        <TouchableOpacity style={styles.testPhotoButton} onPress={() => setIsPhotoModalVisible(true)}>
+          <Text style={styles.testPhotoButtonText}>{t('album.test_upload')}</Text>
+        </TouchableOpacity>
       </View>
 
       {isPhotoModalVisible && (

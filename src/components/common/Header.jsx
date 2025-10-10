@@ -9,17 +9,11 @@ import { FontWeights, FontSizes } from '../../styles/Fonts';
 
 const Header = ({ title, showBackButton = true }) => {
   const navigation = useNavigation();
-  
-  const handleBack = () => {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    }
-  };
-  
+
   return (
     <View style={styles.headerContainer}>
       {showBackButton && (
-        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color={Colors.textDark} />
         </TouchableOpacity>
       )}

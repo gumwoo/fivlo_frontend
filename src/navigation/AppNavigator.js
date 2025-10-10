@@ -58,14 +58,31 @@ import TimeAttackCompleteScreen from '../screens/TimeAttack/TimeAttackCompleteSc
 // 6. 성장 앨범
 import GrowthAlbumScreen from '../screens/Album/GrowthAlbumScreen';
 
+import PhotoUploadModal from '../screens/Album/PhotoUploadModal';
+import GrowthAlbumCalendarView from '../screens/Album/GrowthAlbumCalendarView';
+import GrowthAlbumCategoryView from '../screens/Album/GrowthAlbumCategoryView';
+
 // 7. 망각방지 알림
 import ReminderScreen from '../screens/Reminder/ReminderScreen';
 import ReminderAddEditScreen from '../screens/Reminder/ReminderAddEditScreen';
-import ReminderChecklistScreen from '../screens/Reminder/ReminderChecklistScreen';
+import ReminderTimeSettingModal from '../screens/Reminder/ReminderTimeSettingModal';
 import ReminderLocationSettingScreen from '../screens/Reminder/ReminderLocationSettingScreen';
+import ReminderChecklistScreen from '../screens/Reminder/ReminderChecklistScreen';
+import ReminderLocationAlertModal from '../screens/Reminder/ReminderLocationAlertModal';
+import ReminderCompleteCoinModal from '../screens/Reminder/ReminderCompleteCoinModal';
 
 // 8. 집중도 분석
 import AnalysisGraphScreen from '../screens/AnalysisGraphScreen';
+import DailyAnalysisView from '../screens/Analysis/DailyAnalysisView';
+import WeeklyAnalysisView from '../screens/Analysis/WeeklyAnalysisView';
+import MonthlyAnalysisView from '../screens/Analysis/MonthlyAnalysisView';
+import DDayAnalysisView from '../screens/Analysis/DDayAnalysisView';
+
+// 9. 오분이 커스터마이징
+import ObooniCustomizationScreen from '../screens/Obooni/ObooniCustomizationScreen';
+import ObooniClosetScreen from '../screens/Obooni/ObooniClosetScreen';
+import ObooniOwnedItemsScreen from '../screens/Obooni/ObooniOwnedItemsScreen';
+import ObooniShopScreen from '../screens/Obooni/ObooniShopScreen';
 
 // 10. 목표 세분화
 import RoutineSettingScreen from '../screens/RoutineSettingScreen';
@@ -156,19 +173,25 @@ const MainTabNavigator = () => {
           } else {
             iconName = 'help-circle-outline';
           }
+
           return <Icon name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: Colors.accentApricot,
         tabBarInactiveTintColor: Colors.secondaryBrown,
         headerShown: false,
+        
+        // 👇 이전에 글자를 숨겼던 이 줄을 제거하거나 주석 처리합니다.
+        // tabBarShowLabel: false, 
+        
         tabBarStyle: {
           backgroundColor: Colors.primaryBeige,
-          borderTopLeftRadius:20,
+          borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
-          height: 100,
-          paddingBottom: 10,
-          paddingTop: 10,
-          // --- ✨ position: 'absolute' 관련 속성을 모두 제거했습니다 ---
+          position: 'absolute',
+          bottom: 0,
+          height: 90, 
+          left: 0,
+          right: 0,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -3 },
           shadowOpacity: 0.1,
@@ -176,22 +199,28 @@ const MainTabNavigator = () => {
           elevation: 5,
         },
         tabBarItemStyle: {
+           paddingTop: 10,
+           paddingBottom: 10, 
+          
           justifyContent: 'center',
-          alignItems: 'center',
+          width: '25%',
+          paddingHorizontal: 48,
         },
+        // 👇 텍스트 라벨의 스타일을 다시 활성화하여 아이콘 아래에 표시되도록 합니다.
         tabBarLabelStyle: {
           fontSize: FontSizes.small,
           fontWeight: FontWeights.medium,
-          marginTop: -5,
+          marginTop: 5, // 아이콘과 텍스트 사이의 간격을 좁혀줍니다.
         },
       })}
     >
+      {/* Tab.Screen 목록은 그대로 유지 */}
       <Tab.Screen name="HomeTab" component={HomeScreen} options={{ tabBarLabel: t('tabs.home') }} />
       <Tab.Screen name="GrowthAlbumTab" component={GrowthAlbumScreen} options={{ tabBarLabel: t('tabs.growth_album') }} />
       <Tab.Screen name="FeaturesTab" component={FeaturesScreen} options={{ tabBarLabel: t('tabs.features') }} />
       <Tab.Screen name="SettingsTab" component={SettingsScreen} options={{ tabBarLabel: t('tabs.settings') }} />
-
-      {/* 숨겨진 탭들 - 기능에서 사용 */}
+      
+      {/* 숨겨진 탭들 */}
       <Tab.Screen name="PomodoroTab" component={PomodoroStack} options={{ tabBarButton: () => null }} />
       <Tab.Screen name="ReminderTab" component={ReminderStack} options={{ tabBarButton: () => null }} />
       <Tab.Screen name="TimeAttackTab" component={TimeAttackStack} options={{ tabBarButton: () => null }} />
@@ -214,28 +243,29 @@ const AppNavigator = () => {
         <Stack.Screen name="LanguageSelection" component={LanguageSelectionScreen} />
         <Stack.Screen name="PurposeSelection" component={PurposeSelectionScreen} />
 
+        
         {/* 메인 탭 진입 */}
         <Stack.Screen name="Main" component={MainTabNavigator} />
-
         {/* 기능별 전체 화면 */}
         <Stack.Screen name="AccountManagement" component={AccountManagementScreen} />
         <Stack.Screen name="PremiumMembership" component={PremiumMembershipScreen} />
         <Stack.Screen name="Information" component={InformationScreen} />
 
+        
         {/* Task 관련 화면들 */}
         <Stack.Screen name="TaskCalendar" component={TaskCalendarScreen} />
-        <Stack.Screen
-          name="TaskDetailModal"
-          component={TaskDetailModal}
-          options={{
+        <Stack.Screen 
+          name="TaskDetailModal" 
+          component={TaskDetailModal} 
+          options={{ 
             presentation: 'transparentModal',
             cardStyle: { backgroundColor: 'transparent' },
             gestureEnabled: true,
             headerShown: false,
-          }}
+
+          }} 
         />
         <Stack.Screen name="TaskEditModal" component={TaskEditModal} options={{ presentation: 'modal' }} />
-
         {/* ⚠️ Category 화면들을 일반 화면으로 등록 */}
         <Stack.Screen name="CategorySetting" component={CategorySettingScreen} />
         <Stack.Screen name="CategoryEdit" component={CategoryEditScreen} />

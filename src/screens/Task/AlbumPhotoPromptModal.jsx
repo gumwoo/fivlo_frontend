@@ -1,9 +1,18 @@
-// src/screens/Task/AlbumPhotoPromptModal.jsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Image, TextInput, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  Image,
+  TextInput,
+  Alert,
+} from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
+import { Video } from 'expo-av';
 
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
@@ -57,10 +66,10 @@ const AlbumPhotoPromptModal = ({ visible, onClose, onSave }) => {
       Alert.alert(t('album.need_permission_title'), t('album.need_image'));
       return;
     }
-    onSave({ 
-      uri: imageUri || videoUri, 
-      memo, 
-      type: imageUri ? 'image' : 'video' 
+    onSave({
+      uri: imageUri || videoUri,
+      memo,
+      type: imageUri ? 'image' : 'video',
     });
     // 초기화
     setImageUri(null);
@@ -89,10 +98,13 @@ const AlbumPhotoPromptModal = ({ visible, onClose, onSave }) => {
                 <Image source={{ uri: imageUri }} style={styles.previewImage} />
               )}
               {videoUri && (
-                <View style={styles.videoPreview}>
-                  <FontAwesome5 name="video" size={60} color={Colors.textDark} />
-                  <Text style={styles.videoText}>동영상 선택됨</Text>
-                </View>
+                <Video
+                  source={{ uri: videoUri }}
+                  style={styles.previewVideo}
+                  useNativeControls
+                  resizeMode="contain"
+                  isLooping
+                />
               )}
             </View>
           ) : (
@@ -100,12 +112,19 @@ const AlbumPhotoPromptModal = ({ visible, onClose, onSave }) => {
               <Text style={styles.panelGuide}>
                 {t('album.photo_or_video', '사진을 업로드하거나\\n클릭해서 촬영하세요')}
               </Text>
-          
               <View style={styles.iconRow}>
-                <TouchableOpacity style={styles.iconTap} onPress={pickImage} activeOpacity={0.8}>
+                <TouchableOpacity
+                  style={styles.iconTap}
+                  onPress={pickImage}
+                  activeOpacity={0.8}
+                >
                   <FontAwesome5 name="image" size={65} color={Colors.textDark} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.iconTap} onPress={pickVideo} activeOpacity={0.8}>
+                <TouchableOpacity
+                  style={styles.iconTap}
+                  onPress={pickVideo}
+                  activeOpacity={0.8}
+                >
                   <FontAwesome5 name="video" size={65} color={Colors.textDark} />
                 </TouchableOpacity>
               </View>
@@ -123,8 +142,8 @@ const AlbumPhotoPromptModal = ({ visible, onClose, onSave }) => {
               multiline
             />
           ) : (
-            <TouchableOpacity 
-              style={[styles.panel, styles.placeholderPanel]} 
+            <TouchableOpacity
+              style={[styles.panel, styles.placeholderPanel]}
               onPress={() => setShowMemoInput(true)}
             >
               <Text style={styles.placeholderText}>
@@ -185,7 +204,7 @@ const styles = StyleSheet.create({
   // 공통 하얀 패널
   panel: {
     width: '100%',
-    backgroundColor: Colors.textLight,   // 하얀색
+    backgroundColor: Colors.textLight, // 하얀색
     borderRadius: RADIUS,
     paddingVertical: 14,
     paddingHorizontal: 16,
@@ -214,7 +233,7 @@ const styles = StyleSheet.create({
   iconTap: {
     padding: 20,
     borderRadius: 12,
-    backgroundColor: 'rgba(0,0,0,0.0)', // 살짝 음영
+    backgroundColor: 'rgba(0,0,0,0.0)',
   },
 
   // 두 번째 패널(회색 플레이스홀더 느낌)
@@ -245,6 +264,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     resizeMode: 'cover',
+    borderRadius: RADIUS,
+  },
+
+  previewVideo: {
+    width: '100%',
+    height: 200,
     borderRadius: RADIUS,
   },
 
