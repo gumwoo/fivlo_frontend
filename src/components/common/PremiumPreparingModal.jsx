@@ -1,9 +1,6 @@
 // src/components/common/PremiumPreparingModal.jsx
 
 import React from 'react';
-<<<<<<< HEAD
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Image } from 'react-native';
-=======
 import {
   View,
   Text,
@@ -12,7 +9,6 @@ import {
   Image,
   TouchableWithoutFeedback,
 } from 'react-native';
->>>>>>> Ahyeon/main
 import { useTranslation } from 'react-i18next';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
@@ -27,23 +23,6 @@ const PremiumPreparingModal = ({ visible, onClose }) => {
       animationType="fade"
       onRequestClose={onClose}
     >
-<<<<<<< HEAD
-      <View style={styles.overlay}>
-        <View style={styles.modalContainer}>
-          {/* 오분이 이미지 */}
-          <Image 
-            source={require('../../../assets/기본오분이.png')}
-            style={styles.characterImage}
-            resizeMode="contain"
-          />
-          
-          {/* 메시지 */}
-          <Text style={styles.message}>
-            {t('premium.preparing_message')}
-          </Text>
-        </View>
-      </View>
-=======
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
           <TouchableWithoutFeedback onPress={() => {}}>
@@ -63,7 +42,6 @@ const PremiumPreparingModal = ({ visible, onClose }) => {
           </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
->>>>>>> Ahyeon/main
     </Modal>
   );
 };
@@ -85,14 +63,7 @@ const styles = StyleSheet.create({
     maxWidth: 300,
     alignItems: 'center',
     shadowColor: '#000',
-<<<<<<< HEAD
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-=======
     shadowOffset: { width: 0, height: 2 },
->>>>>>> Ahyeon/main
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
