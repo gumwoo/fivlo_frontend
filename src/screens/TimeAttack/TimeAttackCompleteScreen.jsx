@@ -11,7 +11,7 @@ import { Colors } from '../../styles/color'; // <-- 사용자님 파일명에 �
 import { FontSizes, FontWeights } from '../../styles/Fonts'; // <-- 사용자님 파일명에 맞춰 'Fonts'로 수정!
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
-import CharacterImage from '../../components/common/CharacterImage';
+import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
 import { useTranslation } from 'react-i18next';
 
 const TimeAttackCompleteScreen = () => {
@@ -40,7 +40,7 @@ const TimeAttackCompleteScreen = () => {
         <Text style={styles.completeText}>{t('time_attack_complete.complete_ready')}</Text>
         <Text style={styles.praiseText}>{t('time_attack_complete.praise_message')}</Text>
         
-        <CharacterImage style={styles.obooniCharacter} />
+        <TimeAttackMascot running={false} size={260} />
         
         <Button title={t('time_attack_complete.go_home')} onPress={handleGoToHome} style={styles.homeButton} />
       </View>

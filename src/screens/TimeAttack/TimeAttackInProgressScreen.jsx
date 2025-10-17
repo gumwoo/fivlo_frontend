@@ -1,7 +1,7 @@
 // src/screens/TimeAttack/TimeAttackInProgressScreen.jsx
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Image, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Dimensions } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -12,7 +12,8 @@ import { GlobalStyles } from '../../styles/GlobalStyles';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
-import CharacterImage from '../../components/common/CharacterImage';
+import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
+import ConfirmExitModal from '../../components/timeattack/ConfirmExitModal';
 import { useTranslation } from 'react-i18next';
 
 // expo-speech 설치 필요: expo install expo-speech
@@ -21,7 +22,7 @@ const AUTO_NEXT_THRESHOLD = 3000; // 자동 다음 단계 전환 대기 시간 (
 
 // 화면 너비를 기준으로 동적 크기 계산
 const { width: screenWidth } = Dimensions.get('window');
-const nextButtonSize = Math.min(screenWidth * 0.35, 120); // 다음 버튼 크기
+// 하단 전체폭 버튼 사용으로 변경
 
 const TimeAttackInProgressScreen = () => {
   const navigation = useNavigation();
@@ -35,6 +36,8 @@ const TimeAttackInProgressScreen = () => {
   const [timeLeft, setTimeLeft] = useState(0); // 현재 단계의 남은 시간
   const [isRunning, setIsRunning] = useState(false); // 타이머 작동 여부 - 초기값을 false로 변경
   const [nextButtonPressTime, setNextButtonPressTime] = useState(0); // 다음 버튼 눌린 시간
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [autoNextCountdown, setAutoNextCountdown] = useState(null); // 3,2,1 카운트
 
   const timerRef = useRef(null); // setInterval 참조
   const nextTimerRef = useRef(null); // 자동 다음 단계 전환 타이머
@@ -111,11 +114,18 @@ const TimeAttackInProgressScreen = () => {
       speakText(completedMessageEn);
     }
 
-    Alert.alert(t('time_attack.completed_title'), completedMessageKo, [
-      { text: t('common.ok'), onPress: () => {
-        handleNextTask();
-      }},
-    ], { cancelable: false });
+    // 3초 후 자동으로 다음 단계로 이동
+    setAutoNextCountdown(3);
+    const cd = setInterval(() => {
+      setAutoNextCountdown(prev => {
+        if (prev === 1) {
+          clearInterval(cd);
+          handleNextTask();
+          return null;
+        }
+        return (prev || 1) - 1;
+      });
+    }, 1000);
   };
 
   const handleNextTask = () => {
@@ -139,10 +149,7 @@ const TimeAttackInProgressScreen = () => {
   const handleNextButtonPressOut = () => {
     clearTimeout(nextTimerRef.current);
     if (Date.now() - nextButtonPressTime < AUTO_NEXT_THRESHOLD) {
-      Alert.alert(t('time_attack.next_step'), t('time_attack.confirm_complete', { task: currentTask.text }), [
-        { text: t('common.cancel'), style: 'cancel' },
-        { text: t('common.ok'), onPress: handleNextTask },
-      ]);
+      setConfirmVisible(true);
     }
   };
 
@@ -157,13 +164,9 @@ const TimeAttackInProgressScreen = () => {
         <Text style={styles.goalText}>{selectedGoal}</Text>
         <Text style={styles.currentTaskText}>{currentTask ? currentTask.text : t('time_attack.ready')}</Text>
 
-        {/* 타임어택 오분이.gif */}
+        {/* 타임어택 오분이 (PNG, 러닝 시 펄스 애니메이션) */}
         <View style={styles.obooniContainer}>
-          <Image
-            source={require('../../../assets/타임어택 오분이.gif')}
-            style={styles.obooniGif}
-            resizeMode="contain"
-          />
+          <TimeAttackMascot running={isRunning} />
         </View>
 
         {/* 시간 표시 */}
@@ -172,13 +175,21 @@ const TimeAttackInProgressScreen = () => {
         </View>
 
         <TouchableOpacity
-          style={styles.nextButton}
+          style={styles.bottomBar}
           onPressIn={handleNextButtonPressIn}
           onPressOut={handleNextButtonPressOut}
         >
-          <Text style={styles.nextButtonText}>{t('time_attack.next_step')}</Text>
+          <Text style={styles.bottomBarText}>
+            {autoNextCountdown !== null ? t('time_attack.auto_next', { sec: autoNextCountdown }) : t('time_attack.next_step')}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
+
+      <ConfirmExitModal
+        visible={confirmVisible}
+        onCancel={() => setConfirmVisible(false)}
+        onConfirm={() => { setConfirmVisible(false); handleNextTask(); }}
+      />
     </View>
   );
 };
@@ -214,10 +225,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 30,
   },
-  obooniGif: {
-    width: 200,
-    height: 200,
-  },
   timeContainer: {
     alignItems: 'center',
     marginBottom: 40,
@@ -229,24 +236,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   nextButton: {
-    backgroundColor: Colors.accentApricot,
-    // --- 수정: 동적 크기 적용 ---
-    width: nextButtonSize,
-    height: nextButtonSize,
-    borderRadius: nextButtonSize / 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
+    display: 'none'
   },
-  nextButtonText: {
-    fontSize: FontSizes.large,
-    fontWeight: FontWeights.bold,
-    color: Colors.textLight,
-  },
+  bottomBar: { backgroundColor: Colors.accentApricot, alignSelf: 'stretch', paddingVertical: 14, borderRadius: 12, marginTop: 10 },
+  bottomBarText: { color: Colors.textDark, textAlign: 'center', fontSize: FontSizes.large, fontWeight: FontWeights.bold },
 });
 
 export default TimeAttackInProgressScreen;

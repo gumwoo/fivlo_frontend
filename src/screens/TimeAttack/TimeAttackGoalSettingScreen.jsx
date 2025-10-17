@@ -12,6 +12,7 @@ import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
 import { useTranslation } from 'react-i18next';
 import TimePicker from '../../components/common/TimePicker'; // 기존 TimePicker 컴포넌트 사용
+import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
 
 const TimeAttackGoalSettingScreen = () => {
   const navigation = useNavigation();
@@ -64,6 +65,8 @@ const TimeAttackGoalSettingScreen = () => {
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('headers.time_attack')} showBackButton={true} />
       <View style={styles.content}>
+        <TimeAttackMascot running={false} size={200} />
+        
         <Text style={styles.questionText}>{t('time_attack.question_time')}</Text>
         {/* 4. 시간 표시 영역을 TouchableOpacity로 감싸 모달을 열도록 합니다. */}
         <TouchableOpacity style={styles.timerDisplayContainer} onPress={handleOpenModal}>

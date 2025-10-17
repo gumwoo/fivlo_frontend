@@ -10,6 +10,7 @@ import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
+import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
 import { useTranslation } from 'react-i18next';
 
 const TimeAttackAISubdivisionScreen = () => {
@@ -109,6 +110,9 @@ const TimeAttackAISubdivisionScreen = () => {
         </View>
       ) : (
         <>
+          <View style={{ alignItems: 'center', marginTop: 10 }}>
+            <TimeAttackMascot running={false} size={160} />
+          </View>
           <Text style={styles.title}>{t('time_attack_ai.ai_message', { totalMinutes })}</Text>
           <FlatList
             data={tasks}

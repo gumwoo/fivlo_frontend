@@ -1,5 +1,7 @@
 // src/utils/reminderApi.js
 // 백엔드 연동을 위한 API 함수들
+import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_BASE_URL = 'https://api.fivlo.com'; // 실제 백엔드 URL로 변경
 

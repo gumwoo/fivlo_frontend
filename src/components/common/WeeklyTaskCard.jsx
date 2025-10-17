@@ -5,7 +5,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 
-const WeeklyTaskCard = ({ allTasks = [], isContinuous = false, onEditTask, onAddToTask }) => {
+const WeeklyTaskCard = ({ allTasks = [], isContinuous = false, onEditTask, onAddToTask, onSelectionChange }) => {
   const [checked, setChecked] = useState({});
 
   const grouped = useMemo(() => {
@@ -17,6 +17,16 @@ const WeeklyTaskCard = ({ allTasks = [], isContinuous = false, onEditTask, onAdd
   }, [allTasks]);
 
   const toggle = (id) => setChecked(prev => ({ ...prev, [id]: !prev[id] }));
+
+  // Notify parent when selection changes
+  React.useEffect(() => {
+    if (!onSelectionChange) return;
+    const selected = allTasks.filter((t) => {
+      const id = (t.id ?? `${t.week || 1}-${t.text}`);
+      return !!checked[id];
+    });
+    onSelectionChange(selected);
+  }, [checked, allTasks, onSelectionChange]);
 
   const title = isContinuous ? '오분이가 추천하는 반복일정' : '오분이가 추천하는 일정';
 
