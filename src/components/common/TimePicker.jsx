@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import WheelPicker from './WheelPicker';
 import { Colors } from '../../styles/color';
 import { FontSizes } from '../../styles/Fonts';
 
@@ -19,41 +19,21 @@ const TimePicker = ({ time, setTime }) => {
         <Text style={styles.label}>초</Text>
       </View>
       <View style={styles.pickerContainer}>
-        {/* 시간 Picker */}
-        <Picker
+        <WheelPicker
+          items={hours}
           selectedValue={time.h}
-          style={styles.picker}
-          itemStyle={styles.itemStyle}
-          onValueChange={(itemValue) => setTime(prev => ({ ...prev, h: itemValue }))}
-        >
-          {hours.map(h => (
-            <Picker.Item key={`hour-${h}`} label={String(h).padStart(2, '0')} value={h} />
-          ))}
-        </Picker>
-
-        {/* 분 Picker */}
-        <Picker
+          onValueChange={(value) => setTime(prev => ({ ...prev, h: value }))}
+        />
+        <WheelPicker
+          items={minutes}
           selectedValue={time.m}
-          style={styles.picker}
-          itemStyle={styles.itemStyle}
-          onValueChange={(itemValue) => setTime(prev => ({ ...prev, m: itemValue }))}
-        >
-          {minutes.map(m => (
-            <Picker.Item key={`minute-${m}`} label={String(m).padStart(2, '0')} value={m} />
-          ))}
-        </Picker>
-
-        {/* 초 Picker */}
-        <Picker
+          onValueChange={(value) => setTime(prev => ({ ...prev, m: value }))}
+        />
+        <WheelPicker
+          items={seconds}
           selectedValue={time.s}
-          style={styles.picker}
-          itemStyle={styles.itemStyle}
-          onValueChange={(itemValue) => setTime(prev => ({ ...prev, s: itemValue }))}
-        >
-          {seconds.map(s => (
-            <Picker.Item key={`second-${s}`} label={String(s).padStart(2, '0')} value={s} />
-          ))}
-        </Picker>
+          onValueChange={(value) => setTime(prev => ({ ...prev, s: value }))}
+        />
       </View>
     </View>
   );
@@ -69,7 +49,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingHorizontal: 20,
-    marginBottom: -20, // Picker 위에 겹치도록
+    marginBottom: 10,
   },
   label: {
     fontSize: FontSizes.medium,
@@ -81,16 +61,7 @@ const styles = StyleSheet.create({
   pickerContainer: {
     flexDirection: 'row',
     width: '100%',
-    height: 150,
-  },
-  picker: {
-    flex: 1,
-  },
-  itemStyle: {
-    fontSize: 26,
-    color: Colors.textDark,
-    fontWeight: '600',
-    height: 150,
+    height: 200,
   },
 });
 

@@ -88,7 +88,12 @@ const TimeAttackGoalSettingScreen = () => {
         animationType="slide"
         onRequestClose={handleCancelTime}
       >
-        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={handleCancelTime}>
+        <View style={styles.modalContainer}>
+          <TouchableOpacity 
+            style={styles.modalBackdrop} 
+            activeOpacity={1} 
+            onPress={handleCancelTime}
+          />
           <View style={styles.modalContent}>
             <TimePicker time={tempTime} setTime={setTempTime} />
             <View style={styles.modalButtonContainer}>
@@ -96,7 +101,7 @@ const TimeAttackGoalSettingScreen = () => {
               <Button title={"저장"} onPress={handleConfirmTime} style={styles.modalButton} />
             </View>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
     </View>
   );
@@ -134,10 +139,17 @@ const styles = StyleSheet.create({
   startButtonText: { color: Colors.textDark, fontSize: FontSizes.large, fontWeight: 'bold' },
 
   // --- ⬇️ [추가] 모달을 위한 스타일 ---
-  modalOverlay: {
+  modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
+  },
+  modalBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     backgroundColor: Colors.primaryBeige,
