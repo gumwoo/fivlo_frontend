@@ -270,6 +270,11 @@ const AppNavigator = () => {
         <Stack.Screen name="CategorySetting" component={CategorySettingScreen} />
         <Stack.Screen name="CategoryEdit" component={CategoryEditScreen} />
 
+        {/* Obooni 관련 화면들 */}
+        <Stack.Screen name="ObooniCustomization" component={ObooniCustomizationScreen} />
+        <Stack.Screen name="ObooniShop" component={ObooniShopScreen} />
+        <Stack.Screen name="ObooniCloset" component={ObooniClosetScreen} />
+        <Stack.Screen name="ObooniOwnedItems" component={ObooniOwnedItemsScreen} />
         {/* 나머지 임시 화면 */}
         <Stack.Screen name="Report" component={TempScreen} />
 

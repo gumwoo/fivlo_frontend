@@ -280,7 +280,11 @@
     "not_enough_coins_message": "You don't have enough coins.",
     "purchase_title": "Purchase item",
     "purchase_confirm": "Buy {{name}} for {{price}} coins?",
-    "buy": "Buy"
+    "buy": "Buy",
+    "character_preview": "Obooni's appearance",
+    "empty_closet": "Closet is empty. Buy clothes from the shop!",
+    "cancel": "Cancel",
+    "go_to_shop": "Go to shop"
   },
   "core": {
     "language_selection_question": "Please select your language.",

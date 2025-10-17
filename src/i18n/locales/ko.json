@@ -280,7 +280,11 @@
     "not_enough_coins_message": "코인이 부족합니다. 더 많은 코인을 모아주세요!",
     "purchase_title": "아이템 구매",
     "purchase_confirm": "{{name}}(을)를 {{price}} 코인에 구매하시겠습니까?",
-    "buy": "구매하기"
+    "buy": "구매하기",
+    "character_preview": "오분이의 모습",
+    "empty_closet": "옷장이 비어있습니다. 상점에서 옷을 구매해주세요!",
+    "cancel": "취소",
+    "go_to_shop": "상점으로 가기"
   },
   "core": {
     "language_selection_question": "사용하실 언어를 선택해주세요.",

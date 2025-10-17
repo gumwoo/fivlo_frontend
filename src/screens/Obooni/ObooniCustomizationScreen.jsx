@@ -1,85 +1,188 @@
 // src/screens/ObooniCustomizationScreen.jsx
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native'; // Modal 임포트 제거
-import { useNavigation, useRoute } from '@react-navigation/native'; // useRoute 임포트 추가
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, FlatList } from 'react-native';
+import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-// FontAwesome5는 이제 Lock 아이콘을 사용하지 않으므로 제거
-// import { FontAwesome5 } from '@expo/vector-icons'; 
 
 // 공통 스타일 및 컴포넌트 임포트
-import { GlobalStyles } from '../../styles/GlobalStyles';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Button from '../../components/common/Button';
-import CharacterImage from '../../components/common/CharacterImage';
-import Header from '../../components/common/Header'; // Header 임포트 추가
+import Header from '../../components/common/Header';
 import { useTranslation } from 'react-i18next';
+import { mockOwnedItems, shopItemsData } from './ObooniShopScreen';
 
-const ObooniCustomizationScreen = () => { // isVisible, onClose prop 제거
+const ObooniCustomizationScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute(); // route 훅을 사용하여 params에 접근
+  const route = useRoute();
   const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
   const { t } = useTranslation();
 
-  const isPremiumUser = route.params?.isPremiumUser || false; // params에서 isPremiumUser 받기
+  const [selectedClothes, setSelectedClothes] = useState(null);
+  const [ownedClothes, setOwnedClothes] = useState([]);
 
-  const handleGoToCloset = () => {
-    // onClose() 제거
-    navigation.navigate('ObooniCloset'); // ObooniClosetScreen으로 이동
+  useEffect(() => {
+    if (isFocused) {
+      // mockOwnedItems에서 실제 소유한 옷만 필터링
+      const owned = shopItemsData.filter(item => mockOwnedItems.includes(item.id));
+      setOwnedClothes(owned);
+    }
+  }, [isFocused]);
+
+  const handleSelectClothes = (item) => {
+    setSelectedClothes(item);
+  };
+
+  const handleGoToShop = () => {
+    navigation.navigate('ObooniShop');
+  };
+
+  // 현재 선택된 옷을 입은 오분이 이미지 또는 기본 이미지
+  const getCurrentObooniImage = () => {
+    if (selectedClothes && selectedClothes.wornImage) {
+      return selectedClothes.wornImage;
+    }
+    return require('../../../assets/기본오분이.png');
+  };
+
+  const renderClothesItem = ({ item }) => {
+    const isSelected = selectedClothes?.id === item.id;
+    
+    return (
+      <TouchableOpacity
+        style={[styles.clothesItem, isSelected && styles.clothesItemSelected]}
+        onPress={() => handleSelectClothes(item)}
+      >
+        <Image source={item.image} style={styles.clothesItemImage} />
+      </TouchableOpacity>
+    );
   };
 
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
-      {/* Header를 사용하여 뒤로가기 버튼과 타이틀 제공 */}
       <Header title={t('obooni.customize_header')} showBackButton={true} />
 
-      <View style={styles.contentContainer}> {/* 새로운 컨테이너 추가 */}
-        {/* 이제 유료/무료 분기 없이 항상 이 내용을 보여줍니다. */}
-        <Text style={styles.premiumTitle}>{t('obooni.closet_title')}</Text>
-        <CharacterImage style={styles.obooniImage} />
-        <Text style={styles.premiumMessage}>
-          {t('obooni.customize_message')}
-        </Text>
-        <Button title={t('obooni.go_to_closet')} onPress={handleGoToCloset} style={styles.actionButton} />
-        <Button title={t('obooni.close')} onPress={() => navigation.goBack()} primary={false} style={styles.actionButton} /> {/* navigation.goBack() 사용 */}
-      </View>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        {/* 오분이 캐릭터 표시 */}
+        <Text style={styles.sectionTitle}>{t('obooni.character_preview')}</Text>
+        <Image source={getCurrentObooniImage()} style={styles.obooniImage} />
+
+        {/* 옷장 섹션 */}
+        <View style={styles.closetSection}>
+          <View style={styles.closetHeader}>
+            <Text style={styles.sectionTitle}>{t('obooni.closet_title')}</Text>
+            <TouchableOpacity onPress={handleGoToShop} style={styles.addButton}>
+              <Text style={styles.addButtonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+
+          {ownedClothes.length > 0 ? (
+            <FlatList
+              data={ownedClothes}
+              renderItem={renderClothesItem}
+              keyExtractor={item => item.id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.clothesList}
+            />
+          ) : (
+            <View style={styles.emptyCloset}>
+              <Text style={styles.emptyText}>{t('obooni.empty_closet')}</Text>
+              <Button title={t('obooni.go_to_shop')} onPress={handleGoToShop} style={styles.shopButton} />
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  screenContainer: { // 이 스크린 자체의 컨테이너
+  screenContainer: {
     flex: 1,
     backgroundColor: Colors.primaryBeige,
   },
-  contentContainer: { // 모달 내용처럼 중앙에 배치될 컨테이너
-    flex: 1,
-    justifyContent: 'center',
+  contentContainer: {
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingBottom: 40, // 하단 버튼과의 여백
+    paddingBottom: 40,
   },
-  premiumTitle: {
-    fontSize: FontSizes.extraLarge,
+  sectionTitle: {
+    fontSize: FontSizes.large,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    marginBottom: 20,
+    marginTop: 20,
+    marginBottom: 15,
   },
   obooniImage: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 250,
+    resizeMode: 'contain',
     marginBottom: 30,
   },
-  premiumMessage: {
+  closetSection: {
+    width: '100%',
+    backgroundColor: Colors.textLight,
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 20,
+  },
+  closetHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  addButton: {
+    backgroundColor: Colors.secondaryBrown,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addButtonText: {
+    fontSize: FontSizes.extraLarge,
+    color: Colors.textLight,
+    fontWeight: FontWeights.bold,
+  },
+  clothesList: {
+    paddingVertical: 10,
+  },
+  clothesItem: {
+    width: 80,
+    height: 80,
+    backgroundColor: Colors.primaryBeige,
+    borderRadius: 10,
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  clothesItemSelected: {
+    borderColor: Colors.accentApricot,
+    borderWidth: 3,
+  },
+  clothesItemImage: {
+    width: 60,
+    height: 60,
+    resizeMode: 'contain',
+  },
+  emptyCloset: {
+    alignItems: 'center',
+    paddingVertical: 30,
+  },
+  emptyText: {
     fontSize: FontSizes.medium,
     color: Colors.secondaryBrown,
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-  actionButton: {
-    width: '100%',
     marginBottom: 15,
+    textAlign: 'center',
+  },
+  shopButton: {
+    width: 200,
   },
 });
 

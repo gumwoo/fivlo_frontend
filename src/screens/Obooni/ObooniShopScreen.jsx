@@ -16,20 +16,11 @@ import { useTranslation } from 'react-i18next';
 
 // 임시 사용자 데이터 (코인 및 소유 아이템) - 실제로는 백엔드/전역 상태에서 가져옴
 export let mockUserCoins = 500;
-export let mockOwnedItems = [
-  'shop1',
-  'shop3',
-];
+export let mockOwnedItems = [];
 
 export const shopItemsData = [
-  { id: 'shop1', type: 'top', name: '노란색 티셔츠', image: require('../../../assets/images/obooni_item_yellow_tshirt.png'), price: 100 },
-  { id: 'shop2', type: 'bottom', name: '청바지', image: require('../../../assets/images/obooni_item_jeans.png'), price: 150 },
-  { id: 'shop3', type: 'acc', name: '안경', image: require('../../../assets/images/obooni_item_glasses.png'), price: 50 },
-  { id: 'shop4', type: 'top', name: '초록색 셔츠', image: require('../../../assets/images/obooni_item_green_shirt.png'), price: 120 },
-  { id: 'shop5', type: 'top', name: '빨간색 패딩', image: require('../../../assets/images/obooni_item_red_padding.png'), price: 200 },
-  { id: 'shop6', type: 'bottom', name: '베이지색 치마', image: require('../../../assets/images/obooni_item_beige_skirt.png'), price: 130 },
-  { id: 'shop7', type: 'top', name: '파란색 멜빵', image: require('../../../assets/images/obooni_item_blue_overall.png'), price: 180 },
-  { id: 'shop8', type: 'acc', name: '모자', image: require('../../../assets/images/obooni_item_hat.png'), price: 70 },
+  { id: 'clothes1', type: 'top', name: '옷1', image: require('../../../assets/images/옷1.png'), price: 30, wornImage: require('../../../assets/images/오분이몸_옷1.png') },
+  { id: 'clothes2', type: 'top', name: '옷2', image: require('../../../assets/images/옷2.png'), price: 30, wornImage: require('../../../assets/images/오분이몸_옷2.png') },
 ];
 
 
@@ -50,11 +41,6 @@ const ObooniShopScreen = ({ isPremiumUser }) => {
   }, [isFocused]);
 
   const handlePurchaseAttempt = (item) => {
-    if (!isPremiumUser) {
-      navigation.navigate('PremiumMembership');
-      return;
-    }
-
     if (mockOwnedItems.includes(item.id)) {
       Alert.alert(t('reminder.location_required_title'), t('obooni.already_owned'));
       return;
@@ -65,45 +51,37 @@ const ObooniShopScreen = ({ isPremiumUser }) => {
 
   const confirmPurchase = () => {
     if (!selectedItem) return;
-
+  
     if (userCoins >= selectedItem.price) {
       mockUserCoins -= selectedItem.price;
       mockOwnedItems.push(selectedItem.id);
-
+  
       setUserCoins(mockUserCoins);
       Alert.alert(t('obooni.purchase_complete'), t('obooni.purchase_complete_message', { name: getItemName(selectedItem.id) }));
       
-      navigation.replace('ObooniCloset', { purchasedItem: selectedItem });
+      navigation.navigate('ObooniCustomization', { purchasedItem: selectedItem });
       setIsPurchaseConfirmModalVisible(false);
     } else {
       Alert.alert(t('obooni.not_enough_coins'), t('obooni.not_enough_coins_message'));
       setIsPurchaseConfirmModalVisible(false);
     }
   };
-
+  
   const getItemName = (itemId) => {
-    const itemNames = {
-      'shop1': t('obooni_shop.items.yellow_tshirt'),
-      'shop2': t('obooni_shop.items.jeans'),
-      'shop3': t('obooni_shop.items.glasses'),
-      'shop4': t('obooni_shop.items.green_shirt'),
-      'shop5': t('obooni_shop.items.red_padding'),
-      'shop6': t('obooni_shop.items.beige_skirt'),
-      'shop7': t('obooni_shop.items.blue_overall'),
-      'shop8': t('obooni_shop.items.hat'),
-    };
-    return itemNames[itemId] || shopItemsData.find(item => item.id === itemId)?.name;
+    const item = shopItemsData.find(i => i.id === itemId);
+    return item?.name || itemId;
   };
+    
 
   const renderShopItem = ({ item }) => {
     const canAfford = userCoins >= item.price;
     const isOwned = mockOwnedItems.includes(item.id);
-
+  
     return (
       <TouchableOpacity
         style={styles.shopItemContainer}
         onPress={() => handlePurchaseAttempt(item)}
-        disabled={isOwned || !isPremiumUser}
+        disabled={isOwned}
       >
         <Image source={item.image} style={styles.shopItemImage} />
         <Text style={styles.shopItemName}>{getItemName(item.id)}</Text>
@@ -111,11 +89,6 @@ const ObooniShopScreen = ({ isPremiumUser }) => {
           <Text style={styles.shopItemPrice}>{item.price}</Text>
           <FontAwesome5 name="coins" size={FontSizes.small} color={Colors.accentApricot} style={styles.coinIcon} />
         </View>
-        {!isPremiumUser && (
-          <View style={styles.lockOverlay}>
-            <FontAwesome5 name="lock" size={30} color={Colors.textLight} />
-          </View>
-        )}
         {isOwned && (
           <View style={styles.ownedOverlay}>
             <FontAwesome5 name="check-circle" size={30} color={Colors.accentApricot} />
