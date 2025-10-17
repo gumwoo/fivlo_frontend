@@ -11,7 +11,7 @@ import { Colors } from '../../styles/color'; // <-- 사용자님 파일명에 �
 import { FontSizes, FontWeights } from '../../styles/Fonts'; // <-- 사용자님 파일명에 맞춰 'Fonts'로 수정!
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
-import CharacterImage from '../../components/common/CharacterImage';
+import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
 import { useTranslation } from 'react-i18next';
 
 const PomodoroFinishScreen = () => {
@@ -46,11 +46,11 @@ const PomodoroFinishScreen = () => {
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('pomodoro.header')} showBackButton={true} />
 
-      <ScrollView contentContainerStyle={styles.contentContainer}> {/* ScrollView로 감싸기 */}
+      <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text style={styles.finishText}>{t('pomodoro.finish_title')}</Text>
         <Text style={styles.finishMessage}>{t('pomodoro.finish_message')}</Text>
         
-        <CharacterImage style={styles.obooniCharacter} />
+        <TimeAttackMascot running={false} size={250} />
         
         <View style={styles.buttonContainer}>
           <Button title={t('pomodoro.to_analysis')} onPress={handleGoToAnalysis} style={styles.actionButton} />

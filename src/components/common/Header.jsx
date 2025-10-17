@@ -7,19 +7,24 @@ import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../../styles/color';
 import { FontWeights, FontSizes } from '../../styles/Fonts';
 
-const Header = ({ title, showBackButton = true }) => {
+const Header = ({ title, showBackButton = true, onBackPress, showRightButton = false, onRightPress, rightIcon = 'arrow-forward' }) => {
   const navigation = useNavigation();
 
   return (
     <View style={styles.headerContainer}>
       {showBackButton && (
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => (onBackPress ? onBackPress() : navigation.goBack())} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color={Colors.textDark} />
         </TouchableOpacity>
       )}
       <Text style={styles.headerTitle}>{title}</Text>
-      {/* 오른쪽 여백을 위해 빈 뷰를 추가 */}
-      {showBackButton && <View style={{ width: 24 }} />}
+      {showRightButton ? (
+        <TouchableOpacity onPress={onRightPress} style={styles.backButton}>
+          <Ionicons name={rightIcon} size={24} color={Colors.textDark} />
+        </TouchableOpacity>
+      ) : (
+        showBackButton ? <View style={{ width: 24 }} /> : <View style={{ width: 0 }} />
+      )}
     </View>
   );
 };

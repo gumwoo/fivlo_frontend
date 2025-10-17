@@ -57,10 +57,10 @@ import TimeAttackCompleteScreen from '../screens/TimeAttack/TimeAttackCompleteSc
 
 // 6. 성장 앨범
 import GrowthAlbumScreen from '../screens/Album/GrowthAlbumScreen';
-
-import PhotoUploadModal from '../screens/Album/PhotoUploadModal';
 import GrowthAlbumCalendarView from '../screens/Album/GrowthAlbumCalendarView';
 import GrowthAlbumCategoryView from '../screens/Album/GrowthAlbumCategoryView';
+import PhotoUploadModal from '../screens/Album/PhotoUploadModal';
+import PhotoDetailModal from '../screens/Album/PhotoDetailModal';
 
 // 7. 망각방지 알림
 import ReminderScreen from '../screens/Reminder/ReminderScreen';
@@ -117,6 +117,9 @@ const ReminderStack = () => (
     <Stack.Screen name="ReminderAddEdit" component={ReminderAddEditScreen} />
     <Stack.Screen name="ReminderChecklist" component={ReminderChecklistScreen} />
     <Stack.Screen name="ReminderLocationSetting" component={ReminderLocationSettingScreen} />
+    <Stack.Screen name="ReminderTimeSettingModal" component={ReminderTimeSettingModal} options={{ presentation: 'modal' }} />
+    <Stack.Screen name="ReminderLocationAlertModal" component={ReminderLocationAlertModal} options={{ presentation: 'modal' }} />
+    <Stack.Screen name="ReminderCompleteCoinModal" component={ReminderCompleteCoinModal} options={{ presentation: 'modal' }} />
   </Stack.Navigator>
 );
 
@@ -131,6 +134,10 @@ const RoutineStack = () => (
 const AnalysisStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="AnalysisMain" component={AnalysisGraphScreen} />
+    <Stack.Screen name="AnalysisDaily" component={DailyAnalysisView} />
+    <Stack.Screen name="AnalysisWeekly" component={WeeklyAnalysisView} />
+    <Stack.Screen name="AnalysisMonthly" component={MonthlyAnalysisView} />
+    <Stack.Screen name="AnalysisDDay" component={DDayAnalysisView} />
   </Stack.Navigator>
 );
 
@@ -143,6 +150,17 @@ const TimeAttackStack = () => (
     <Stack.Screen name="TimeAttackAISubdivisionScreen" component={TimeAttackAISubdivisionScreen} />
     <Stack.Screen name="TimeAttackInProgress" component={TimeAttackInProgressScreen} />
     <Stack.Screen name="TimeAttackComplete" component={TimeAttackCompleteScreen} />
+  </Stack.Navigator>
+);
+
+// Growth Album Stack Navigator
+const GrowthAlbumStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="GrowthAlbumMain" component={GrowthAlbumScreen} />
+    <Stack.Screen name="GrowthAlbumCalendar" component={GrowthAlbumCalendarView} />
+    <Stack.Screen name="GrowthAlbumCategory" component={GrowthAlbumCategoryView} />
+    <Stack.Screen name="PhotoUploadModal" component={PhotoUploadModal} options={{ presentation: 'modal' }} />
+    <Stack.Screen name="PhotoDetailModal" component={PhotoDetailModal} options={{ presentation: 'modal' }} />
   </Stack.Navigator>
 );
 
@@ -216,7 +234,7 @@ const MainTabNavigator = () => {
     >
       {/* Tab.Screen 목록은 그대로 유지 */}
       <Tab.Screen name="HomeTab" component={HomeScreen} options={{ tabBarLabel: t('tabs.home') }} />
-      <Tab.Screen name="GrowthAlbumTab" component={GrowthAlbumScreen} options={{ tabBarLabel: t('tabs.growth_album') }} />
+      <Tab.Screen name="GrowthAlbumTab" component={GrowthAlbumStack} options={{ tabBarLabel: t('tabs.growth_album') }} />
       <Tab.Screen name="FeaturesTab" component={FeaturesScreen} options={{ tabBarLabel: t('tabs.features') }} />
       <Tab.Screen name="SettingsTab" component={SettingsScreen} options={{ tabBarLabel: t('tabs.settings') }} />
       
@@ -266,6 +284,8 @@ const AppNavigator = () => {
           }} 
         />
         <Stack.Screen name="TaskEditModal" component={TaskEditModal} options={{ presentation: 'modal' }} />
+        <Stack.Screen name="TaskDeleteConfirmModal" component={TaskDeleteConfirmModal} options={{ presentation: 'modal' }} />
+        <Stack.Screen name="TaskCompleteCoinModal" component={TaskCompleteCoinModal} options={{ presentation: 'modal' }} />
         {/* ⚠️ Category 화면들을 일반 화면으로 등록 */}
         <Stack.Screen name="CategorySetting" component={CategorySettingScreen} />
         <Stack.Screen name="CategoryEdit" component={CategoryEditScreen} />

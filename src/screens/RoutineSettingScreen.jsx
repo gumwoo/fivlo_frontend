@@ -43,6 +43,8 @@ const RoutineSettingScreen = () => {
 
   const [loadingAI, setLoadingAI] = useState(false);
   const [aiRecommended, setAiRecommended] = useState([]);
+  const [addingToTask, setAddingToTask] = useState(false);
+  const [selectedTasks, setSelectedTasks] = useState([]);
 
   const ymd = useMemo(() => ({
     y: format(targetDate, 'yyyy'),
@@ -144,8 +146,26 @@ const RoutineSettingScreen = () => {
               allTasks={aiRecommended}
               isContinuous={isContinuous}
               onEditTask={() => {}}
-              onAddToTask={() => {}}
+              onAddToTask={() => setAddingToTask(true)}
+              onSelectionChange={setSelectedTasks}
             />
+            {addingToTask && (
+              <View style={styles.saveArea}>
+                <Button
+                  title={t('task.save', '저장')}
+                  onPress={() => {
+                    if (selectedTasks.length === 0) {
+                      Alert.alert(t('task.title', '안내'), t('task.msg_select', '추가할 항목을 선택해주세요.'));
+                      return;
+                    }
+                    // TODO: 실제 Task 저장 API 연동 위치
+                    Alert.alert(t('task.saved', '저장되었습니다.'), `${selectedTasks.length}개 항목이 추가됩니다.`);
+                    setAddingToTask(false);
+                  }}
+                  style={{ alignSelf: 'center', width: 160 }}
+                />
+              </View>
+            )}
           </View>
         )}
       </ScrollView>
@@ -258,6 +278,7 @@ const styles = StyleSheet.create({
 
   /* AI 카드(회색 반투명) */
   aiCard: { marginTop: 18, backgroundColor: 'rgba(0,0,0,0.05)', borderRadius: 16, padding: 14 },
+  saveArea: { paddingTop: 10 },
 
   /* 하단 피커 시트 */
   pickerOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.35)', justifyContent: 'flex-end' },

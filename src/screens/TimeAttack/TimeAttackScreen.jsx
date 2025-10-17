@@ -9,6 +9,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
+import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
 import { useTranslation } from 'react-i18next';
 
 const TimeAttackScreen = () => {
@@ -75,7 +76,14 @@ const TimeAttackScreen = () => {
 
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
-      <Header title={t('headers.time_attack')} showBackButton={true} />
+      <Header
+        title={t('headers.time_attack')}
+        showBackButton={true}
+        onBackPress={() => navigation.navigate('Main', { screen: 'HomeTab' })}
+        showRightButton
+        onRightPress={() => handleSelectGoal(goals[0]?.text || t('time_attack.default_goal'))}
+      />
+      <TimeAttackMascot running={false} size={180} />
       <Text style={styles.title}>{t('time_attack.question_goal')}</Text>
       <FlatList
         data={goals}

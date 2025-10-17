@@ -9,6 +9,23 @@
     "ios": "expo start --ios",
     "web": "expo start --web"
   },
+  "figma": {
+    "fileKey": "",
+    "note": "Set FIGMA_FILE_KEY via env; do not commit tokens."
+  },
+  "scriptsMeta": {
+    "note": "Additional helper scripts for design tokens"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "figma:pull": "node scripts/fetch-figma.js",
+    "audit:coverage": "node scripts/audit-coverage.js",
+    "mapping:init": "node scripts/generate-mapping.js",
+    "audit:diff": "node scripts/audit-diff.js"
+  },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "^2.2.0",
@@ -20,25 +37,24 @@
     "axios": "^1.10.0",
     "babel-preset-expo": "^54.0.3",
     "date-fns": "^4.1.0",
-    "expo": "^54.0.8",
+    "expo": "54.0.13",
     "expo-av": "~16.0.7",
-    "expo-image-picker": "~16.1.4",
+    "expo-image-picker": "~17.0.8",
     "expo-localization": "^17.0.7",
-    "expo-media-library": "~17.1.7",
-    "expo-speech": "~13.1.7",
-    "expo-status-bar": "~2.2.3",
+    "expo-media-library": "~18.2.0",
+    "expo-speech": "~14.0.7",
+    "expo-status-bar": "~3.0.8",
     "i18next": "^25.5.2",
-    "react": "19.0.0",
+    "react": "19.1.0",
     "react-i18next": "^15.7.3",
-    "react-native": "0.79.5",
+    "react-native": "0.81.4",
     "react-native-calendars": "^1.1313.0",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-reanimated": "~4.1.1",
-    "react-native-safe-area-context": "5.4.0",
-    "react-native-screens": "~4.11.1",
-    "react-native-svg": "^15.13.0",
-    "react-native-worklets": "^0.6.0",
-    "undefined": "@expo/vector-icons\\",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-screens": "~4.16.0",
+    "react-native-svg": "15.12.1",
+    "react-native-worklets": "0.5.1",
     "zustand": "^5.0.8"
   },
   "devDependencies": {

@@ -1,0 +1,111 @@
+# UI Coverage Checklist
+
+## Detected Screen Files
+- [ ] src/screens/AccountManagementScreen.jsx
+- [ ] src/screens/Album/GrowthAlbumCalendarView.jsx
+- [ ] src/screens/Album/GrowthAlbumCategoryView.jsx
+- [ ] src/screens/Album/GrowthAlbumScreen.jsx
+- [ ] src/screens/Album/PhotoDetailModal.jsx
+- [ ] src/screens/Album/PhotoUploadModal.jsx
+- [ ] src/screens/Analysis/DDayAnalysisView.jsx
+- [ ] src/screens/Analysis/DailyAnalysisView.jsx
+- [ ] src/screens/Analysis/MonthlyAnalysisView.jsx
+- [ ] src/screens/Analysis/WeeklyAnalysisView.jsx
+- [ ] src/screens/AnalysisGraphScreen.jsx
+- [ ] src/screens/Auth/AuthChoiceScreen.jsx
+- [ ] src/screens/Auth/EmailLoginScreen.jsx
+- [ ] src/screens/Auth/EmailSignUpScreen.jsx
+- [ ] src/screens/FeaturesScreen.jsx
+- [ ] src/screens/HomeScreen.jsx
+- [ ] src/screens/InformationScreen.jsx
+- [ ] src/screens/LanguageSelectionScreen.jsx
+- [ ] src/screens/Obooni/ObooniClosetScreen.jsx
+- [ ] src/screens/Obooni/ObooniCustomizationScreen.jsx
+- [ ] src/screens/Obooni/ObooniOwnedItemsScreen.jsx
+- [ ] src/screens/Obooni/ObooniShopScreen.jsx
+- [ ] src/screens/OnboardingScreen.jsx
+- [ ] src/screens/Pomodoro/PomodoroBreakChoiceScreen.jsx
+- [ ] src/screens/Pomodoro/PomodoroCycleCompleteScreen.jsx
+- [ ] src/screens/Pomodoro/PomodoroFinishScreen.jsx
+- [ ] src/screens/Pomodoro/PomodoroGoalCreationScreen.jsx
+- [ ] src/screens/Pomodoro/PomodoroPauseScreen.jsx
+- [ ] src/screens/Pomodoro/PomodoroResetConfirmModal.jsx
+- [ ] src/screens/Pomodoro/PomodoroScreen.jsx
+- [ ] src/screens/Pomodoro/PomodoroStopScreen.jsx
+- [ ] src/screens/Pomodoro/PomodoroTimerScreen.jsx
+- [ ] src/screens/PremiumMembershipScreen.jsx
+- [ ] src/screens/PurposeSelectionScreen.jsx
+- [ ] src/screens/Reminder/ReminderAddEditScreen.jsx
+- [ ] src/screens/Reminder/ReminderChecklistScreen.jsx
+- [ ] src/screens/Reminder/ReminderCompleteCoinModal.jsx
+- [ ] src/screens/Reminder/ReminderLocationAlertModal.jsx
+- [ ] src/screens/Reminder/ReminderLocationSettingScreen.jsx
+- [ ] src/screens/Reminder/ReminderScreen.jsx
+- [ ] src/screens/Reminder/ReminderTimeSettingModal.jsx
+- [ ] src/screens/RoutineSettingScreen.jsx
+- [ ] src/screens/SettingsScreen.jsx
+- [ ] src/screens/Task/AlbumPhotoPromptModal.jsx
+- [ ] src/screens/Task/CategoryEditModal.jsx
+- [ ] src/screens/Task/CategorySettingModal.jsx
+- [ ] src/screens/Task/TaskCalendarScreen.jsx
+- [ ] src/screens/Task/TaskCompleteCoinModal.jsx
+- [ ] src/screens/Task/TaskDeleteConfirmModal.jsx
+- [ ] src/screens/Task/TaskDetailModal.jsx
+- [ ] src/screens/Task/TaskEditModal.jsx
+- [ ] src/screens/TimeAttack/TimeAttackAISubdivisionScreen.jsx
+- [ ] src/screens/TimeAttack/TimeAttackCompleteScreen.jsx
+- [ ] src/screens/TimeAttack/TimeAttackGoalSettingScreen.jsx
+- [ ] src/screens/TimeAttack/TimeAttackInProgressScreen.jsx
+- [ ] src/screens/TimeAttack/TimeAttackScreen.jsx
+- [ ] src/screens/TimeAttack/TimeAttackTimeInputModal.jsx
+
+## Navigator Routes
+- [ ] (Stack) PomodoroMain -> PomodoroScreen
+- [ ] (Stack) PomodoroGoalCreation -> PomodoroGoalCreationScreen
+- [ ] (Stack) PomodoroTimer -> PomodoroTimerScreen
+- [ ] (Stack) PomodoroPause -> PomodoroPauseScreen
+- [ ] (Stack) PomodoroResetConfirmModal -> PomodoroResetConfirmModal
+- [ ] (Stack) PomodoroBreakChoice -> PomodoroBreakChoiceScreen
+- [ ] (Stack) PomodoroCycleComplete -> PomodoroCycleCompleteScreen
+- [ ] (Stack) PomodoroFinish -> PomodoroFinishScreen
+- [ ] (Stack) PomodoroStop -> PomodoroStopScreen
+- [ ] (Stack) ReminderMain -> ReminderScreen
+- [ ] (Stack) ReminderAddEdit -> ReminderAddEditScreen
+- [ ] (Stack) ReminderChecklist -> ReminderChecklistScreen
+- [ ] (Stack) ReminderLocationSetting -> ReminderLocationSettingScreen
+- [ ] (Stack) RoutineMain -> RoutineSettingScreen
+- [ ] (Stack) AnalysisMain -> AnalysisGraphScreen
+- [ ] (Stack) TimeAttackMain -> TimeAttackScreen
+- [ ] (Stack) TimeAttackGoalSettingScreen -> TimeAttackGoalSettingScreen
+- [ ] (Stack) TimeAttackTimeInputModal -> TimeAttackTimeInputModal
+- [ ] (Stack) TimeAttackAISubdivisionScreen -> TimeAttackAISubdivisionScreen
+- [ ] (Stack) TimeAttackInProgress -> TimeAttackInProgressScreen
+- [ ] (Stack) TimeAttackComplete -> TimeAttackCompleteScreen
+- [ ] (Stack) Onboarding -> OnboardingScreen
+- [ ] (Stack) AuthChoice -> AuthChoiceScreen
+- [ ] (Stack) EmailSignUp -> EmailSignUpScreen
+- [ ] (Stack) EmailLogin -> EmailLoginScreen
+- [ ] (Stack) LanguageSelection -> LanguageSelectionScreen
+- [ ] (Stack) PurposeSelection -> PurposeSelectionScreen
+- [ ] (Stack) Main -> MainTabNavigator
+- [ ] (Stack) AccountManagement -> AccountManagementScreen
+- [ ] (Stack) PremiumMembership -> PremiumMembershipScreen
+- [ ] (Stack) Information -> InformationScreen
+- [ ] (Stack) TaskCalendar -> TaskCalendarScreen
+- [ ] (Stack) TaskDetailModal -> TaskDetailModal
+- [ ] (Stack) TaskEditModal -> TaskEditModal
+- [ ] (Stack) CategorySetting -> CategorySettingScreen
+- [ ] (Stack) CategoryEdit -> CategoryEditScreen
+- [ ] (Stack) Report -> TempScreen
+- [ ] (Tab) HomeTab -> HomeScreen
+- [ ] (Tab) GrowthAlbumTab -> GrowthAlbumScreen
+- [ ] (Tab) FeaturesTab -> FeaturesScreen
+- [ ] (Tab) SettingsTab -> SettingsScreen
+- [ ] (Tab) PomodoroTab -> PomodoroStack
+- [ ] (Tab) ReminderTab -> ReminderStack
+- [ ] (Tab) TimeAttackTab -> TimeAttackStack
+- [ ] (Tab) RoutineTab -> RoutineStack
+- [ ] (Tab) AnalysisTab -> AnalysisStack
+
+## Figma Pages/Frames
+- (No Figma outline found. Ensure design/figma/file.json is valid — your token/file key may be wrong.)

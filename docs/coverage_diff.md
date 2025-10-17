@@ -1,0 +1,82 @@
+# Code Coverage Diff
+
+## Screens not referenced by any route
+- AlbumPhotoPromptModal (src/screens/Task/AlbumPhotoPromptModal.jsx)
+- CategoryEditModal (src/screens/Task/CategoryEditModal.jsx)
+- CategorySettingModal (src/screens/Task/CategorySettingModal.jsx)
+- DDayAnalysisView (src/screens/Analysis/DDayAnalysisView.jsx)
+- DailyAnalysisView (src/screens/Analysis/DailyAnalysisView.jsx)
+- GrowthAlbumCalendarView (src/screens/Album/GrowthAlbumCalendarView.jsx)
+- GrowthAlbumCategoryView (src/screens/Album/GrowthAlbumCategoryView.jsx)
+- MonthlyAnalysisView (src/screens/Analysis/MonthlyAnalysisView.jsx)
+- ObooniClosetScreen (src/screens/Obooni/ObooniClosetScreen.jsx)
+- ObooniCustomizationScreen (src/screens/Obooni/ObooniCustomizationScreen.jsx)
+- ObooniOwnedItemsScreen (src/screens/Obooni/ObooniOwnedItemsScreen.jsx)
+- ObooniShopScreen (src/screens/Obooni/ObooniShopScreen.jsx)
+- PhotoDetailModal (src/screens/Album/PhotoDetailModal.jsx)
+- PhotoUploadModal (src/screens/Album/PhotoUploadModal.jsx)
+- ReminderCompleteCoinModal (src/screens/Reminder/ReminderCompleteCoinModal.jsx)
+- ReminderLocationAlertModal (src/screens/Reminder/ReminderLocationAlertModal.jsx)
+- ReminderTimeSettingModal (src/screens/Reminder/ReminderTimeSettingModal.jsx)
+- TaskCompleteCoinModal (src/screens/Task/TaskCompleteCoinModal.jsx)
+- TaskDeleteConfirmModal (src/screens/Task/TaskDeleteConfirmModal.jsx)
+- WeeklyAnalysisView (src/screens/Analysis/WeeklyAnalysisView.jsx)
+
+## Routes pointing to missing files
+- AnalysisStack
+- CategoryEditScreen
+- CategorySettingScreen
+- MainTabNavigator
+- PomodoroStack
+- ReminderStack
+- RoutineStack
+- TempScreen
+- TimeAttackStack
+
+## All routes
+- (Stack) PomodoroMain -> PomodoroScreen
+- (Stack) PomodoroGoalCreation -> PomodoroGoalCreationScreen
+- (Stack) PomodoroTimer -> PomodoroTimerScreen
+- (Stack) PomodoroPause -> PomodoroPauseScreen
+- (Stack) PomodoroResetConfirmModal -> PomodoroResetConfirmModal
+- (Stack) PomodoroBreakChoice -> PomodoroBreakChoiceScreen
+- (Stack) PomodoroCycleComplete -> PomodoroCycleCompleteScreen
+- (Stack) PomodoroFinish -> PomodoroFinishScreen
+- (Stack) PomodoroStop -> PomodoroStopScreen
+- (Stack) ReminderMain -> ReminderScreen
+- (Stack) ReminderAddEdit -> ReminderAddEditScreen
+- (Stack) ReminderChecklist -> ReminderChecklistScreen
+- (Stack) ReminderLocationSetting -> ReminderLocationSettingScreen
+- (Stack) RoutineMain -> RoutineSettingScreen
+- (Stack) AnalysisMain -> AnalysisGraphScreen
+- (Stack) TimeAttackMain -> TimeAttackScreen
+- (Stack) TimeAttackGoalSettingScreen -> TimeAttackGoalSettingScreen
+- (Stack) TimeAttackTimeInputModal -> TimeAttackTimeInputModal
+- (Stack) TimeAttackAISubdivisionScreen -> TimeAttackAISubdivisionScreen
+- (Stack) TimeAttackInProgress -> TimeAttackInProgressScreen
+- (Stack) TimeAttackComplete -> TimeAttackCompleteScreen
+- (Stack) Onboarding -> OnboardingScreen
+- (Stack) AuthChoice -> AuthChoiceScreen
+- (Stack) EmailSignUp -> EmailSignUpScreen
+- (Stack) EmailLogin -> EmailLoginScreen
+- (Stack) LanguageSelection -> LanguageSelectionScreen
+- (Stack) PurposeSelection -> PurposeSelectionScreen
+- (Stack) Main -> MainTabNavigator
+- (Stack) AccountManagement -> AccountManagementScreen
+- (Stack) PremiumMembership -> PremiumMembershipScreen
+- (Stack) Information -> InformationScreen
+- (Stack) TaskCalendar -> TaskCalendarScreen
+- (Stack) TaskDetailModal -> TaskDetailModal
+- (Stack) TaskEditModal -> TaskEditModal
+- (Stack) CategorySetting -> CategorySettingScreen
+- (Stack) CategoryEdit -> CategoryEditScreen
+- (Stack) Report -> TempScreen
+- (Tab) HomeTab -> HomeScreen
+- (Tab) GrowthAlbumTab -> GrowthAlbumScreen
+- (Tab) FeaturesTab -> FeaturesScreen
+- (Tab) SettingsTab -> SettingsScreen
+- (Tab) PomodoroTab -> PomodoroStack
+- (Tab) ReminderTab -> ReminderStack
+- (Tab) TimeAttackTab -> TimeAttackStack
+- (Tab) RoutineTab -> RoutineStack
+- (Tab) AnalysisTab -> AnalysisStack
