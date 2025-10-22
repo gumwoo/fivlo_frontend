@@ -1,7 +1,7 @@
 // src/screens/ObooniCustomizationScreen.jsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -11,7 +11,7 @@ import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Button from '../../components/common/Button';
 import Header from '../../components/common/Header';
 import { useTranslation } from 'react-i18next';
-import { mockOwnedItems, shopItemsData } from './ObooniShopScreen';
+import { mockOwnedItems, shopItemsData, mockObooniState } from './ObooniShopScreen';
 
 const ObooniCustomizationScreen = () => {
   const navigation = useNavigation();
@@ -33,6 +33,8 @@ const ObooniCustomizationScreen = () => {
 
   const handleSelectClothes = (item) => {
     setSelectedClothes(item);
+    // 전역 객체에도 저장하여 홈 화면에서 사용
+    mockObooniState.selectedClothes = item;
   };
 
   const handleGoToShop = () => {
@@ -44,27 +46,14 @@ const ObooniCustomizationScreen = () => {
     if (selectedClothes && selectedClothes.wornImage) {
       return selectedClothes.wornImage;
     }
-    return require('../../../assets/기본오분이.png');
-  };
-
-  const renderClothesItem = ({ item }) => {
-    const isSelected = selectedClothes?.id === item.id;
-    
-    return (
-      <TouchableOpacity
-        style={[styles.clothesItem, isSelected && styles.clothesItemSelected]}
-        onPress={() => handleSelectClothes(item)}
-      >
-        <Image source={item.image} style={styles.clothesItemImage} />
-      </TouchableOpacity>
-    );
+    return require('../../../assets/images/오분이몸.png');
   };
 
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('obooni.customize_header')} showBackButton={true} />
 
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <View style={styles.contentContainer}>
         {/* 오분이 캐릭터 표시 */}
         <Text style={styles.sectionTitle}>{t('obooni.character_preview')}</Text>
         <Image source={getCurrentObooniImage()} style={styles.obooniImage} />
@@ -79,14 +68,29 @@ const ObooniCustomizationScreen = () => {
           </View>
 
           {ownedClothes.length > 0 ? (
-            <FlatList
-              data={ownedClothes}
-              renderItem={renderClothesItem}
-              keyExtractor={item => item.id}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.clothesList}
-            />
+            <ScrollView 
+              style={styles.clothesScrollView}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.clothesGrid}>
+                {ownedClothes.map((item, index) => {
+                  const isSelected = selectedClothes?.id === item.id;
+                  return (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        styles.clothesItem,
+                        isSelected && styles.clothesItemSelected,
+                        index % 2 === 0 ? styles.clothesItemLeft : styles.clothesItemRight
+                      ]}
+                      onPress={() => handleSelectClothes(item)}
+                    >
+                      <Image source={item.image} style={styles.clothesItemImage} />
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </ScrollView>
           ) : (
             <View style={styles.emptyCloset}>
               <Text style={styles.emptyText}>{t('obooni.empty_closet')}</Text>
@@ -94,7 +98,7 @@ const ObooniCustomizationScreen = () => {
             </View>
           )}
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -124,6 +128,8 @@ const styles = StyleSheet.create({
   },
   closetSection: {
     width: '100%',
+    minHeight: 400, // 최소 높이
+    maxHeight: 450, // 최대 높이
     backgroundColor: Colors.textLight,
     borderRadius: 15,
     padding: 15,
@@ -148,27 +154,39 @@ const styles = StyleSheet.create({
     color: Colors.textLight,
     fontWeight: FontWeights.bold,
   },
-  clothesList: {
+  clothesScrollView: {
+    flex: 1,
+  },
+  clothesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
     paddingVertical: 10,
   },
   clothesItem: {
-    width: 80,
-    height: 80,
+    width: '48%',
+    aspectRatio: 1,
     backgroundColor: Colors.primaryBeige,
     borderRadius: 10,
-    marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
     borderColor: 'transparent',
+    marginBottom: 10,
+  },
+  clothesItemLeft: {
+    marginRight: '2%',
+  },
+  clothesItemRight: {
+    marginLeft: '2%',
   },
   clothesItemSelected: {
     borderColor: Colors.accentApricot,
     borderWidth: 3,
   },
   clothesItemImage: {
-    width: 60,
-    height: 60,
+    width: '70%',
+    height: '70%',
     resizeMode: 'contain',
   },
   emptyCloset: {

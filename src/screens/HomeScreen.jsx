@@ -1,7 +1,7 @@
 // src/screens/HomeScreen.jsx
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ScrollView, Modal } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { format, addDays, subDays } from 'date-fns';
 import { ko } from 'date-fns/locale/ko';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,16 +11,17 @@ import { useTranslation } from 'react-i18next';
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
 import Button from '../components/common/Button';
-
 const HomeScreen = ({ isPremiumUser }) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const isFocused = useIsFocused();
   const { t } = useTranslation();
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [tasks, setTasks] = useState([]);
   const [coins, setCoins] = useState(1234);
   const [showCoinGrantModal, setShowCoinGrantModal] = useState(false);
+  const [obooniImage, setObooniImage] = useState(require('../../assets/images/오분이몸.png'));
 
   const mockTasks = [
     { id: '1', text: t('task_calendar.sample_tasks.water'), completed: false, category: t('home.categories.daily'), color: Colors.primaryBeige },
@@ -41,7 +42,25 @@ const HomeScreen = ({ isPremiumUser }) => {
 
   const goToPreviousDay = () => setCurrentDate(subDays(currentDate, 1));
   const goToNextDay = () => setCurrentDate(addDays(currentDate, 1));
-
+  
+  // 선택된 옷 확인
+  useEffect(() => {
+    if (isFocused) {
+      try {
+        const { mockObooniState } = require('./Obooni/ObooniShopScreen');
+        const selectedClothes = mockObooniState.selectedClothes;
+        if (selectedClothes && selectedClothes.wornImage) {
+          setObooniImage(selectedClothes.wornImage);
+        } else {
+          setObooniImage(require('../../assets/images/오분이몸.png'));
+        }
+      } catch (error) {
+        // 모듈을 불러올 수 없으면 기본 이미지 사용
+        setObooniImage(require('../../assets/images/오분이몸.png'));
+      }
+    }
+  }, [isFocused]);
+  
   const toggleTaskCompletion = (id) => {
     setTasks(prev =>
       prev.map(task => (task.id === id ? { ...task, completed: !task.completed } : task))
@@ -96,7 +115,7 @@ const HomeScreen = ({ isPremiumUser }) => {
         )}
 
         <TouchableOpacity onPress={handleObooniPress}>
-          <Image source={require('../../assets/기본오분이.png')} style={styles.obooniCharacter} />
+          <Image source={obooniImage} style={styles.obooniCharacter} />
         </TouchableOpacity>
 
         <View style={styles.taskListContainer}>

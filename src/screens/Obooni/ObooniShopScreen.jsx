@@ -17,10 +17,22 @@ import { useTranslation } from 'react-i18next';
 // 임시 사용자 데이터 (코인 및 소유 아이템) - 실제로는 백엔드/전역 상태에서 가져옴
 export let mockUserCoins = 500;
 export let mockOwnedItems = [];
+// 선택된 옷 - 객체로 관리하여 외부에서 수정 가능하게
+export const mockObooniState = {
+  selectedClothes: null
+};
 
 export const shopItemsData = [
-  { id: 'clothes1', type: 'top', name: '옷1', image: require('../../../assets/images/옷1.png'), price: 30, wornImage: require('../../../assets/images/오분이몸_옷1.png') },
-  { id: 'clothes2', type: 'top', name: '옷2', image: require('../../../assets/images/옷2.png'), price: 30, wornImage: require('../../../assets/images/오분이몸_옷2.png') },
+  { id: 'obooni_bear_coat', type: 'top', name: '곰돌이코트', image: require('../../../assets/images/오분이_곰돌이코트.png'), price: 150, wornImage: require('../../../assets/images/오분이_곰돌이코트_착용.png') },
+  { id: 'obooni_yellow_tshirt', type: 'top', name: '노랑티셔츠', image: require('../../../assets/images/오분이_노랑티셔츠.png'), price: 50, wornImage: require('../../../assets/images/오분이_노랑티셔츠_착용.png') },
+  { id: 'obooni_beige_dress', type: 'dress', name: '베이지드레스', image: require('../../../assets/images/오분이_베이지드레스.png'), price: 120, wornImage: require('../../../assets/images/오분이_베이지드레스_착용.png') },
+  { id: 'obooni_red_hood', type: 'top', name: '빨간후드', image: require('../../../assets/images/오분이_빨간후드.png'), price: 100, wornImage: require('../../../assets/images/오분이_빨간후드_착용.png') },
+  { id: 'obooni_birthday', type: 'top', name: '생일옷', image: require('../../../assets/images/오분이_생일옷.png'), price: 80, wornImage: require('../../../assets/images/오분이_생일옷_착용.png') },
+  { id: 'obooni_orange_duffle', type: 'top', name: '오렌지더플', image: require('../../../assets/images/오분이_오렌지더플.png'), price: 130, wornImage: require('../../../assets/images/오분이_오렌지더플_착용.png') },
+  { id: 'obooni_blue_overall', type: 'overall', name: '청멜빵', image: require('../../../assets/images/오분이_청멜빵.png'), price: 90, wornImage: require('../../../assets/images/오분이_청멜빵_착용.png') },
+  { id: 'obooni_green_shirt', type: 'top', name: '초록셔츠', image: require('../../../assets/images/오분이_초록셔츠.png'), price: 70, wornImage: require('../../../assets/images/오분이_초록셔츠_착용.png') },
+  { id: 'obooni_pink_dress', type: 'dress', name: '핑크원피스', image: require('../../../assets/images/오분이_핑크원피스.png'), price: 110, wornImage: require('../../../assets/images/오분이_핑크원피스_착용.png') },
+  { id: 'obooni_sky_bear', type: 'top', name: '하늘곰', image: require('../../../assets/images/오분이_하늘곰.png'), price: 140, wornImage: require('../../../assets/images/오분이_하늘곰_착용.png') },
 ];
 
 
@@ -59,7 +71,8 @@ const ObooniShopScreen = ({ isPremiumUser }) => {
       setUserCoins(mockUserCoins);
       Alert.alert(t('obooni.purchase_complete'), t('obooni.purchase_complete_message', { name: getItemName(selectedItem.id) }));
       
-      navigation.navigate('ObooniCustomization', { purchasedItem: selectedItem });
+      // 구매 후 커스터마이징 화면으로 돌아가기 (goBack 사용)
+      navigation.goBack();
       setIsPurchaseConfirmModalVisible(false);
     } else {
       Alert.alert(t('obooni.not_enough_coins'), t('obooni.not_enough_coins_message'));

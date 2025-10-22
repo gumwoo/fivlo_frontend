@@ -33,7 +33,7 @@ const PremiumMembershipScreen = () => {
         {/* 오분이 캐릭터 */}
         <View style={styles.characterContainer}>
           <Image 
-            source={require('../../assets/images/오분이몸_옷1.png')}
+            source={require('../../assets/images/오분이_노랑티셔츠_착용.png')}
             style={styles.characterImage}
             resizeMode="contain"
           />
