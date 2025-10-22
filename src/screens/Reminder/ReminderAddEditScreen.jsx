@@ -12,6 +12,7 @@ import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
 import { useTranslation } from 'react-i18next';
 import ReminderTimeSettingModal from './ReminderTimeSettingModal';
+import { scheduleReminderNotifications, cancelReminderNotifications } from '../../utils/notifications';
 
 const ReminderAddEditScreen = () => {
   const navigation = useNavigation();
@@ -22,7 +23,8 @@ const ReminderAddEditScreen = () => {
 
   const [title, setTitle] = useState(initialReminder?.title || '');
   const [time, setTime] = useState(initialReminder?.time || '09:00');
-  const [location, setLocation] = useState(initialReminder?.location || '');
+  const [location, setLocation] = useState(initialReminder?.location || initialReminder?.locationName || '');
+  const [locationCoords, setLocationCoords] = useState(initialReminder?.locationCoords || null);
   const [checklistItems, setChecklistItems] = useState(initialReminder?.checklist || ['']);
   const [isTimeModalVisible, setIsTimeModalVisible] = useState(false);
 
@@ -31,6 +33,17 @@ const ReminderAddEditScreen = () => {
     initialReminder.repeatDays.forEach(day => { initialDays[day] = true; });
   }
   const [selectedDays, setSelectedDays] = useState(initialDays);
+
+  // 표시용: 24시간 문자열(HH:mm)을 AM/PM 형식으로 변환
+  const formatDisplayTime = (hhmm) => {
+    if (!hhmm || typeof hhmm !== 'string') return hhmm;
+    const [hStr, mStr] = hhmm.split(':');
+    let h = parseInt(hStr, 10);
+    const m = mStr.padStart(2, '0');
+    const isAM = h < 12;
+    const hour12 = h % 12 === 0 ? 12 : h % 12;
+    return `${isAM ? 'AM' : 'PM'} ${String(hour12).padStart(2, '0')} : ${m}`;
+  };
 
   const handleTimeSelected = (newTime, newSelectedDays) => {
     setTime(newTime);
@@ -48,18 +61,27 @@ const ReminderAddEditScreen = () => {
     return days.join(', ');
   };
 
-  // --- ✨ [수정] 비어있던 저장 기능 구현 ---
+  // --- ✨ 저장 기능 구현 및 네비게이션 수정 ---
   const handleSaveReminder = async () => {
     if (!title.trim()) {
-      Alert.alert(t('reminder.title_required'));
+      Alert.alert(t('reminder.error_title'), t('reminder.title_required'));
       return;
     }
+
+    // 알림 스케줄링 전 기존 알림 취소 (수정 케이스)
+    try {
+      if (initialReminder?.notificationIds?.length) {
+        await cancelReminderNotifications(initialReminder.notificationIds);
+      }
+    } catch {}
 
     const newReminder = {
       id: initialReminder ? initialReminder.id : Date.now().toString(),
       title: title.trim(),
       time: time,
       location: location.trim(),
+      locationName: location.trim(),
+      locationCoords: locationCoords,
       isPremiumLocation: !!location.trim(), // 장소가 있으면 유료 기능으로 간주 (임시)
       checklist: checklistItems.filter(item => item.trim() !== ''),
       repeatDays: Object.keys(selectedDays).filter(day => selectedDays[day]),
@@ -69,6 +91,9 @@ const ReminderAddEditScreen = () => {
     };
 
     try {
+      // 알림 스케줄링 (시간 기반)
+      newReminder.notificationIds = await scheduleReminderNotifications(newReminder);
+
       const REMINDERS_STORAGE_KEY = 'reminders_data';
       const existingReminders = await AsyncStorage.getItem(REMINDERS_STORAGE_KEY);
       let reminders = existingReminders ? JSON.parse(existingReminders) : [];
@@ -86,7 +111,7 @@ const ReminderAddEditScreen = () => {
       await AsyncStorage.setItem(REMINDERS_STORAGE_KEY, JSON.stringify(reminders));
       
       // 목록 화면으로 돌아가면서 새로고침하도록 파라미터 전달
-      navigation.navigate('Reminder', { refresh: true });
+      navigation.navigate('ReminderMain', { refresh: true });
     } catch (error) {
       console.error('알림 저장 실패:', error);
       Alert.alert(t('reminder.error_title'), t('reminder.save_failed'));
@@ -109,13 +134,40 @@ const ReminderAddEditScreen = () => {
         <Text style={styles.sectionTitle}>{t('reminder.time_setting')}</Text>
         <TouchableOpacity style={styles.settingButton} onPress={() => setIsTimeModalVisible(true)}>
           <View>
-            <Text style={styles.timeText}>{time}</Text>
+            <Text style={styles.timeText}>{formatDisplayTime(time)}</Text>
             <Text style={styles.daysText}>{getSelectedDaysText()}</Text>
           </View>
           <FontAwesome5 name="chevron-right" size={18} color={Colors.secondaryBrown} />
         </TouchableOpacity>
         
-        {/* (나머지 UI 코드) */}
+        {/* 장소 설정 */}
+        <Text style={styles.sectionTitle}>{t('reminder.location_setting')}</Text>
+        <TouchableOpacity
+          style={styles.settingButton}
+          onPress={() => navigation.navigate('ReminderLocationSetting', {
+            initialLocation: location,
+            onLocationSelected: (data) => {
+              if (typeof data === 'string') {
+                setLocation(data);
+                setLocationCoords(null);
+              } else if (data && typeof data === 'object') {
+                setLocation(data.name || '');
+                setLocationCoords(data.coords || null);
+              }
+            },
+          })}
+        >
+          <View>
+            <Text style={styles.daysText}>{location ? location : t('reminder.location_not_set')}</Text>
+          </View>
+          <FontAwesome5 name="chevron-right" size={18} color={Colors.secondaryBrown} />
+        </TouchableOpacity>
+
+        {/* 안내 문구 */}
+        <Text style={styles.infoText}>
+          {t('reminder.info_text')}
+        </Text>
+
         <Button title={t('reminder.save')} onPress={handleSaveReminder} style={{marginTop: 40}} />
         
       </ScrollView>
@@ -139,6 +191,7 @@ const styles = StyleSheet.create({
   settingButton: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', backgroundColor: Colors.textLight, borderRadius: 10, padding: 15 },
   timeText: { fontSize: FontSizes.xlarge, fontWeight: FontWeights.bold, color: Colors.textDark },
   daysText: { fontSize: FontSizes.medium, color: Colors.secondaryBrown, marginTop: 5 },
+  infoText: { fontSize: FontSizes.medium, color: Colors.secondaryBrown, textAlign: 'center', marginTop: 20 },
 });
 
 export default ReminderAddEditScreen;

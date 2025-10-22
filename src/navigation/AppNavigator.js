@@ -70,6 +70,7 @@ import ReminderLocationSettingScreen from '../screens/Reminder/ReminderLocationS
 import ReminderChecklistScreen from '../screens/Reminder/ReminderChecklistScreen';
 import ReminderLocationAlertModal from '../screens/Reminder/ReminderLocationAlertModal';
 import ReminderCompleteCoinModal from '../screens/Reminder/ReminderCompleteCoinModal';
+import ReminderChecklistOverlayModal from '../screens/Reminder/ReminderChecklistOverlayModal';
 
 // 8. 집중도 분석
 import AnalysisGraphScreen from '../screens/AnalysisGraphScreen';
@@ -91,6 +92,9 @@ import RoutineSettingScreen from '../screens/RoutineSettingScreen';
 // 스타일 임포트
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
+import React, { useEffect } from 'react';
+import { ensureNotificationPermissionsAsync } from '../utils/notifications';
+import { navigationRef, navigate as navTo } from './navigationRef';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -120,6 +124,7 @@ const ReminderStack = () => (
     <Stack.Screen name="ReminderTimeSettingModal" component={ReminderTimeSettingModal} options={{ presentation: 'modal' }} />
     <Stack.Screen name="ReminderLocationAlertModal" component={ReminderLocationAlertModal} options={{ presentation: 'modal' }} />
     <Stack.Screen name="ReminderCompleteCoinModal" component={ReminderCompleteCoinModal} options={{ presentation: 'modal' }} />
+    <Stack.Screen name="ReminderChecklistOverlay" component={ReminderChecklistOverlayModal} options={{ presentation: 'transparentModal', cardStyle: { backgroundColor: 'transparent' } }} />
   </Stack.Navigator>
 );
 
@@ -250,8 +255,28 @@ const MainTabNavigator = () => {
 
 // 앱 전체 스택 내비게이터
 const AppNavigator = () => {
+  useEffect(() => {
+    // Request permissions if expo-notifications is installed
+    ensureNotificationPermissionsAsync();
+    let sub;
+    (async () => {
+      try {
+        const Notifications = await import('expo-notifications');
+        sub = Notifications.addNotificationResponseReceivedListener((resp) => {
+          try {
+            const data = resp.notification.request.content.data || {};
+            if (data?.type === 'reminder') {
+              navTo('ReminderChecklistOverlay', { reminderTitle: data.title, items: data.checklist || [] });
+            }
+          } catch {}
+        });
+      } catch {}
+    })();
+    return () => { try { sub && sub.remove && sub.remove(); } catch {} };
+  }, []);
+
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="Onboarding" screenOptions={{ headerShown: false }}>
         {/* 온보딩 및 인증 플로우 */}
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />

@@ -10,6 +10,7 @@ import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
 import { useTranslation } from 'react-i18next';
+import { scheduleReminderNotifications, cancelReminderNotifications } from '../../utils/notifications';
 
 const ReminderScreen = () => {
   const navigation = useNavigation();
@@ -20,6 +21,16 @@ const ReminderScreen = () => {
   const [reminders, setReminders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const REMINDERS_STORAGE_KEY = 'reminders_data';
+
+  const formatDisplayTime = (hhmm) => {
+    if (!hhmm || typeof hhmm !== 'string') return hhmm;
+    const [hStr, mStr] = hhmm.split(':');
+    let h = parseInt(hStr, 10);
+    const m = (mStr || '00').padStart(2, '0');
+    const isAM = h < 12;
+    const hour12 = h % 12 === 0 ? 12 : h % 12;
+    return `${isAM ? 'AM' : 'PM'} ${String(hour12).padStart(2, '0')} : ${m}`;
+  };
 
   const loadReminders = useCallback(async (force = false) => {
     if (isLoading && !force) return;
@@ -57,11 +68,21 @@ const ReminderScreen = () => {
   // --- ✨ [기능 추가] 알림 ON/OFF 상태를 저장하는 함수 ---
   const handleToggleActive = async (reminderId, newIsActive) => {
     try {
-      const updatedReminders = reminders.map(reminder => 
-        reminder.id === reminderId 
-          ? { ...reminder, isActive: newIsActive, updatedAt: new Date().toISOString() }
-          : reminder
-      );
+      let updatedReminders = reminders.map(reminder => reminder);
+      const idx = reminders.findIndex(r => r.id === reminderId);
+      if (idx < 0) return;
+      const target = { ...reminders[idx] };
+      target.isActive = newIsActive;
+      target.updatedAt = new Date().toISOString();
+      if (!newIsActive && target.notificationIds?.length) {
+        await cancelReminderNotifications(target.notificationIds);
+        target.notificationIds = [];
+      }
+      if (newIsActive) {
+        target.notificationIds = await scheduleReminderNotifications(target);
+      }
+      updatedReminders = [...reminders];
+      updatedReminders[idx] = target;
       setReminders(updatedReminders); // UI 즉시 반영
       await AsyncStorage.setItem(REMINDERS_STORAGE_KEY, JSON.stringify(updatedReminders)); // 변경사항 저장
     } catch (error) {
@@ -73,6 +94,34 @@ const ReminderScreen = () => {
   // --- 💬 [기능 확인] 알림 '수정' 페이지로 이동하는 기능 ---
   const handleEditReminder = (reminder) => {
     navigation.navigate('ReminderAddEdit', { reminder: reminder });
+  };
+
+  const handleDeleteReminder = async (reminderId) => {
+    Alert.alert(
+      t('reminder.delete_title'),
+      t('reminder.delete_message'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('reminder.delete_confirm'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const target = reminders.find(r => r.id === reminderId);
+              if (target?.notificationIds?.length) {
+                await cancelReminderNotifications(target.notificationIds);
+              }
+              const updated = reminders.filter(r => r.id !== reminderId);
+              setReminders(updated);
+              await AsyncStorage.setItem(REMINDERS_STORAGE_KEY, JSON.stringify(updated));
+            } catch (e) {
+              console.error('알림 삭제 실패:', e);
+              Alert.alert(t('reminder.error_title'), t('reminder.change_failed'));
+            }
+          }
+        },
+      ]
+    );
   };
 
   // --- 💬 [기능 확인] 알림 '추가' 페이지로 이동하는 기능 ---
@@ -87,28 +136,37 @@ const ReminderScreen = () => {
         <TouchableOpacity 
           style={styles.reminderContent} 
           onPress={() => handleEditReminder(item)}
+          onLongPress={() => navigation.navigate('ReminderChecklistOverlay', { reminderTitle: item.title, items: item.checklist?.length ? item.checklist : (t('reminder.default_checklist', { returnObjects: true })) })}
         >
           <Text style={styles.reminderTitle}>{item.title}</Text>
           <View style={styles.reminderDetails}>
             <FontAwesome5 name="clock" size={14} color={Colors.secondaryBrown} />
-            <Text style={styles.reminderTime}>{item.time}</Text>
+            <Text style={styles.reminderTime}>{formatDisplayTime(item.time)}</Text>
           </View>
           <View style={styles.reminderDetails}>
             <FontAwesome5 name="map-marker-alt" size={14} color={Colors.secondaryBrown} />
             <Text style={styles.reminderLocationText}>
-              {item.location ? item.location : t('reminder.location_not_set')}
+              {item.locationName || item.location || t('reminder.location_not_set')}
             </Text>
           </View>
         </TouchableOpacity>
 
-        {/* --- ✨ [기능 추가] 알림 ON/OFF를 위한 토글 스위치 --- */}
-        <Switch
-          trackColor={{ false: '#767577', true: Colors.accentApricot }}
-          thumbColor={item.isActive ? Colors.primaryBeige : '#f4f3f4'}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={(newValue) => handleToggleActive(item.id, newValue)}
-          value={item.isActive}
-        />
+        <View style={styles.itemActions}>
+          {/* Drag handle icon (디자인용) */}
+          <FontAwesome5 name="bars" size={18} color={Colors.secondaryBrown} style={{ marginRight: 12 }} />
+          {/* --- ✨ 알림 ON/OFF 토글 --- */}
+          <Switch
+            trackColor={{ false: '#767577', true: Colors.accentApricot }}
+            thumbColor={item.isActive ? Colors.primaryBeige : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={(newValue) => handleToggleActive(item.id, newValue)}
+            value={item.isActive}
+          />
+          {/* 삭제 아이콘 */}
+          <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteReminder(item.id)}>
+            <FontAwesome5 name="times" size={18} color={Colors.secondaryBrown} />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -185,16 +243,19 @@ const styles = StyleSheet.create({
     },
     addButton: {
         position: 'absolute',
-        bottom: 30,
-        right: 30,
-        backgroundColor: Colors.accentApricot,
-        width: 60,
-        height: 60,
-        borderRadius: 30,
+        bottom: 100, // 탭바 위에 보이도록 여백 확보
+        alignSelf: 'center',
+        backgroundColor: '#E6E6E6',
+        width: 64,
+        height: 64,
+        borderRadius: 32,
         justifyContent: 'center',
         alignItems: 'center',
-        elevation: 5,
+        elevation: 3,
+        zIndex: 1000,
     },
+    itemActions: { flexDirection: 'row', alignItems: 'center' },
+    deleteButton: { marginLeft: 12, padding: 6 },
 });
 
 export default ReminderScreen;
