@@ -87,7 +87,7 @@
     "premium_message": "D-Day 분석은 유료 버전에서만 이용 가능합니다. 결제 페이지로 이동하시겠습니까?"
   },
   "reminder": {
-    "title": "망각방지 알림",
+    "title": "망각방지 알림 시스템",
     "location_not_set": "장소 설정 안 함",
     "empty_list": "아직 설정된 알림이 없습니다.",
     "add_new": "+ 추가",
@@ -103,6 +103,9 @@
     "checklist_placeholder": "체크할 항목",
     "checklist_add": "항목 추가",
     "save": "저장",
+    "no_repeat": "반복 없음",
+    "everyday": "매일",
+    "title_required": "제목을 입력해주세요.",
     "saved_title": "알림 저장",
     "saved_message": "\"{{title}}\" 알림이 저장되었습니다.",
     "time_setting": "시간 설정",
@@ -123,6 +126,7 @@
     "location_required_message": "장소 이름 또는 주소를 입력해주세요.",
     "location_saved_title": "장소 저장",
     "location_saved_message": "\"{{name}}\" 장소가 저장되었습니다.",
+    "info_text": "\"지정된 시간에 체크하지 않으면,\n설정된 장소를 벗어날 때 알림이 울립니다.\"",
     "checklist_question": "무언가 놓고 가신 건 없으신가요?",
     "remind_in_5m": "5분 뒤 다시",
     "skip_today": "오늘은 안 챙겨도 됨",
@@ -141,7 +145,12 @@
     "days_full": ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"],
     "days_short": ["월", "화", "수", "목", "금", "토", "일"],
     "snooze_implementation": "5분 뒤 다시 알림 기능 구현 필요",
-    "skip_implementation": "오늘 건너뛰기 기능 구현 필요"
+    "skip_implementation": "오늘 건너뛰기 기능 구현 필요",
+    "delete_title": "알림 삭제",
+    "delete_message": "이 알림을 삭제할까요?",
+    "delete_confirm": "삭제",
+    "dont_forget": "잊지말고 체크하세요!",
+    "check_please": "체크 해주세요"
   },
   "pomodoro": {
     "header": "포모도로 기능",
