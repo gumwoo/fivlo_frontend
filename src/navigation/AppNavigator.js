@@ -1,6 +1,6 @@
 // src/navigation/AppNavigator.js
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -92,7 +92,6 @@ import RoutineSettingScreen from '../screens/RoutineSettingScreen';
 // 스타일 임포트
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
-import React, { useEffect } from 'react';
 import { ensureNotificationPermissionsAsync } from '../utils/notifications';
 import { navigationRef, navigate as navTo } from './navigationRef';
 

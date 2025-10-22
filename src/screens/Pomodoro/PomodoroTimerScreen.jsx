@@ -6,7 +6,8 @@ import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import Svg, { Circle, Line, Text as SvgText } from 'react-native-svg'; // SVG 컴포넌트 임포트
+// SVG 기반 아날로그 시계는 디자인과 다르므로 렌더링하지 않습니다.
+// import Svg, { Circle, Line, Text as SvgText } from 'react-native-svg';
 
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
@@ -40,62 +41,7 @@ const AnimatedClock = ({ timeLeft, totalTime, isFocusMode }) => {
   const borderColor = isFocusMode ? '#CC7B0A' : '#E0A320'; // 테두리 색상
   const centerColor = isFocusMode ? Colors.accentApricot : Colors.accentYellow; // 중심 색상
 
-  return (
-    <View style={styles.clockContainer}>
-      <Svg height="250" width="250" viewBox="0 0 100 100">
-        {/* 시계 테두리 */}
-        <Circle cx="50" cy="50" r="48" fill={Colors.textLight} stroke={borderColor} strokeWidth="2" />
-        {/* 시계 내부 배경 */}
-        <Circle cx="50" cy="50" r="45" fill={clockBackgroundColor} />
-
-        {/* 시계 숫자 (대략적인 위치) */}
-        {[12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((num, index) => {
-          const angle = (index * 30 * Math.PI) / 180; // 각도를 라디안으로 변환
-          const x = 50 + 38 * Math.sin(angle);
-          const y = 50 - 38 * Math.cos(angle);
-          return (
-            <SvgText
-              key={num}
-              x={x}
-              y={y + 2} // 텍스트 중앙 정렬을 위해 y 살짝 조정
-              fontSize="8"
-              fontWeight="bold"
-              fill={Colors.textDark}
-              textAnchor="middle"
-              alignmentBaseline="middle"
-            >
-              {num}
-            </SvgText>
-          );
-        })}
-
-        {/* 시침 (현재 시간을 기준으로 회전) */}
-        <Line
-          x1="50" y1="50"
-          x2="50" y2="35" // 초기 위치
-          stroke={handleColor}
-          strokeWidth="3"
-          strokeLinecap="round"
-          originX="50"
-          originY="50"
-          rotation={animatedRotation} // 애니메이션 적용
-        />
-        {/* 분침 (시침보다 길게, 빠르게 움직임 - 여기서는 간단히 하나의 바늘로 시간 비율만 표현) */}
-        <Line
-          x1="50" y1="50"
-          x2="50" y2="30" // 초기 위치
-          stroke={handleColor}
-          strokeWidth="2"
-          strokeLinecap="round"
-          originX="50"
-          originY="50"
-          rotation={animatedRotation} // 애니메이션 적용
-        />
-        {/* 시계 중심 */}
-        <Circle cx="50" cy="50" r="3" fill={centerColor} />
-      </Svg>
-    </View>
-  );
+  return null; // 아날로그 시계 비활성화
 };
 
 
@@ -151,7 +97,10 @@ const PomodoroTimerScreen = () => {
 
   const handleStop = () => {
     setIsRunning(false);
-    navigation.navigate('PomodoroFinish', { selectedGoal: goal });
+    navigation.navigate('PomodoroResetConfirmModal', {
+      onConfirm: () => navigation.navigate('PomodoroFinish', { selectedGoal: goal }),
+      onCancel: () => navigation.goBack(),
+    });
   };
   
   const handleCycleEnd = () => {
@@ -177,7 +126,7 @@ const PomodoroTimerScreen = () => {
   const formatTime = (totalSeconds) => {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`; // 디자인의 공백 포함 형식
   };
 
   const remainingMinutes = Math.floor(timeLeft / 60);
@@ -193,16 +142,10 @@ const PomodoroTimerScreen = () => {
         <Text style={styles.goalText}>{goal.text}</Text>
 
         <View style={styles.timerWrapper}>
-          {/* --- ✨ 커스텀 애니메이션 시계 컴포넌트 사용 ✨ --- */}
-          <AnimatedClock 
-            timeLeft={timeLeft} 
-            totalTime={currentTotalTime} 
-            isFocusMode={isFocusMode} 
-          />
-          {/* 오분이 캐릭터 이미지 (시계 뒤에) */}
+          {/* 달리는 시계 오분이 이미지 (디자인 매칭) */}
           <Image 
-            source={require('../../../assets/기본오분이.png')} // 정적인 오분이 이미지
-            style={styles.characterBehindClock} 
+            source={require('../../../assets/images/obooni_clock.png')}
+            style={styles.characterBehindClock}
           />
           <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
           <Text style={styles.remainingTimeText}>
@@ -243,22 +186,25 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.extraLarge,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    marginBottom: 40,
+    marginBottom: 24,
+    textAlign: 'center',
   },
   timerWrapper: {
-    width: 250,
-    height: 250,
+    width: 300,
+    height: 300,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 50,
+    marginBottom: 36,
     position: 'relative', // 자식 요소 위치 지정을 위해
   },
   characterBehindClock: {
     position: 'absolute',
-    width: '100%',
-    height: '100%',
+    width: 320,
+    height: 320,
+    right: -24,
+    top: -6,
     resizeMode: 'contain',
-    zIndex: 0, // 시계보다 뒤에 위치
+    zIndex: 0,
   },
   // --- ✨ 커스텀 시계 컴포넌트 스타일 ✨ ---
   clockContainer: {
@@ -271,20 +217,20 @@ const styles = StyleSheet.create({
   },
   timerText: {
     position: 'absolute',
-    fontSize: FontSizes.extraLarge * 1.5, // 폰트 크기 조정
+    fontSize: 48,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    zIndex: 2, // 시계 및 캐릭터보다 위에 위치
+    zIndex: 2,
   },
   remainingTimeText: {
     fontSize: FontSizes.medium,
     color: Colors.secondaryBrown,
-    marginTop: 10,
+    marginTop: 12,
   },
   controlButtons: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '60%',
+    width: '70%',
   },
   controlButton: {
     backgroundColor: Colors.textLight,
