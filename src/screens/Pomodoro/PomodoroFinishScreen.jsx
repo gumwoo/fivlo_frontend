@@ -54,7 +54,6 @@ const PomodoroFinishScreen = () => {
         
         <View style={styles.buttonContainer}>
           <Button title={t('pomodoro.to_analysis')} onPress={handleGoToAnalysis} style={styles.actionButton} />
-          <Button title={t('pomodoro.to_home')} onPress={handleGoToHome} primary={false} style={styles.actionButton} />
         </View>
       </ScrollView>
 

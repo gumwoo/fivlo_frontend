@@ -1,6 +1,6 @@
 // src/screens/PomodoroCycleCompleteScreen.jsx
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native'; // ScrollView 임포트 추가!
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,6 +21,24 @@ const PomodoroCycleCompleteScreen = () => {
   const { t } = useTranslation();
 
   const { selectedGoal, cycleCount } = route.params;
+  const [countdown, setCountdown] = useState(3);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    // 3초 후 자동으로 계속 진행
+    timerRef.current = setInterval(() => {
+      setCountdown((c) => {
+        if (c <= 1) {
+          clearInterval(timerRef.current);
+          handleContinue();
+          return 0;
+        }
+        return c - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleContinue = () => {
     navigation.navigate('PomodoroTimer', { selectedGoal, resume: true, isFocusMode: true });
@@ -43,6 +61,7 @@ const PomodoroCycleCompleteScreen = () => {
           <Button title={t('pomodoro.continue')} onPress={handleContinue} style={styles.actionButton} />
           <Button title={t('pomodoro.stop')} onPress={handleStop} primary={false} style={styles.actionButton} />
         </View>
+        <Text style={styles.autoProceedText}>{countdown}초가 지나면 "{t('pomodoro.continue')}" 로 진행합니다.</Text>
       </ScrollView>
     </View>
   );
@@ -77,6 +96,10 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     marginBottom: 15,
+  },
+  autoProceedText: {
+    marginTop: 6,
+    color: Colors.secondaryBrown,
   },
 });
 
