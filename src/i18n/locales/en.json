@@ -416,6 +416,13 @@
   "account": {
     "title": "Profile Settings",
     "change_image": "Change Image",
+    "select_image_source": "Select Image Source",
+    "take_photo": "Take Photo",
+    "choose_from_gallery": "Choose from Gallery",
+    "permission_required": "Permission Required",
+    "camera_permission_message": "Camera permission is required.",
+    "gallery_permission_message": "Gallery access permission is required.",
+    "image_error": "An error occurred while processing the image.",
     "name": "Name",
     "account_info": "Account Information",
     "fivlo_purpose": "FIVLO Usage Purpose",

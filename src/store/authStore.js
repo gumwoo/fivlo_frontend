@@ -4,10 +4,12 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const USER_PURPOSE_KEY = 'userPurpose';
+const USER_PROFILE_IMAGE_KEY = 'userProfileImage';
 
 const useAuthStore = create((set) => ({
   userToken: null,
   userPurpose: null,
+  userProfileImage: null,
   
   // ✨ [수정] isPremiumUser 상태를 추가하고 기본값을 false로 설정하여 프리미엄 기능 테스트를 가능하게 합니다.
   isPremiumUser: false, 
@@ -26,6 +28,19 @@ const useAuthStore = create((set) => ({
     }
   },
   
+  // 프로필 이미지 저장
+  setUserProfileImage: async (imageUri) => {
+    try {
+      await AsyncStorage.setItem(USER_PROFILE_IMAGE_KEY, imageUri);
+      set({ userProfileImage: imageUri });
+      if (__DEV__) {
+        console.log('[AuthStore] Saved profile image:', imageUri);
+      }
+    } catch (error) {
+      console.error('[AuthStore] Save profile image error:', error);
+    }
+  },
+  
   // 앱 시작 시 저장된 목적 불러오기
   loadUserPurpose: async () => {
     try {
@@ -41,6 +56,21 @@ const useAuthStore = create((set) => ({
     }
   },
   
+  // 앱 시작 시 프로필 이미지 불러오기
+  loadUserProfileImage: async () => {
+    try {
+      const imageUri = await AsyncStorage.getItem(USER_PROFILE_IMAGE_KEY);
+      if (imageUri) {
+        set({ userProfileImage: imageUri });
+        if (__DEV__) {
+          console.log('[AuthStore] Loaded profile image:', imageUri);
+        }
+      }
+    } catch (error) {
+      console.error('[AuthStore] Load profile image error:', error);
+    }
+  },
+  
   // ✨ [추가] 나중에 실제 결제 연동 시 프리미엄 상태를 변경할 함수 (선택 사항)
   setIsPremiumUser: (isPremium) => set({ isPremiumUser: isPremium }), 
 
@@ -48,7 +78,8 @@ const useAuthStore = create((set) => ({
   logout: async () => {
     try {
       await AsyncStorage.removeItem(USER_PURPOSE_KEY);
-      set({ userToken: null, userPurpose: null, isPremiumUser: false });
+      await AsyncStorage.removeItem(USER_PROFILE_IMAGE_KEY);
+      set({ userToken: null, userPurpose: null, userProfileImage: null, isPremiumUser: false });
     } catch (error) {
       console.error('[AuthStore] Logout error:', error);
     }

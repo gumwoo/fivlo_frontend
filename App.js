@@ -17,13 +17,14 @@ export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
   
   // ✨ [수정] useState를 제거하고, authStore에서 isPremiumUser 상태를 직접 가져옵니다.
-  const { isPremiumUser, loadUserPurpose } = useAuthStore();
+  const { isPremiumUser, loadUserPurpose, loadUserProfileImage } = useAuthStore();
   const { loadRecords } = useFocusStore();
 
   useEffect(() => {
     (async () => {
       await initI18n();
       await loadUserPurpose(); // 사용자 목적 불러오기
+      await loadUserProfileImage(); // 프로필 이미지 불러오기
       await loadRecords(); // 집중 기록 불러오기
       setIsAppReady(true);
     })();

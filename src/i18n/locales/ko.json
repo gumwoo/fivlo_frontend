@@ -426,6 +426,13 @@
   "account": {
     "title": "프로필 설정",
     "change_image": "이미지 변경",
+    "select_image_source": "이미지 선택",
+    "take_photo": "사진 촬영",
+    "choose_from_gallery": "갤러리에서 선택",
+    "permission_required": "권한 필요",
+    "camera_permission_message": "카메라 권한이 필요합니다.",
+    "gallery_permission_message": "갤러리 접근 권한이 필요합니다.",
+    "image_error": "이미지 처리 중 오류가 발생했습니다.",
     "name": "이름",
     "account_info": "계정 정보",
     "fivlo_purpose": "FIVLO 사용목적",
