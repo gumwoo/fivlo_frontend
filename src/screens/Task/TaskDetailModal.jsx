@@ -1,18 +1,26 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Alert, FlatList, Animated, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  Alert,
+  FlatList,
+  Animated,
+  Pressable,
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
-
-// 공통 스타일 및 컴포넌트 임포트
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import { useTranslation } from 'react-i18next';
 import useAlbumStore from '../../store/albumStore';
+import useTaskStore from '../../store/taskStore'; // ✅ 전역 상태 불러오기
 
-// 다른 Modal 임포트
 import TaskEditModal from './TaskEditModal';
 import TaskDeleteConfirmModal from './TaskDeleteConfirmModal';
 import TaskCompleteCoinModal from './TaskCompleteCoinModal';
@@ -23,9 +31,10 @@ const TaskDetailModal = () => {
   const route = useRoute();
   const { t } = useTranslation();
   const addPhoto = useAlbumStore((state) => state.addPhoto);
-  
-  const { selectedDate, tasks: initialTasks, onTaskUpdate } = route.params;
+  const addTask = useTaskStore((state) => state.addTask); // ✅ 추가
+  const updateTask = useTaskStore((state) => state.updateTask); // ✅ 업데이트용
 
+  const { selectedDate, tasks: initialTasks } = route.params;
   const [tasks, setTasks] = useState(initialTasks);
 
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -34,7 +43,7 @@ const TaskDetailModal = () => {
 
   const [isDeleteConfirmModalVisible, setIsDeleteConfirmModalVisible] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
-  
+
   const [isCoinModalVisible, setIsCoinModalVisible] = useState(false);
   const [completedTask, setCompletedTask] = useState(null);
 
@@ -42,16 +51,16 @@ const TaskDetailModal = () => {
 
   const closeModal = () => navigation.goBack();
 
+  // ✅ Task 완료 토글
   const toggleTaskCompletion = (id) => {
-    const task = tasks.find(t => t.id === id);
+    const task = tasks.find((t) => t.id === id);
     if (task && !task.completed) {
       setCompletedTask(task);
-      
-      if (onTaskUpdate) {
-        onTaskUpdate(id, { completed: true });
-      }
-      
-      setTasks(currentTasks => currentTasks.map(t => t.id === id ? { ...t, completed: true } : t));
+
+      updateTask(selectedDate, id, { completed: true }); // ✅ 전역 상태 업데이트
+      setTasks((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, completed: true } : t))
+      );
 
       if (task.isAlbumLinked) {
         showPhotoModal(task);
@@ -72,7 +81,7 @@ const TaskDetailModal = () => {
 
   const handlePhotoSave = (photoData) => {
     setIsAlbumPromptVisible(false);
-    
+
     if (completedTask) {
       const newPhoto = {
         id: `photo-${Date.now()}`,
@@ -81,10 +90,8 @@ const TaskDetailModal = () => {
         categoryKey: completedTask.categoryKey || 'daily',
         type: photoData.type || 'image',
       };
-      
       addPhoto(selectedDate, newPhoto);
     }
-    
     showCoinModal(completedTask);
   };
 
@@ -106,11 +113,7 @@ const TaskDetailModal = () => {
   };
 
   const onConfirmDelete = (deleteFutureTasks) => {
-    if (deleteFutureTasks) {
-      Alert.alert('삭제 완료', `"${taskToDelete.text}"와 미래 예정된 모든 반복 Task가 삭제되었습니다.`);
-    } else {
-      Alert.alert('삭제 완료', `"${taskToDelete.text}"가 삭제되었습니다.`);
-    }
+    Alert.alert('삭제 완료', `"${taskToDelete.text}"가 삭제되었습니다.`);
     setIsDeleteConfirmModalVisible(false);
     setTaskToDelete(null);
     closeModal();
@@ -121,12 +124,20 @@ const TaskDetailModal = () => {
     setTaskToDelete(null);
   };
 
-  const onTaskEditSave = (updatedTask) => {
-    Alert.alert('Task', t('task.saved', { mode: t(editMode === 'add' ? 'task.saved_mode_add' : 'task.saved_mode_edit') }));
+  // ✅ Task 저장 시 전역 스토어에 추가
+  const onTaskEditSave = (savedTask) => {
+    addTask(selectedDate, savedTask); // ✅ 전역 상태에 추가
+    Alert.alert(
+      'Task',
+      t('task.saved', {
+        mode: t(editMode === 'add' ? 'task.saved_mode_add' : 'task.saved_mode_edit'),
+      })
+    );
     setIsEditModalVisible(false);
     closeModal();
   };
 
+  // ✅ Swipeable Task item
   const SwipeableTaskItem = ({ item }) => {
     const swipeableRef = useRef(null);
 
@@ -146,8 +157,7 @@ const TaskDetailModal = () => {
               handleEditTask(item);
             }}
           >
-            {/* ⚠️ 아이콘 이름을 'pen'에서 'bars'로 변경했습니다. */}
-            <FontAwesome5 name="bars" size={18} color={Colors.textLight} />
+            <FontAwesome5 name="pen" size={18} color={Colors.textLight} />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.swipeAction, styles.deleteAction]}
@@ -164,26 +174,14 @@ const TaskDetailModal = () => {
 
     return (
       <View style={styles.swipeContainer}>
-        <Swipeable
-          ref={swipeableRef}
-          renderRightActions={renderRightActions}
-          overshootRight={false}
-        >
-          <View
-            style={[
-              styles.taskItem,
-              { backgroundColor: item.color || Colors.textLight },
-            ]}
-          >
+        <Swipeable ref={swipeableRef} renderRightActions={renderRightActions} overshootRight={false}>
+          <View style={[styles.taskItem, { backgroundColor: item.color || Colors.textLight }]}>
             <View style={{ flex: 1 }}>
               <Text style={[styles.taskText, item.completed && styles.taskTextCompleted]}>
                 {item.text}
               </Text>
             </View>
-            <TouchableOpacity
-              style={styles.checkbox}
-              onPress={() => toggleTaskCompletion(item.id)}
-            >
+            <TouchableOpacity style={styles.checkbox} onPress={() => toggleTaskCompletion(item.id)}>
               <Text style={item.completed ? styles.checkboxChecked : styles.checkboxUnchecked}>
                 {item.completed ? '✔' : ''}
               </Text>
@@ -197,76 +195,78 @@ const TaskDetailModal = () => {
   const renderTaskItem = ({ item }) => <SwipeableTaskItem item={item} />;
 
   return (
-    <Pressable style={styles.overlay} onPress={closeModal}>
-      <Pressable style={styles.modalContent}>
-        <Text style={styles.modalDate}>
-          {format(new Date(selectedDate), 'M월 d일 (E)', { locale: ko })}
-        </Text>
-        
-        <View style={{ flex: 1 }}>
-          {tasks.length > 0 ? (
-            <FlatList
-              data={tasks}
-              renderItem={renderTaskItem}
-              keyExtractor={item => item.id}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.taskListContent}
-            />
-          ) : (
-            <View style={styles.noTaskContainer}>
-              <Text style={styles.noTaskText}>{t('task.no_tasks')}</Text>
-            </View>
-          )}
-        </View>
-
-        <TouchableOpacity style={styles.addTaskButton} onPress={handleAddTask}>
-          <Text style={styles.addTaskButtonText}>+ {t('task.add_task_button')}</Text>
-        </TouchableOpacity>
-      </Pressable>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isEditModalVisible}
-        onRequestClose={() => setIsEditModalVisible(false)}
-      >
-        <TaskEditModal
-          mode={editMode}
-          initialTask={currentEditingTask}
-          onSave={onTaskEditSave}
-          onClose={() => setIsEditModalVisible(false)}
-        />
-      </Modal>
-
       <Modal
         animationType="fade"
         transparent={true}
-        visible={isDeleteConfirmModalVisible}
-        onRequestClose={onCancelDelete}
+        visible={true}          // 항상 보이도록 (navigation으로 제어됨)
+        onRequestClose={closeModal}
+        onDismiss={closeModal}  // ✅ 모달 닫힐 때 완전히 언마운트
       >
-        <TaskDeleteConfirmModal
-          task={taskToDelete}
-          onConfirm={onConfirmDelete}
-          onCancel={onCancelDelete}
+      <Pressable style={styles.overlay} onPress={closeModal}>
+        <Pressable style={styles.modalContent}>
+          <Text style={styles.modalDate}>
+            {format(new Date(selectedDate), 'M월 d일 (E)', { locale: ko })}
+          </Text>
+
+          <View style={{ flex: 1 }}>
+            {tasks.length > 0 ? (
+              <FlatList
+                data={tasks}
+                renderItem={renderTaskItem}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.taskListContent}
+              />
+            ) : (
+              <View style={styles.noTaskContainer}>
+                <Text style={styles.noTaskText}>{t('task.no_tasks', '등록된 Task가 없습니다')}</Text>
+              </View>
+            )}
+          </View>
+
+          <TouchableOpacity style={styles.addTaskButton} onPress={handleAddTask}>
+            <Text style={styles.addTaskButtonText}>+ {t('task.add_task_button', '새 Task 추가')}</Text>
+          </TouchableOpacity>
+        </Pressable>
+
+        {/* 편집 모달 */}
+        <Modal 
+          animationType="slide"
+          transparent={true}
+          visible={isEditModalVisible} 
+          onRequestClose={() => setIsEditModalVisible(false)}>
+          <TaskEditModal
+            mode={editMode}
+            initialTask={currentEditingTask}
+            onSave={onTaskEditSave}
+            onClose={() => setIsEditModalVisible(false)}
+          />
+        </Modal>
+
+        {/* 삭제 확인 모달 */}
+        <Modal animationType="fade" transparent visible={isDeleteConfirmModalVisible} onRequestClose={onCancelDelete}>
+          <TaskDeleteConfirmModal task={taskToDelete} onConfirm={onConfirmDelete} onCancel={onCancelDelete} />
+        </Modal>
+
+        {/* 코인 모달 */}
+        <TaskCompleteCoinModal
+          isVisible={isCoinModalVisible}
+          onClose={() => {
+            setIsCoinModalVisible(false);
+            setCompletedTask(null);
+          }}
+          taskText={completedTask?.text}
+          earnedCoins={10}
         />
-      </Modal>
 
-      <TaskCompleteCoinModal
-        isVisible={isCoinModalVisible}
-        onClose={() => {
-          setIsCoinModalVisible(false);
-          setCompletedTask(null);
-        }}
-        taskText={completedTask?.text}
-        earnedCoins={10}
-      />
-
-      <AlbumPhotoPromptModal
-        visible={isAlbumPromptVisible}
-        onClose={() => setIsAlbumPromptVisible(false)}
-        onSave={handlePhotoSave}
-      />
-    </Pressable>
+        {/* 앨범 업로드 모달 */}
+        <AlbumPhotoPromptModal
+          visible={isAlbumPromptVisible}
+          onClose={() => setIsAlbumPromptVisible(false)}
+          onSave={handlePhotoSave}
+        />
+      </Pressable>
+     </Modal> 
   );
 };
 
@@ -276,6 +276,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 999,
   },
   modalContent: {
     backgroundColor: Colors.primaryBeige,
@@ -299,32 +305,12 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'left',
   },
-  taskListContent: {
-    paddingBottom: 10,
-  },
-  swipeContainer: {
-    marginBottom: 10,
-    overflow: 'hidden',
-    borderRadius: 10,
-  },
-  swipeActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: 120,
-    justifyContent: 'flex-end',
-  },
-  swipeAction: {
-    flex: 1,
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  editAction: {
-    backgroundColor: Colors.accentApricot,
-  },
-  deleteAction: {
-    backgroundColor: '#FF6B6B',
-  },
+  taskListContent: { paddingBottom: 10 },
+  swipeContainer: { marginBottom: 10, overflow: 'hidden', borderRadius: 10 },
+  swipeActions: { flexDirection: 'row', alignItems: 'center', width: 120, justifyContent: 'flex-end' },
+  swipeAction: { flex: 1, height: '100%', justifyContent: 'center', alignItems: 'center' },
+  editAction: { backgroundColor: Colors.accentApricot },
+  deleteAction: { backgroundColor: '#FF6B6B' },
   taskItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -350,32 +336,12 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     backgroundColor: Colors.textLight,
   },
-  checkboxChecked: {
-    color: Colors.accentApricot,
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  checkboxUnchecked: {
-    color: 'transparent',
-  },
-  taskText: {
-    fontSize: FontSizes.medium,
-    color: Colors.textDark,
-    flex: 1,
-  },
-  taskTextCompleted: {
-    textDecorationLine: 'line-through',
-    color: Colors.secondaryBrown,
-  },
-  noTaskContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 50,
-  },
-  noTaskText: {
-    fontSize: FontSizes.medium,
-    color: Colors.secondaryBrown,
-  },
+  checkboxChecked: { color: Colors.accentApricot, fontSize: 18, fontWeight: 'bold' },
+  checkboxUnchecked: { color: 'transparent' },
+  taskText: { fontSize: FontSizes.medium, color: Colors.textDark, flex: 1 },
+  taskTextCompleted: { textDecorationLine: 'line-through', color: Colors.secondaryBrown },
+  noTaskContainer: { justifyContent: 'center', alignItems: 'center', paddingVertical: 50 },
+  noTaskText: { fontSize: FontSizes.medium, color: Colors.secondaryBrown },
   addTaskButton: {
     backgroundColor: '#FFFCF5',
     borderRadius: 10,
@@ -385,11 +351,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0)',
   },
-  addTaskButtonText: {
-    fontSize: FontSizes.medium,
-    color: Colors.textDark,
-    fontWeight: FontWeights.medium,
-  },
+  addTaskButtonText: { fontSize: FontSizes.medium, color: Colors.textDark, fontWeight: FontWeights.medium },
 });
 
 export default TaskDetailModal;

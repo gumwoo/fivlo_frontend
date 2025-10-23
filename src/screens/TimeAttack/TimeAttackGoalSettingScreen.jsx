@@ -12,7 +12,6 @@ import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
 import { useTranslation } from 'react-i18next';
 import TimePicker from '../../components/common/TimePicker'; // 기존 TimePicker 컴포넌트 사용
-import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
 
 const TimeAttackGoalSettingScreen = () => {
   const navigation = useNavigation();
