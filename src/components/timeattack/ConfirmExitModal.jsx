@@ -1,22 +1,27 @@
 // src/components/timeattack/ConfirmExitModal.jsx
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 
-const ConfirmExitModal = ({ visible, onConfirm, onCancel, message = '오분이와 함께하는 집중 시간을 끝내시겠습니까?' }) => {
+const ConfirmExitModal = ({ visible, onConfirm, onCancel, message }) => {
+  const { t } = useTranslation();
+  
+  const displayMessage = message || t('timeattack.exit_confirm_message');
+  
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
       <View style={styles.overlay}>
         <View style={styles.card}>
-          <Image source={require('../../../assets/타임어택.png')} style={styles.icon} />
-          <Text style={styles.message}>{message}</Text>
+          <Image source={require('../../../assets/타임어택_오분이.gif')} style={styles.icon} />
+          <Text style={styles.message}>{displayMessage}</Text>
           <View style={styles.row}>
-            <TouchableOpacity style={[styles.btn, styles.btnGhost]} onPress={onCancel}>
-              <Text style={[styles.btnText, styles.btnGhostText]}>아니요</Text>
+            <TouchableOpacity style={[styles.btn, styles.btnSecondary]} onPress={onCancel}>
+              <Text style={[styles.btnText, styles.btnSecondaryText]}>{t('common.no')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.btn, styles.btnPrimary]} onPress={onConfirm}>
-              <Text style={[styles.btnText, styles.btnPrimaryText]}>예</Text>
+              <Text style={[styles.btnText, styles.btnPrimaryText]}>{t('common.yes')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -26,18 +31,62 @@ const ConfirmExitModal = ({ visible, onConfirm, onCancel, message = '오분이�
 };
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', alignItems: 'center', justifyContent: 'center' },
-  card: { width: '80%', backgroundColor: Colors.textLight, borderRadius: 16, paddingHorizontal: 18, paddingVertical: 16, alignItems: 'center' },
-  icon: { width: 48, height: 48, marginBottom: 10 },
-  message: { fontSize: FontSizes.medium, color: Colors.textDark, textAlign: 'center', marginBottom: 14 },
-  row: { flexDirection: 'row', gap: 10 },
-  btn: { flex: 1, borderRadius: 10, paddingVertical: 12, alignItems: 'center' },
-  btnGhost: { backgroundColor: 'transparent', borderWidth: 1, borderColor: 'rgba(0,0,0,0.1)' },
-  btnPrimary: { backgroundColor: Colors.accentApricot },
-  btnText: { fontSize: FontSizes.medium, fontWeight: FontWeights.bold },
-  btnGhostText: { color: Colors.textDark },
-  btnPrimaryText: { color: Colors.textLight },
+  overlay: { 
+    flex: 1, 
+    backgroundColor: 'rgba(51, 51, 51, 0.7)', 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
+  card: { 
+    width: '85%', 
+    backgroundColor: Colors.primaryBeige, 
+    borderRadius: 24, 
+    paddingHorizontal: 24, 
+    paddingVertical: 28, 
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: Colors.secondaryBrown,
+  },
+  icon: { 
+    width: 80, 
+    height: 80, 
+    marginBottom: 16 
+  },
+  message: { 
+    fontSize: FontSizes.large, 
+    fontWeight: FontWeights.medium,
+    color: Colors.textDark, 
+    textAlign: 'center', 
+    marginBottom: 24,
+    lineHeight: 28,
+  },
+  row: { 
+    flexDirection: 'row', 
+    gap: 12,
+    width: '100%',
+  },
+  btn: { 
+    flex: 1, 
+    borderRadius: 12, 
+    paddingVertical: 14, 
+    alignItems: 'center',
+  },
+  btnSecondary: { 
+    backgroundColor: Colors.secondaryBrown,
+  },
+  btnPrimary: { 
+    backgroundColor: Colors.accentApricot 
+  },
+  btnText: { 
+    fontSize: FontSizes.medium, 
+    fontWeight: FontWeights.bold 
+  },
+  btnSecondaryText: { 
+    color: Colors.textLight 
+  },
+  btnPrimaryText: { 
+    color: Colors.textLight 
+  },
 });
 
 export default ConfirmExitModal;
-

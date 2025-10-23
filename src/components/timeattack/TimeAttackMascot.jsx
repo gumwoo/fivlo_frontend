@@ -26,7 +26,7 @@ const TimeAttackMascot = ({ running = true, size = 220 }) => {
   return (
     <Animated.View style={{ transform: [{ scale }], width: size, height: size }}>
       <Image
-        source={require('../../../assets/타임어택.png')}
+        source={require('../../../assets/타임어택_오분이.gif')}
         style={[styles.image, { width: size, height: size }]}
         resizeMode="contain"
       />

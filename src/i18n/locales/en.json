@@ -2,7 +2,10 @@
   "common": {
     "loading_app": "Loading app...",
     "ok": "OK",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "error": "Error"
   },
   "tabs": {
     "home": "Home",
@@ -437,10 +440,11 @@
     "delete_confirm_title": "Are you sure you want to delete your account?",
     "delete_confirm_message": "It's such a pity..",
     "delete_confirm_submessage": "If you withdraw as a member, all created routines and albums will disappear.",
-    "confirm": "Confirm",
-    "cancel": "Cancel",
-    "delete": "Delete Account"
-  },
+    "confirm": "Confirm"
+    },
+    "timeattack": {
+    "exit_confirm_message": "Do you want to end your focus time with Obooni?"
+    },
   "task_detail": {
     "delete_confirm_yes": "Yes",
     "delete_confirm_no": "No"
