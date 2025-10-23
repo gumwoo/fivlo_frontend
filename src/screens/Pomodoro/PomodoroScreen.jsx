@@ -78,8 +78,9 @@ const styles = StyleSheet.create({
   },
   // --- 추가: 부제 텍스트 스타일 ---
   subtitleText: {
-    fontSize: FontSizes.medium,
+    fontSize: FontSizes.large,
     color: Colors.textDark,
+    fontWeight: FontWeights.bold,
     marginBottom: 40,
   },
   // --- 수정: 버튼 스타일 ---
