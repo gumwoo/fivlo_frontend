@@ -34,7 +34,7 @@ const PomodoroBreakChoiceScreen = () => {
 
   const handleAnalysis = () => {
     // 집중도 분석 화면으로 이동
-    navigation.navigate('AnalysisMain');
+    navigation.navigate('AnalysisGraphScreen');
   };
 
   return (

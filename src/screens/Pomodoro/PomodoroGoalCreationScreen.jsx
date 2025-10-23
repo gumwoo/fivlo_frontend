@@ -2,7 +2,7 @@
 // src/screens/Pomodoro/PomodoroGoalCreationScreen.jsx
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, Modal, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -55,17 +55,11 @@ const PomodoroGoalCreationScreen = () => {
   };
 
   const handleSelectGoal = (goal) => {
-    Alert.alert(
-      t('pomodoro.start_pomodoro_title'),
-      t('pomodoro.start_pomodoro_message', { goal: goal.text }),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('common.ok'),
-          onPress: () => navigation.navigate('PomodoroTimer', { selectedGoal: goal }),
-        },
-      ]
-    );
+    navigation.navigate('PomodoroStartConfirmModal', {
+      goal,
+      onConfirm: () => navigation.navigate('PomodoroTimer', { selectedGoal: goal }),
+      onCancel: () => {},
+    });
   };
 
   const handleDeleteGoal = (goalId) => {

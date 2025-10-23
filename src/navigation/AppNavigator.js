@@ -42,6 +42,7 @@ import PomodoroGoalCreationScreen from '../screens/Pomodoro/PomodoroGoalCreation
 import PomodoroTimerScreen from '../screens/Pomodoro/PomodoroTimerScreen';
 import PomodoroPauseScreen from '../screens/Pomodoro/PomodoroPauseScreen';
 import PomodoroResetConfirmModal from '../screens/Pomodoro/PomodoroResetConfirmModal';
+import PomodoroStartConfirmModal from '../screens/Pomodoro/PomodoroStartConfirmModal';
 import PomodoroBreakOptionModal from '../screens/Pomodoro/PomodoroBreakOptionModal';
 import PomodoroBreakChoiceScreen from '../screens/Pomodoro/PomodoroBreakChoiceScreen';
 import PomodoroCycleCompleteScreen from '../screens/Pomodoro/PomodoroCycleCompleteScreen';
@@ -106,6 +107,7 @@ const PomodoroStack = () => (
     <Stack.Screen name="PomodoroGoalCreation" component={PomodoroGoalCreationScreen} />
     <Stack.Screen name="PomodoroTimer" component={PomodoroTimerScreen} />
     <Stack.Screen name="PomodoroResetConfirmModal" component={PomodoroResetConfirmModal} options={{ presentation: 'modal' }} />
+    <Stack.Screen name="PomodoroStartConfirmModal" component={PomodoroStartConfirmModal} options={{ presentation: 'modal' }} />
     <Stack.Screen name="PomodoroBreakOptionModal" component={PomodoroBreakOptionModal} options={{ presentation: 'modal' }} />
     <Stack.Screen name="PomodoroBreakChoice" component={PomodoroBreakChoiceScreen} />
     <Stack.Screen name="PomodoroCycleComplete" component={PomodoroCycleCompleteScreen} />
