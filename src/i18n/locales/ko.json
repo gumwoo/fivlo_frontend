@@ -2,7 +2,10 @@
   "common": {
     "loading_app": "앱 로딩 중...",
     "ok": "확인",
-    "cancel": "취소"
+    "cancel": "취소",
+    "yes": "예",
+    "no": "아니요",
+    "error": "오류"
   },
   "tabs": {
     "home": "홈",
@@ -402,7 +405,7 @@
     }
   },
   "time_attack_complete": {
-    "complete_ready": "완료 준비 완료!",
+    "complete_ready": "준비 완료!",
     "praise_message": "오분이가 칭찬합니다 ~",
     "go_home": "홈화면으로"
   },
@@ -447,10 +450,11 @@
     "delete_confirm_title": "정말로 계정을 삭제하실건가요?",
     "delete_confirm_message": "너무 아쉽습니다..",
     "delete_confirm_submessage": "회원을 탈퇴하면 생성한 루틴 및 앨범이 모두 사라집니다.",
-    "confirm": "확인",
-    "cancel": "취소",
-    "delete": "계정 삭제"
-  },
+    "confirm": "확인"
+    },
+    "timeattack": {
+    "exit_confirm_message": "오분이와 함께하는 집중 시간을 끝내시겠습니까?"
+    },
   "task_detail": {
     "delete_confirm_yes": "예",
     "delete_confirm_no": "아니오"

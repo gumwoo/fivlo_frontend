@@ -1,7 +1,7 @@
 // src/screens/TimeAttack/TimeAttackScreen.jsx
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -9,7 +9,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
-import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
 import { useTranslation } from 'react-i18next';
 
 const TimeAttackScreen = () => {
@@ -83,7 +82,6 @@ const TimeAttackScreen = () => {
         showRightButton
         onRightPress={() => handleSelectGoal(goals[0]?.text || t('time_attack.default_goal'))}
       />
-      <TimeAttackMascot running={false} size={180} />
       <Text style={styles.title}>{t('time_attack.question_goal')}</Text>
       <FlatList
         data={goals}

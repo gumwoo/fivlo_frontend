@@ -1,7 +1,7 @@
 // src/screens/TimeAttack/TimeAttackAISubdivisionScreen.jsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator, FlatList, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator, FlatList, TextInput, Image } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -111,7 +111,6 @@ const TimeAttackAISubdivisionScreen = () => {
       ) : (
         <>
           <View style={{ alignItems: 'center', marginTop: 10 }}>
-            <TimeAttackMascot running={false} size={160} />
           </View>
           <Text style={styles.title}>{t('time_attack_ai.ai_message', { totalMinutes })}</Text>
           <FlatList

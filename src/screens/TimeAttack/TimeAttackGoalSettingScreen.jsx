@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 // Modal, TouchableOpacity를 import에 추가합니다.
-import { View, Text, StyleSheet, Alert, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Alert, Modal, TouchableOpacity,Image } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -64,9 +64,7 @@ const TimeAttackGoalSettingScreen = () => {
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('headers.time_attack')} showBackButton={true} />
-      <View style={styles.content}>
-        <TimeAttackMascot running={false} size={200} />
-        
+      <View style={styles.content}>        
         <Text style={styles.questionText}>{t('time_attack.question_time')}</Text>
         {/* 4. 시간 표시 영역을 TouchableOpacity로 감싸 모달을 열도록 합니다. */}
         <TouchableOpacity style={styles.timerDisplayContainer} onPress={handleOpenModal}>
