@@ -6,52 +6,65 @@ import { format, startOfWeek, addDays } from 'date-fns';
 // 공통 스타일 및 컴포넌트 임포트
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
+import useFocusStore from '../../store/focusStore';
 
 const DailyAnalysisView = ({ date }) => {
-  // 임시 데이터 (실제로는 백엔드에서 해당 날짜의 집중 기록 가져옴)
-  const mockDailyData = {
-    '2025-07-20': {
-      totalConcentrationTime: 150, // 분 단위
-      concentrationRatio: 75, // %
-      activities: [
-        { id: 'a1', name: '토익공부', time: 60, color: '#FFD1DC' },
-        { id: 'a2', name: 'FIVLO 개발', time: 45, color: '#99DDFF' },
-        { id: 'a3', name: '독서', time: 30, color: '#A0FFC3' },
-      ],
-      hourlyData: { // 시간대별 데이터 (0시~23시)
-        '09': { '토익공부': 30 },
-        '10': { '토익공부': 30, 'FIVLO 개발': 15 },
-        '14': { 'FIVLO 개발': 30 },
-        '19': { '독서': 30 },
-      }
-    },
-    '2025-07-21': { // 다른 날짜 예시
-      totalConcentrationTime: 90,
-      concentrationRatio: 60,
-      activities: [
-        { id: 'a4', name: '운동', time: 45, color: '#FFABAB' },
-        { id: 'a5', name: '일상 정리', time: 45, color: Colors.primaryBeige },
-      ],
-      hourlyData: {
-        '08': { '운동': 45 },
-        '17': { '일상 정리': 45 },
-      }
-    }
-  };
-
+  const { getRecordsByDate } = useFocusStore();
   const [dailyData, setDailyData] = useState(null);
 
   useEffect(() => {
     // date prop이 변경될 때마다 해당 날짜의 데이터 로드
     const dateString = format(date, 'yyyy-MM-dd');
-    setDailyData(mockDailyData[dateString] || {
-      totalConcentrationTime: 0,
-      concentrationRatio: 0,
-      activities: [],
-      hourlyData: {}
+    const records = getRecordsByDate(dateString);
+
+    if (__DEV__) {
+      console.log('[DailyAnalysisView] Date:', dateString, 'Records:', records.length);
+    }
+
+    // 활동별로 그룹화하고 총 시간 계산
+    const activitiesMap = {};
+    let totalTime = 0;
+
+    records.forEach((record) => {
+      const goal = record.goal || '기타';
+      const time = record.focusedTime || 0;
+      
+      if (!activitiesMap[goal]) {
+        activitiesMap[goal] = {
+          id: goal,
+          name: goal,
+          time: 0,
+          color: getColorForGoal(goal),
+        };
+      }
+      
+      activitiesMap[goal].time += time;
+      totalTime += time;
+    });
+
+    const activities = Object.values(activitiesMap);
+    const totalMinutes = Math.floor(totalTime / 60);
+
+    setDailyData({
+      totalConcentrationTime: totalMinutes,
+      concentrationRatio: totalMinutes > 0 ? Math.min(100, Math.floor((totalMinutes / 1440) * 100)) : 0,
+      activities,
+      hourlyData: {}, // TODO: 시간대별 데이터 구현
     });
   }, [date]);
 
+  // 목표별 색상 지정
+  const getColorForGoal = (goal) => {
+    const colors = {
+      '공부하기': '#FFD1DC',
+      '운동하기': '#FFABAB',
+      '독서하기': '#A0FFC3',
+      '정리하기': '#FFE5B4',
+      '기타': Colors.lightGray,
+    };
+    return colors[goal] || Colors.lightGray;
+  };
+  
   // 시간대별 바 차트 데이터 생성 (3번)
   const hourlyChartData = Array.from({ length: 24 }, (_, i) => {
     const hour = i.toString().padStart(2, '0');

@@ -11,16 +11,19 @@ import { FontSizes } from './src/styles/Fonts';
 
 // ✨ [추가] 전역 상태 관리를 위해 authStore를 임포트합니다.
 import useAuthStore from './src/store/authStore';
+import useFocusStore from './src/store/focusStore';
 
 export default function App() {
   const [isAppReady, setIsAppReady] = useState(false);
   
   // ✨ [수정] useState를 제거하고, authStore에서 isPremiumUser 상태를 직접 가져옵니다.
   const { isPremiumUser } = useAuthStore();
+  const { loadRecords } = useFocusStore();
 
   useEffect(() => {
     (async () => {
       await initI18n();
+      await loadRecords(); // 집중 기록 불러오기
       setIsAppReady(true);
     })();
   }, []);
