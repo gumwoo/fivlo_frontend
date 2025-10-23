@@ -61,41 +61,43 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(51, 51, 51, 0.7)', // 더 진한 오버레이
   },
   modalContent: {
-    backgroundColor: Colors.textLight,
-    borderRadius: 20,
-    padding: 25,
+    backgroundColor: Colors.primaryBeige, // 베이지 배경
+    borderRadius: 24,
+    padding: 30,
     width: '85%',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 12,
+    borderWidth: 2,
+    borderColor: Colors.secondaryBrown, // 브라운 테두리
   },
   obooniImage: {
-    width: 72,
-    height: 72,
-    marginBottom: 20,
+    width: 100,
+    height: 100,
+    marginBottom: 24,
   },
   questionText: {
     fontSize: FontSizes.large,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
     textAlign: 'center',
-    marginBottom: 30,
-    lineHeight: 28,
+    marginBottom: 32,
+    lineHeight: 30,
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     width: '100%',
+    gap: 12,
   },
   modalButton: {
     flex: 1,
-    marginHorizontal: 5,
   },
 });
 

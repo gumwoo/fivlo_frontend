@@ -30,8 +30,8 @@ const PomodoroBreakChoiceScreen = () => {
   const { minutes, seconds } = formatTime(focusedTime);
 
   const handleAnalysis = () => {
-    // 집중도 분석 화면 또는 포모도로 메인으로
-    navigation.navigate('PomodoroMain');
+    // 집중도 분석 화면으로 이동
+    navigation.navigate('AnalysisMain');
   };
 
   return (
@@ -39,9 +39,9 @@ const PomodoroBreakChoiceScreen = () => {
       <Header title={t('pomodoro.header')} showBackButton={true} />
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        {/* 상단 타이틀 */}
+        {/* 상단 타이틀 - 선택한 목표 표시 */}
         <Text style={styles.titleText}>
-          {t('pomodoro.study_mode')}
+          {selectedGoal || t('pomodoro.study_mode')}
         </Text>
         
         {/* GIF 애니메이션 캐릭터 */}
