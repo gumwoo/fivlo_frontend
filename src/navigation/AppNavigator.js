@@ -110,7 +110,7 @@ const PomodoroStack = () => (
     <Stack.Screen name="PomodoroStartConfirmModal" component={PomodoroStartConfirmModal} options={{ presentation: 'modal' }} />
     <Stack.Screen name="PomodoroBreakOptionModal" component={PomodoroBreakOptionModal} options={{ presentation: 'modal' }} />
     <Stack.Screen name="PomodoroBreakChoice" component={PomodoroBreakChoiceScreen} />
-    <Stack.Screen name="AnalysisDaily" component={DailyAnalysisView} />
+    <Stack.Screen name="AnalysisGraphScreen" component={AnalysisGraphScreen} />
     <Stack.Screen name="PomodoroCycleComplete" component={PomodoroCycleCompleteScreen} />
     <Stack.Screen name="PomodoroFinish" component={PomodoroFinishScreen} />
     <Stack.Screen name="PomodoroStop" component={PomodoroStopScreen} />

@@ -57,8 +57,8 @@ const PomodoroBreakChoiceScreen = () => {
   const { minutes, seconds } = formatTime(focusedTime);
 
   const handleAnalysis = () => {
-    // 집중도 분석 일간 화면으로 이동
-    navigation.navigate('AnalysisDaily');
+    // 집중도 분석 화면으로 이동 (월간 탭)
+    navigation.navigate('AnalysisGraphScreen');
   };
 
   return (
