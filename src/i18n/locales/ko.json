@@ -405,7 +405,7 @@
     }
   },
   "time_attack_complete": {
-    "complete_ready": "외출 준비 완료!",
+    "complete_ready": "준비 완료!",
     "praise_message": "오분이가 칭찬합니다 ~",
     "go_home": "홈화면으로"
   },
