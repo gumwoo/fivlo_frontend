@@ -11,14 +11,29 @@ import Button from '../components/common/Button';
 import AccountDeleteModal from '../components/common/AccountDeleteModal';
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
+import useAuthStore from '../store/authStore';
 
 const AccountManagementScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const { userPurpose } = useAuthStore();
 
   const [name, setName] = useState('오분이');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  // 목적을 한글로 변환
+  const getPurposeText = () => {
+    if (!userPurpose) return t('account.purpose_placeholder');
+    
+    const purposeMap = {
+      'concentration': t('core.purpose_concentration'),
+      'routine': t('core.purpose_routine'),
+      'goal': t('core.purpose_goal'),
+    };
+    
+    return purposeMap[userPurpose] || t('account.purpose_placeholder');
+  };
 
   // ✨ 수정: 저장 버튼 클릭 시 Alert을 띄운 후, 확인을 누르면 이전 화면으로 돌아갑니다.
   const handleSave = () => {
@@ -90,7 +105,9 @@ const AccountManagementScreen = () => {
           style={styles.purposeBox} 
           onPress={() => navigation.navigate('PurposeSelection', { from: 'profile' })}
         >
-          <Text style={styles.infoText}>{t('account.purpose_placeholder')}</Text>
+          <Text style={[styles.infoText, userPurpose && styles.selectedPurposeText]}>
+            {getPurposeText()}
+          </Text>
         </TouchableOpacity>
 
       </ScrollView>
@@ -121,14 +138,18 @@ const styles = StyleSheet.create({
   actionText: { fontSize: FontSizes.medium, color: Colors.textDark, fontWeight: '600' },
   deleteText: { color: Colors.accentRed },
   purposeBox: { 
-  width: '100%',
-  backgroundColor: Colors.textLight,
-  borderRadius: 12,
-  padding: 12,
-  borderWidth: 2,
-  borderColor: Colors.secondaryBrown,
-  marginTop: 8
-},
+    width: '100%',
+    backgroundColor: Colors.textLight,
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 2,
+    borderColor: Colors.secondaryBrown,
+    marginTop: 8
+  },
+  selectedPurposeText: {
+    color: Colors.textDark,
+    fontWeight: FontWeights.bold,
+  },
   saveButtonContainer: { position: 'absolute', bottom: 30, left: 0, right: 0, paddingHorizontal: 20, backgroundColor: Colors.primaryBeige },
 });
 

@@ -419,7 +419,7 @@
     "name": "Name",
     "account_info": "Account Information",
     "fivlo_purpose": "FIVLO Usage Purpose",
-    "purpose_placeholder": "Routine Building",
+    "purpose_placeholder": "Please select your FIVLO usage purpose",
     "save": "Save",
     "logout": "Logout",
     "delete_account": "Delete Account",

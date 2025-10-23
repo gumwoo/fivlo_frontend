@@ -429,7 +429,7 @@
     "name": "이름",
     "account_info": "계정 정보",
     "fivlo_purpose": "FIVLO 사용목적",
-    "purpose_placeholder": "루틴 형성",
+    "purpose_placeholder": "FIVLO 사용 목적을 선택해주세요",
     "save": "저장",
     "logout": "로그아웃",
     "delete_account": "회원 탈퇴",

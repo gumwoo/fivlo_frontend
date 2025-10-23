@@ -11,15 +11,25 @@ import Header from '../components/common/Header';
 import Button from '../components/common/Button';
 import CharacterImage from '../components/common/CharacterImage';
 import { useTranslation } from 'react-i18next';
+import useAuthStore from '../store/authStore';
 
 const PurposeSelectionScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const { setUserPurpose } = useAuthStore();
 
   const handlePurposeSelect = (purpose) => {
     console.log('Selected purpose:', purpose);
+    
+    // authStore에 목적 저장
+    setUserPurpose(purpose);
+    
+    if (__DEV__) {
+      console.log('[PurposeSelection] Saved purpose:', purpose);
+    }
+    
     // --- 수정: 홈 화면으로 이동하고, 이전 스택을 모두 제거 ---
     if (route.params?.from === 'profile') {
       navigation.goBack(); // 프로필 수정에서 온 경우 → 원래 화면으로
