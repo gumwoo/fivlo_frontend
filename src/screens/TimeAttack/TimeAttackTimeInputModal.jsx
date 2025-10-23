@@ -1,7 +1,7 @@
 // src/screens/TimeAttack/TimeAttackTimeInputModal.jsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Alert, TextInput } from 'react-native'; // Modal 임포트 확인!
+import { View, Text, StyleSheet, Modal, TouchableOpacity, Alert, TextInput, Image } from 'react-native'; // Modal 임포트 확인!
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 

@@ -37,10 +37,13 @@ const TimeAttackCompleteScreen = () => {
       <Header title={t('headers.time_attack')} showBackButton={true} />
 
       <View style={styles.contentContainer}>
+        <Image
+          source={require('../../../assets/오분이_신난이미지.png')}
+          style={styles.obooniCharacter}
+          resizeMode="contain"
+        />
         <Text style={styles.completeText}>{t('time_attack_complete.complete_ready')}</Text>
         <Text style={styles.praiseText}>{t('time_attack_complete.praise_message')}</Text>
-        
-        <TimeAttackMascot running={false} size={260} />
         
         <Button title={t('time_attack_complete.go_home')} onPress={handleGoToHome} style={styles.homeButton} />
       </View>

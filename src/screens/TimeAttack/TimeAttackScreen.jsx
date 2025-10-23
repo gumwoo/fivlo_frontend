@@ -1,7 +1,7 @@
 // src/screens/TimeAttack/TimeAttackScreen.jsx
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -82,11 +82,6 @@ const TimeAttackScreen = () => {
         showRightButton
         onRightPress={() => handleSelectGoal(goals[0]?.text || t('time_attack.default_goal'))}
       />
-      <Image 
-        source={require('../../../assets/타임어택.png')} 
-        style={styles.mascotImage}
-        resizeMode="contain"
-      />
       <Text style={styles.title}>{t('time_attack.question_goal')}</Text>
       <FlatList
         data={goals}
@@ -105,7 +100,6 @@ const TimeAttackScreen = () => {
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige },
-  mascotImage: { width: 180, height: 180, alignSelf: 'center', marginTop: 20 },
   title: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.textDark, marginHorizontal: 60, marginTop: 30, marginBottom: 30 },
   listContainer: { paddingHorizontal: 30 },
   goalItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.lightGray, borderRadius: 10, padding: 20, marginBottom: 30, justifyContent: 'space-between' },
