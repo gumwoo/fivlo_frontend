@@ -1,4 +1,4 @@
-// src/screens/Pomodoro/PomodoroResetConfirmModal.jsx
+// src/screens/Pomodoro/PomodoroStartConfirmModal.jsx
 
 import React from 'react';
 import { View, Text, StyleSheet, Modal } from 'react-native';
@@ -11,18 +11,15 @@ import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Button from '../../components/common/Button';
 import CharacterImage from '../../components/common/CharacterImage';
 
-const PomodoroResetConfirmModal = () => {
+const PomodoroStartConfirmModal = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { t } = useTranslation();
   
-  // --- 수정: useEffect를 제거하고 route.params에서 직접 함수를 가져옵니다 ---
-  const { onConfirm, onCancel } = route.params;
+  const { goal, onConfirm, onCancel } = route.params;
 
   const handleConfirm = () => {
-    // 모달 먼저 닫고
     navigation.goBack();
-    // onConfirm 실행
     setTimeout(() => {
       try { onConfirm && onConfirm(); } catch {}
     }, 100);
@@ -32,6 +29,8 @@ const PomodoroResetConfirmModal = () => {
     try { onCancel && onCancel(); } catch {}
     try { navigation.goBack(); } catch {}
   };
+
+  const goalText = goal?.text || goal || t('pomodoro.study_mode');
 
   return (
     <Modal
@@ -43,12 +42,24 @@ const PomodoroResetConfirmModal = () => {
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
           <CharacterImage style={styles.obooniImage} />
-          <Text style={styles.questionText}>
-            {t('pomodoro.reset_confirm_question')}
+          <Text style={styles.titleText}>
+            {t('pomodoro.start_pomodoro_title')}
+          </Text>
+          <Text style={styles.messageText}>
+            "{goalText}" {t('pomodoro.start_message_suffix')}
           </Text>
           <View style={styles.buttonContainer}>
-            <Button title={t('pomodoro.yes')} onPress={handleConfirm} style={styles.modalButton} />
-            <Button title={t('pomodoro.no')} onPress={handleCancel} primary={false} style={styles.modalButton} />
+            <Button 
+              title={t('common.cancel')} 
+              onPress={handleCancel} 
+              primary={false}
+              style={styles.modalButton} 
+            />
+            <Button 
+              title={t('common.ok')} 
+              onPress={handleConfirm} 
+              style={styles.modalButton} 
+            />
           </View>
         </View>
       </View>
@@ -61,10 +72,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(51, 51, 51, 0.7)', // 더 진한 오버레이
+    backgroundColor: 'rgba(51, 51, 51, 0.7)',
   },
   modalContent: {
-    backgroundColor: Colors.primaryBeige, // 베이지 배경
+    backgroundColor: Colors.primaryBeige,
     borderRadius: 24,
     padding: 30,
     width: '85%',
@@ -75,20 +86,26 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 12,
     borderWidth: 2,
-    borderColor: Colors.secondaryBrown, // 브라운 테두리
+    borderColor: Colors.secondaryBrown,
   },
   obooniImage: {
     width: 100,
     height: 100,
     marginBottom: 24,
   },
-  questionText: {
-    fontSize: FontSizes.large,
+  titleText: {
+    fontSize: FontSizes.extraLarge,
     fontWeight: FontWeights.bold,
+    color: Colors.textDark,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  messageText: {
+    fontSize: FontSizes.medium,
     color: Colors.textDark,
     textAlign: 'center',
     marginBottom: 32,
-    lineHeight: 30,
+    lineHeight: 24,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -101,4 +118,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PomodoroResetConfirmModal;
+export default PomodoroStartConfirmModal;

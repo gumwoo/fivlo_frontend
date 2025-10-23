@@ -1,6 +1,6 @@
 // src/screens/PomodoroBreakChoiceScreen.jsx
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,14 +11,41 @@ import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
 import { useTranslation } from 'react-i18next';
+import useFocusStore from '../../store/focusStore';
 
 const PomodoroBreakChoiceScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const { addRecord } = useFocusStore();
 
   const { selectedGoal, focusedTime = 0 } = route.params;
+
+  // selectedGoal이 객체인 경우 text 속성 추출
+  const goalText = selectedGoal?.text || selectedGoal || t('pomodoro.study_mode');
+
+  // 화면 진입 시 기록 저장
+  useEffect(() => {
+    const saveRecord = async () => {
+      if (focusedTime > 0) {
+        await addRecord({
+          goal: goalText,
+          focusedTime,
+          type: 'pomodoro', // 포모도로 기록
+        });
+        
+        if (__DEV__) {
+          console.log('[PomodoroBreakChoice] Saved focus record:', {
+            goal: goalText,
+            time: `${Math.floor(focusedTime / 60)}m ${focusedTime % 60}s`,
+          });
+        }
+      }
+    };
+
+    saveRecord();
+  }, []);
 
   // 시간 포맷 함수 (초 → 분초)
   const formatTime = (totalSeconds) => {
@@ -30,8 +57,8 @@ const PomodoroBreakChoiceScreen = () => {
   const { minutes, seconds } = formatTime(focusedTime);
 
   const handleAnalysis = () => {
-    // 집중도 분석 화면 또는 포모도로 메인으로
-    navigation.navigate('PomodoroMain');
+    // 집중도 분석 화면으로 이동 (월간 탭)
+    navigation.navigate('AnalysisGraphScreen');
   };
 
   return (
@@ -39,9 +66,9 @@ const PomodoroBreakChoiceScreen = () => {
       <Header title={t('pomodoro.header')} showBackButton={true} />
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        {/* 상단 타이틀 */}
+        {/* 상단 타이틀 - 선택한 목표 표시 */}
         <Text style={styles.titleText}>
-          {t('pomodoro.study_mode')}
+          {goalText}
         </Text>
         
         {/* GIF 애니메이션 캐릭터 */}

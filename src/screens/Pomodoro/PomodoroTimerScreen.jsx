@@ -161,7 +161,7 @@ const PomodoroTimerScreen = () => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {/* 상단 타이틀 */}
         <Text style={styles.titleText}>
-          {isFocusMode ? '공부하기' : '휴식시간'}
+          {isFocusMode ? (goal?.text || goal || t('pomodoro.study_mode')) : t('pomodoro.break_time')}
         </Text>
       
         {/* GIF 애니메이션 캐릭터 */}
