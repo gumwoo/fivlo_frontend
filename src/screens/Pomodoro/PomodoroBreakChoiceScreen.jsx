@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 40,
+    paddingVertical: 30,
   },
   titleText: {
     fontSize: FontSizes.extraLarge,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    marginBottom: 40,
+    marginBottom: 30,
     textAlign: 'center',
   },
   pomodoroGif: {
