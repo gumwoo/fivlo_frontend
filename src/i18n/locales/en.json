@@ -146,6 +146,7 @@
   "pomodoro": {
     "header": "Pomodoro",
     "what_focus": "What do you want to focus on?",
+    "lets_focus": "Let's focus on it with Obooni!",
     "create_goal": "Create focus goal",
     "create_header": "Write focus goal",
     "create_goal_label": "Write your goal",

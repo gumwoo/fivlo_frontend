@@ -155,6 +155,7 @@
   "pomodoro": {
     "header": "포모도로 기능",
     "what_focus": "무엇에 집중하고 싶으신가요?",
+    "lets_focus": "오분이와 함께 집중해봅시다!",
     "create_goal": "집중 목표 작성하기",
     "create_header": "집중 목표 작성",
     "create_goal_label": "목표를 작성하는 칸",
