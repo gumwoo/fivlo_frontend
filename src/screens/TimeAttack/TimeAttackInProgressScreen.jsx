@@ -12,8 +12,6 @@ import { GlobalStyles } from '../../styles/GlobalStyles';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
-import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
-import ConfirmExitModal from '../../components/timeattack/ConfirmExitModal';
 import { useTranslation } from 'react-i18next';
 
 // expo-speech 설치 필요: expo install expo-speech
@@ -35,8 +33,7 @@ const TimeAttackInProgressScreen = () => {
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0); // 현재 단계의 남은 시간
   const [isRunning, setIsRunning] = useState(false); // 타이머 작동 여부 - 초기값을 false로 변경
-  const [nextButtonPressTime, setNextButtonPressTime] = useState(0); // 다음 버튼 눌린 시간
-  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [nextButtonPressTime, setNextButtonPressTime] = useState(0); // 다음 버튼 누른 시간
   const [autoNextCountdown, setAutoNextCountdown] = useState(null); // 3,2,1 카운트
 
   const timerRef = useRef(null); // setInterval 참조
@@ -149,12 +146,10 @@ const TimeAttackInProgressScreen = () => {
   const handleNextButtonPressOut = () => {
     clearTimeout(nextTimerRef.current);
     if (Date.now() - nextButtonPressTime < AUTO_NEXT_THRESHOLD) {
-      setConfirmVisible(true);
+      handleNextTask(); // 직접 다음 단계 이동
     }
   };
-
-
-
+  
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('headers.time_attack')} showBackButton={true} />
@@ -164,9 +159,13 @@ const TimeAttackInProgressScreen = () => {
         <Text style={styles.goalText}>{selectedGoal}</Text>
         <Text style={styles.currentTaskText}>{currentTask ? currentTask.text : t('time_attack.ready')}</Text>
 
-        {/* 타임어택 오분이 (PNG, 러닝 시 펄스 애니메이션) */}
+        {/* 타임어택 오분이 GIF */}
         <View style={styles.obooniContainer}>
-          <TimeAttackMascot running={isRunning} />
+          <Image 
+            source={require('../../../assets/타임어택_오분이.gif')} 
+            style={styles.obooniImage}
+            resizeMode="contain"
+          />
         </View>
 
         {/* 시간 표시 */}
@@ -184,13 +183,7 @@ const TimeAttackInProgressScreen = () => {
           </Text>
         </TouchableOpacity>
       </ScrollView>
-
-      <ConfirmExitModal
-        visible={confirmVisible}
-        onCancel={() => setConfirmVisible(false)}
-        onConfirm={() => { setConfirmVisible(false); handleNextTask(); }}
-      />
-    </View>
+      </View>
   );
 };
 
@@ -224,6 +217,10 @@ const styles = StyleSheet.create({
   obooniContainer: {
     alignItems: 'center',
     marginBottom: 30,
+  },
+  obooniImage: {
+    width: 220,
+    height: 220,
   },
   timeContainer: {
     alignItems: 'center',

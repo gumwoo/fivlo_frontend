@@ -9,7 +9,6 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
-import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
 import { useTranslation } from 'react-i18next';
 
 const TimeAttackScreen = () => {
@@ -83,7 +82,11 @@ const TimeAttackScreen = () => {
         showRightButton
         onRightPress={() => handleSelectGoal(goals[0]?.text || t('time_attack.default_goal'))}
       />
-      <TimeAttackMascot running={false} size={180} />
+      <Image 
+        source={require('../../../assets/타임어택.png')} 
+        style={styles.mascotImage}
+        resizeMode="contain"
+      />
       <Text style={styles.title}>{t('time_attack.question_goal')}</Text>
       <FlatList
         data={goals}
@@ -102,6 +105,7 @@ const TimeAttackScreen = () => {
 
 const styles = StyleSheet.create({
   screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige },
+  mascotImage: { width: 180, height: 180, alignSelf: 'center', marginTop: 20 },
   title: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.textDark, marginHorizontal: 60, marginTop: 30, marginBottom: 30 },
   listContainer: { paddingHorizontal: 30 },
   goalItem: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.lightGray, borderRadius: 10, padding: 20, marginBottom: 30, justifyContent: 'space-between' },
