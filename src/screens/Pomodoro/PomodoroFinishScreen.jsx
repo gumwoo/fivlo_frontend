@@ -46,12 +46,14 @@ const PomodoroFinishScreen = () => {
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('pomodoro.header')} showBackButton={true} />
 
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <ScrollView contentContainerStyle={styles.contentContainer}>        
+        <Image
+          source={require('../../../assets/오분이_신난이미지.png')}
+          style={{ width: 250, height: 250, marginBottom: 50 }}
+          resizeMode="contain"
+        />
         <Text style={styles.finishText}>{t('pomodoro.finish_title')}</Text>
         <Text style={styles.finishMessage}>{t('pomodoro.finish_message')}</Text>
-        
-        <TimeAttackMascot running={false} size={250} />
-        
         <View style={styles.buttonContainer}>
           <Button title={t('pomodoro.to_analysis')} onPress={handleGoToAnalysis} style={styles.actionButton} />
         </View>

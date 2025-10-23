@@ -1,17 +1,15 @@
 // src/screens/PomodoroBreakChoiceScreen.jsx
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native'; // ScrollView 임포트 추가!
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // 공통 스타일 및 컴포넌트 임포트
-import { GlobalStyles } from '../../styles/GlobalStyles';
-import { Colors } from '../../styles/color'; // <-- 사용자님 파일명에 맞춰 'color'로 수정!
-import { FontSizes, FontWeights } from '../../styles/Fonts'; // <-- 사용자님 파일명에 맞춰 'Fonts'로 수정!
+import { Colors } from '../../styles/color';
+import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
-import CharacterImage from '../../components/common/CharacterImage';
 import { useTranslation } from 'react-i18next';
 
 const PomodoroBreakChoiceScreen = () => {
@@ -20,29 +18,52 @@ const PomodoroBreakChoiceScreen = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
 
-  const { selectedGoal } = route.params;
+  const { selectedGoal, focusedTime = 0 } = route.params;
 
-  const handleNoBreak = () => {
-    navigation.navigate('PomodoroTimer', { selectedGoal, resume: true, isFocusMode: true });
+  // 시간 포맷 함수 (초 → 분초)
+  const formatTime = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return { minutes, seconds };
   };
 
-  const handleTakeBreak = () => {
-    navigation.navigate('PomodoroTimer', { selectedGoal, isFocusMode: false });
+  const { minutes, seconds } = formatTime(focusedTime);
+
+  const handleAnalysis = () => {
+    // 집중도 분석 화면 또는 포모도로 메인으로
+    navigation.navigate('PomodoroMain');
   };
 
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('pomodoro.header')} showBackButton={true} />
 
-      <ScrollView contentContainerStyle={styles.contentContainer}> {/* ScrollView로 감싸기 */}
-        <Text style={styles.questionText}>{t('pomodoro.break_question')}</Text>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        {/* 상단 타이틀 */}
+        <Text style={styles.titleText}>
+          {t('pomodoro.study_mode')}
+        </Text>
         
-        <CharacterImage style={styles.obooniCharacter} />
+        {/* GIF 애니메이션 캐릭터 */}
+        <Image 
+          source={require('../../../assets/포모도로.gif')}
+          style={styles.pomodoroGif}
+        />
         
-        <View style={styles.buttonContainer}>
-          <Button title={t('pomodoro.yes')} onPress={handleNoBreak} style={styles.actionButton} />
-          <Button title={t('pomodoro.no')} onPress={handleTakeBreak} primary={false} style={styles.actionButton} />
-        </View>
+        {/* 집중 완료 메시지 */}
+        <Text style={styles.completeText}>
+          {t('pomodoro.focus_complete', { minutes, seconds })}
+        </Text>
+        <Text style={styles.praiseText}>
+          {t('pomodoro.praise_message')}
+        </Text>
+
+        {/* 집중도 분석 버튼 */}
+        <Button 
+          title={t('pomodoro.view_analysis')} 
+          onPress={handleAnalysis} 
+          style={styles.analysisButton}
+        />
       </ScrollView>
     </View>
   );
@@ -53,30 +74,42 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primaryBeige,
   },
-  contentContainer: { // ScrollView의 contentContainerStyle로 사용
+  contentContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+    paddingVertical: 40,
   },
-  questionText: {
+  titleText: {
+    fontSize: FontSizes.extraLarge,
+    fontWeight: FontWeights.bold,
+    color: Colors.textDark,
+    marginBottom: 40,
+    textAlign: 'center',
+  },
+  pomodoroGif: {
+    width: 250,
+    height: 250,
+    resizeMode: 'contain',
+    marginBottom: 30,
+  },
+  completeText: {
     fontSize: FontSizes.large,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    marginBottom: 30,
+    marginBottom: 10,
     textAlign: 'center',
   },
-  obooniCharacter: {
-    width: 250,
-    height: 250,
-    marginBottom: 50,
+  praiseText: {
+    fontSize: FontSizes.medium,
+    color: Colors.textDark,
+    marginBottom: 40,
+    textAlign: 'center',
   },
-  buttonContainer: {
-    width: '80%',
-    alignItems: 'center',
-  },
-  actionButton: {
-    marginBottom: 15,
+  analysisButton: {
+    width: '90%',
+    backgroundColor: Colors.accentApricot,
   },
 });
 

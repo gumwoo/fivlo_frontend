@@ -97,8 +97,17 @@ const PomodoroTimerScreen = () => {
 
   const handleStop = () => {
     setIsRunning(false);
+    // 실제 집중한 시간 계산 (초 단위)
+    const focusedTime = isFocusMode ? (FOCUS_TIME - timeLeft) : 0;
+    
     navigation.navigate('PomodoroResetConfirmModal', {
-      onConfirm: () => navigation.navigate('PomodoroFinish', { selectedGoal: goal }),
+      onConfirm: () => {
+        // 중단 시 화면 13 (집중 완료 화면)으로
+        navigation.navigate('PomodoroBreakChoice', { 
+          selectedGoal: goal,
+          focusedTime: focusedTime, // 실제 집중 시간 전달
+        });
+      },
       onCancel: () => navigation.goBack(),
     });
   };
@@ -106,11 +115,23 @@ const PomodoroTimerScreen = () => {
   const handleCycleEnd = () => {
     setIsRunning(false);
     if (isFocusMode) {
-      // 집중 시간 종료 -> 휴식 선택 화면으로
-      navigation.navigate('PomodoroBreakChoice', { 
-        selectedGoal: goal,
-        cycleCount: cycleCount + 1,
-        isFocusMode: false, // 다음은 휴식 모드
+      // 집중 시간 종료 (25분 완료) -> 휴식 선택 모달로
+      navigation.navigate('PomodoroBreakOptionModal', {
+        onContinue: () => {
+          // "네" 선택 시 - 바로 다음 포모도로 시작
+          navigation.navigate('PomodoroTimer', { 
+            selectedGoal: goal, 
+            resume: true, 
+            isFocusMode: true 
+          });
+        },
+        onBreak: () => {
+          // "아니오" 선택 시 - 휴식 시간 시작
+          navigation.navigate('PomodoroTimer', { 
+            selectedGoal: goal, 
+            isFocusMode: false 
+          });
+        },
       });
     } else {
       // 휴식 시간 종료 -> 사이클 완료 화면으로
@@ -138,31 +159,38 @@ const PomodoroTimerScreen = () => {
       <Header title={t('pomodoro.header')} showBackButton={true} />
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        {/* 목표 텍스트 */}
-        <Text style={styles.goalText}>{goal.text}</Text>
-
-        <View style={styles.timerWrapper}>
-          {/* 달리는 시계 오분이 이미지 (디자인 매칭) */}
-          <Image 
-            source={require('../../../assets/images/obooni_clock.png')}
-            style={styles.characterBehindClock}
-          />
-          <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
-          <Text style={styles.remainingTimeText}>
-             {t('pomodoro.timer_remaining', { min: remainingMinutes, sec: remainingSeconds })}
-          </Text>
-        </View>
-
+        {/* 상단 타이틀 */}
+        <Text style={styles.titleText}>
+          {isFocusMode ? '공부하기' : '휴식시간'}
+        </Text>
+      
+        {/* GIF 애니메이션 캐릭터 */}
+        <Image 
+          source={require('../../../assets/포모도로.gif')}
+          style={styles.pomodoroGif}
+        />
+      
+        {/* 타이머 시간 표시 */}
+        <Text style={styles.timerText}>
+          {formatTime(currentTotalTime - timeLeft)}
+        </Text>
+        
+        {/* 남은 시간 텍스트 */}
+        <Text style={styles.remainingTimeText}>
+          {t('pomodoro.timer_remaining', { min: remainingMinutes, sec: remainingSeconds })}
+        </Text>
+      
+        {/* 컨트롤 버튼 */}
         <View style={styles.controlButtons}>
           <TouchableOpacity style={styles.controlButton} onPress={handleStartPause}>
             <FontAwesome5 
               name={isRunning ? "pause" : "play"} 
-              size={24} 
+              size={32} 
               color={Colors.textDark} 
             />
           </TouchableOpacity>
           <TouchableOpacity style={styles.controlButton} onPress={handleStop}>
-            <FontAwesome5 name="stop" size={24} color={Colors.textDark} />
+            <FontAwesome5 name="stop" size={32} color={Colors.textDark} />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -176,56 +204,36 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryBeige,
   },
   contentContainer: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingBottom: 80, // 하단 탭바 높이만큼 여백
+    paddingVertical: 40,
   },
-  goalText: {
+  titleText: {
     fontSize: FontSizes.extraLarge,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    marginBottom: 24,
+    marginBottom: 40,
     textAlign: 'center',
   },
-  timerWrapper: {
-    width: 300,
-    height: 300,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 36,
-    position: 'relative', // 자식 요소 위치 지정을 위해
-  },
-  characterBehindClock: {
-    position: 'absolute',
-    width: 320,
-    height: 320,
-    right: -24,
-    top: -6,
+  pomodoroGif: {
+    width: 250,
+    height: 250,
     resizeMode: 'contain',
-    zIndex: 0,
-  },
-  // --- ✨ 커스텀 시계 컴포넌트 스타일 ✨ ---
-  clockContainer: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1, // 오분이 캐릭터보다 앞에 위치
+    marginBottom: 0,
   },
   timerText: {
-    position: 'absolute',
-    fontSize: 48,
+    fontSize: 60,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
-    zIndex: 2,
+    marginBottom: 10,
+    letterSpacing: 4,
   },
   remainingTimeText: {
-    fontSize: FontSizes.medium,
+    fontSize: FontSizes.large,
     color: Colors.secondaryBrown,
-    marginTop: 12,
+    marginBottom: 30,
   },
   controlButtons: {
     flexDirection: 'row',

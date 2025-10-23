@@ -1,9 +1,8 @@
-// src/screens/Pomodoro/PomodoroResetConfirmModal.jsx
+// src/screens/Pomodoro/PomodoroBreakOptionModal.jsx
 
-import React from 'react';
-import { View, Text, StyleSheet, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
 
 // 공통 스타일 및 컴포넌트 임포트
 import { Colors } from '../../styles/color';
@@ -11,45 +10,64 @@ import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Button from '../../components/common/Button';
 import CharacterImage from '../../components/common/CharacterImage';
 
-const PomodoroResetConfirmModal = () => {
+const PomodoroBreakOptionModal = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { t } = useTranslation();
+  const [countdown, setCountdown] = useState(3);
   
-  // --- 수정: useEffect를 제거하고 route.params에서 직접 함수를 가져옵니다 ---
-  const { onConfirm, onCancel } = route.params;
+  const { onContinue, onBreak } = route.params;
 
-  const handleConfirm = () => {
-    // 모달 먼저 닫고
+  const handleContinue = () => {
     navigation.goBack();
-    // onConfirm 실행
     setTimeout(() => {
-      try { onConfirm && onConfirm(); } catch {}
+      try { onContinue && onContinue(); } catch {}
     }, 100);
   };
 
-  const handleCancel = () => {
-    try { onCancel && onCancel(); } catch {}
-    try { navigation.goBack(); } catch {}
+  const handleBreak = () => {
+    navigation.goBack();
+    setTimeout(() => {
+      try { onBreak && onBreak(); } catch {}
+    }, 100);
   };
+
+  useEffect(() => {
+    // 3초 카운트다운
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          // 시간 종료 시 "네" 선택 (바로 진행)
+          handleContinue();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <Modal
       animationType="fade"
       transparent={true}
       visible={true}
-      onRequestClose={handleCancel}
+      onRequestClose={handleBreak}
     >
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
           <CharacterImage style={styles.obooniImage} />
           <Text style={styles.questionText}>
-            {t('pomodoro.reset_confirm_question')}
+            휴식시간 없이 바로{'\n'}시이클을 진행하시겠어요?
           </Text>
           <View style={styles.buttonContainer}>
-            <Button title={t('pomodoro.yes')} onPress={handleConfirm} style={styles.modalButton} />
-            <Button title={t('pomodoro.no')} onPress={handleCancel} primary={false} style={styles.modalButton} />
+            <Button title="네" onPress={handleContinue} style={styles.modalButton} />
+            <Button title="아니오" onPress={handleBreak} primary={false} style={styles.modalButton} />
           </View>
+          <Text style={styles.countdownText}>
+            3초가 지나면 '네' 로 진행합니다.
+          </Text>
         </View>
       </View>
     </Modal>
@@ -76,8 +94,8 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   obooniImage: {
-    width: 72,
-    height: 72,
+    width: 80,
+    height: 80,
     marginBottom: 20,
   },
   questionText: {
@@ -92,11 +110,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
+    marginBottom: 15,
   },
   modalButton: {
     flex: 1,
     marginHorizontal: 5,
   },
+  countdownText: {
+    fontSize: FontSizes.small,
+    color: Colors.secondaryBrown,
+    textAlign: 'center',
+  },
 });
 
-export default PomodoroResetConfirmModal;
+export default PomodoroBreakOptionModal;

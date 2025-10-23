@@ -51,17 +51,44 @@ const PomodoroCycleCompleteScreen = () => {
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('pomodoro.header')} showBackButton={true} />
-
-      <ScrollView contentContainerStyle={styles.contentContainer}> {/* ScrollView로 감싸기 */}
-        <Text style={styles.cycleCompleteText}>{t('pomodoro.cycle_complete', { count: cycleCount })}</Text>
+  
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        {/* 상단 타이틀 */}
+        <Text style={styles.titleText}>공부하기</Text>
         
-        <CharacterImage style={styles.obooniCharacter} />
+        {/* GIF 애니메이션 */}
+        <Image 
+          source={require('../../../assets/포모도로.gif')}
+          style={styles.pomodoroGif}
+        />
         
+        {/* 사이클 완료 메시지 */}
+        <Text style={styles.cycleCompleteText}>
+          {cycleCount} 사이클 완료!
+        </Text>
+        
+        <Text style={styles.questionText}>
+          {cycleCount} 사이클 더 하실래요?
+        </Text>
+        
+        {/* 버튼들 */}
         <View style={styles.buttonContainer}>
-          <Button title={t('pomodoro.continue')} onPress={handleContinue} style={styles.actionButton} />
-          <Button title={t('pomodoro.stop')} onPress={handleStop} primary={false} style={styles.actionButton} />
+          <Button 
+            title="계속하기" 
+            onPress={handleContinue} 
+            style={styles.continueButton}
+          />
+          <Button 
+            title="그만하기" 
+            onPress={handleStop} 
+            primary={false} 
+            style={styles.stopButton} 
+          />
         </View>
-        <Text style={styles.autoProceedText}>{countdown}초가 지나면 "{t('pomodoro.continue')}" 로 진행합니다.</Text>
+        
+        <Text style={styles.autoProceedText}>
+          3초가 지나면 '계속하기' 로 진행합니다.
+        </Text>
       </ScrollView>
     </View>
   );
@@ -72,34 +99,58 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primaryBeige,
   },
-  contentContainer: { // ScrollView의 contentContainerStyle로 사용
+  contentContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+    paddingVertical: 40,
   },
-  cycleCompleteText: {
+  titleText: {
     fontSize: FontSizes.extraLarge,
     fontWeight: FontWeights.bold,
     color: Colors.textDark,
     marginBottom: 30,
     textAlign: 'center',
   },
-  obooniCharacter: {
-    width: 250,
-    height: 250,
-    marginBottom: 50,
+  pomodoroGif: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
+    marginBottom: 30,
+  },
+  cycleCompleteText: {
+    fontSize: FontSizes.extraLarge,
+    fontWeight: FontWeights.bold,
+    color: Colors.textDark,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  questionText: {
+    fontSize: FontSizes.large,
+    color: Colors.textDark,
+    marginBottom: 40,
+    textAlign: 'center',
   },
   buttonContainer: {
-    width: '80%',
-    alignItems: 'center',
+    flexDirection: 'row',
+    width: '90%',
+    justifyContent: 'space-between',
+    marginBottom: 20,
   },
-  actionButton: {
-    marginBottom: 15,
+  continueButton: {
+    flex: 1,
+    marginRight: 10,
+    backgroundColor: Colors.accentYellow,
+  },
+  stopButton: {
+    flex: 1,
+    marginLeft: 10,
   },
   autoProceedText: {
-    marginTop: 6,
+    fontSize: FontSizes.small,
     color: Colors.secondaryBrown,
+    textAlign: 'center',
   },
 });
 
