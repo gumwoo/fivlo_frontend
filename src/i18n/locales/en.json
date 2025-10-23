@@ -181,7 +181,7 @@
     "view_analysis": "View Focus Analysis",
     "finish_modal_message": "Pomodoro complete\nObooni gives you a coin\nGreat job ~",
     "ok": "OK",
-    "reset_confirm_question": "Do you want to end the Pomodoro or continue?",
+    "reset_confirm_question": "Do you want to finish your concentration time with Obooni?",
     "stop_title_generic": "Focus completed!",
     "stop_message": "Obooni praises you ~",
     "navigate": "Navigate",

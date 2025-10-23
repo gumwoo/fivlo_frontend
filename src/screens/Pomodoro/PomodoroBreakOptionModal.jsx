@@ -1,7 +1,7 @@
 // src/screens/Pomodoro/PomodoroBreakOptionModal.jsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Modal } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
 // 공통 스타일 및 컴포넌트 임포트
@@ -14,38 +14,51 @@ const PomodoroBreakOptionModal = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const [countdown, setCountdown] = useState(3);
-  
+
   const { onContinue, onBreak } = route.params;
 
+  // ✅ 수정된 함수: 부모 콜백 실행 → navigation.goBack() 순서
   const handleContinue = () => {
-    navigation.goBack();
     setTimeout(() => {
-      try { onContinue && onContinue(); } catch {}
+      try {
+        onContinue && onContinue(); // 부모 로직 먼저 실행
+      } catch (e) {
+        console.warn('onContinue error:', e);
+      }
+      navigation.goBack(); // 그 다음 모달 닫기
     }, 100);
   };
 
   const handleBreak = () => {
-    navigation.goBack();
     setTimeout(() => {
-      try { onBreak && onBreak(); } catch {}
+      try {
+        onBreak && onBreak(); // 부모 로직 먼저 실행
+      } catch (e) {
+        console.warn('onBreak error:', e);
+      }
+      navigation.goBack(); // 그 다음 모달 닫기
     }, 100);
   };
 
+  // ✅ 안전한 타이머 (언마운트 방지 포함)
   useEffect(() => {
-    // 3초 카운트다운
+    let mounted = true;
     const timer = setInterval(() => {
       setCountdown((prev) => {
+        if (!mounted) return prev;
         if (prev <= 1) {
           clearInterval(timer);
-          // 시간 종료 시 "네" 선택 (바로 진행)
-          handleContinue();
+          setTimeout(handleContinue, 0); // 즉시가 아닌 다음 tick에서 실행
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      mounted = false;
+      clearInterval(timer);
+    };
   }, []);
 
   return (
@@ -63,10 +76,15 @@ const PomodoroBreakOptionModal = () => {
           </Text>
           <View style={styles.buttonContainer}>
             <Button title="네" onPress={handleContinue} style={styles.modalButton} />
-            <Button title="아니오" onPress={handleBreak} primary={false} style={styles.modalButton} />
+            <Button
+              title="아니오"
+              onPress={handleBreak}
+              primary={false}
+              style={styles.modalButton}
+            />
           </View>
           <Text style={styles.countdownText}>
-            3초가 지나면 '네' 로 진행합니다.
+            {countdown}초가 지나면 '네' 로 진행합니다.
           </Text>
         </View>
       </View>

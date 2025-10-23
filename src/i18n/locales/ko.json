@@ -190,7 +190,7 @@
     "view_analysis": "집중도 분석 보러가기",
     "finish_modal_message": "포모도로 완료\n오분이가 코인을 드렸습니다\n고생하셨습니다 ~",
     "ok": "확인",
-    "reset_confirm_question": "포모도로를 끝낼지 지속할지 묻습니다.",
+    "reset_confirm_question": "오분이와 함께하는 집중 시간을 끝내시겠습니까?",
     "stop_title_generic": "집중 완료 !",
     "stop_message": "오분이가 칭찬합니다 ~",
     "navigate": "이동",
