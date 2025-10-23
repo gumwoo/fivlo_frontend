@@ -20,6 +20,9 @@ const PomodoroBreakChoiceScreen = () => {
 
   const { selectedGoal, focusedTime = 0 } = route.params;
 
+  // selectedGoal이 객체인 경우 text 속성 추출
+  const goalText = selectedGoal?.text || selectedGoal || t('pomodoro.study_mode');
+
   // 시간 포맷 함수 (초 → 분초)
   const formatTime = (totalSeconds) => {
     const minutes = Math.floor(totalSeconds / 60);
@@ -41,7 +44,7 @@ const PomodoroBreakChoiceScreen = () => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {/* 상단 타이틀 - 선택한 목표 표시 */}
         <Text style={styles.titleText}>
-          {selectedGoal || t('pomodoro.study_mode')}
+          {goalText}
         </Text>
         
         {/* GIF 애니메이션 캐릭터 */}
