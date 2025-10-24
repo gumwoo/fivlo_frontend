@@ -7,6 +7,8 @@ import { format, startOfWeek, addDays } from 'date-fns';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import useFocusStore from '../../store/focusStore';
+import DonutChart from '../../components/common/DonutChart';
+import { formatTime } from '../../utils/timeFormat';
 
 const DailyAnalysisView = ({ date }) => {
   const { getRecordsByDate } = useFocusStore();
@@ -24,21 +26,22 @@ const DailyAnalysisView = ({ date }) => {
     // 활동별로 그룹화하고 총 시간 계산
     const activitiesMap = {};
     let totalTime = 0;
-
+    
     records.forEach((record) => {
       const goal = record.goal || '기타';
-      const time = record.focusedTime || 0;
+      const time = record.focusedTime || 0; // 초 단위
       
       if (!activitiesMap[goal]) {
         activitiesMap[goal] = {
           id: goal,
           name: goal,
-          time: 0,
+          time: 0, // 분 단위로 저장
           color: getColorForGoal(goal),
         };
       }
       
-      activitiesMap[goal].time += time;
+      // ✅ 초를 분으로 변환하여 저장
+      activitiesMap[goal].time += Math.floor(time / 60);
       totalTime += time;
     });
 
@@ -130,16 +133,26 @@ const DailyAnalysisView = ({ date }) => {
         <Text style={styles.noDataText}>해당 날짜에 집중 기록이 없습니다.</Text>
       )}
 
-      {/* 집중도 통계 (5번) */}
-      <Text style={styles.sectionTitle}>집중도 통계</Text>
-      <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>총 집중 시간</Text>
-          <Text style={styles.statValue}>{dailyData?.totalConcentrationTime || 0}분</Text>
+      {/* 집중도 통계 (5번) - 사진과 동일하게 */}
+      <View style={styles.statsContainerWithChart}>
+        {/* 왼쪽: 총 집중 시간 */}
+        <View style={styles.statTextSection}>
+          <Text style={styles.statLabelSmall}>총 집중 시간</Text>
+          <Text style={styles.statValueLarge}>{formatTime(dailyData?.totalConcentrationTime || 0)}</Text>
         </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>집중 비율</Text>
-          <Text style={styles.statValue}>{dailyData?.concentrationRatio || 0}%</Text>
+        
+        {/* 구분선 */}
+        <View style={styles.divider} />
+        
+        {/* 오른쪽: 원형 차트 + 집중 비율 */}
+        <View style={styles.chartSection}>
+          <DonutChart 
+            percentage={dailyData?.concentrationRatio || 0} 
+            size={80}
+            strokeWidth={8}
+            color={Colors.secondaryBrown}
+          />
+          <Text style={styles.statLabelSmall}>집중 비율</Text>
         </View>
       </View>
     </View>
@@ -241,7 +254,48 @@ const styles = StyleSheet.create({
     marginTop: 30,
     paddingHorizontal: 20,
   },
-  // 통계 스타일
+  // 통계 스타일 - 사진과 동일한 레이아웃
+  statsContainerWithChart: {
+    width: '100%',
+    paddingHorizontal: 20,
+    marginTop: 30,
+    marginBottom: 20,
+    flexDirection: 'row',
+    backgroundColor: Colors.textLight,
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  statTextSection: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  statLabelSmall: {
+    fontSize: FontSizes.small,
+    color: Colors.secondaryBrown,
+    marginBottom: 5,
+  },
+  statValueLarge: {
+    fontSize: FontSizes.extraLarge,
+    fontWeight: FontWeights.bold,
+    color: Colors.textDark,
+  },
+  divider: {
+    width: 1,
+    height: '80%',
+    backgroundColor: Colors.secondaryBrown,
+    marginHorizontal: 15,
+  },
+  chartSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   statsContainer: {
     width: '100%',
     paddingHorizontal: 20,

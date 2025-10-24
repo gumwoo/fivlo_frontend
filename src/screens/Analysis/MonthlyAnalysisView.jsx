@@ -2,74 +2,114 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ScrollView, TouchableOpacity } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { format, startOfMonth, eachDayOfInterval, endOfMonth, isSameDay } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
 // 공통 스타일 및 컴포넌트 임포트
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
-
-// 캘린더 한국어 설정 (TaskCalendarScreen과 동일)
-LocaleConfig.locales['ko'] = {
-  monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-  monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-  dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
-  dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-  today: '오늘',
-};
-LocaleConfig.defaultLocale = 'ko';
+import useFocusStore from '../../store/focusStore';
+import DonutChart from '../../components/common/DonutChart';
+import { formatTime } from '../../utils/timeFormat';
+import ObooniCalendar from '../../components/common/ObooniCalendar';
 
 const MonthlyAnalysisView = ({ date }) => {
-  // 임시 데이터 (실제로는 백엔드에서 해당 월의 집중 기록 가져옴)
-  const mockMonthlyData = {
-    '2025-07': { // 해당 월 (yyyy-MM)
-      totalConcentrationTime: 3500, // 월간 누적 (분)
-      averageConcentrationTime: 113, // 월간 평균 (분)
-      concentrationRatio: 72, // %
-      focusTime: 3500,
-      breakTime: 1500,
-      dailyConcentration: { // 일별 집중 시간 (분)
-        '2025-07-01': { minutes: 120, activities: [{ name: '독서', color: '#A0FFC3' }] },
-        '2025-07-05': { minutes: 180, activities: [{ name: '공부', color: '#99DDFF' }] },
-        '2025-07-10': { minutes: 60, activities: [{ name: '운동', color: '#FFABAB' }] },
-        '2025-07-15': { minutes: 240, activities: [{ name: '개발', color: '#FFC3A0' }] },
-        '2025-07-20': { minutes: 150, activities: [{ name: '토익', color: '#FFD1DC' }] },
-        '2025-07-25': { minutes: 90, activities: [{ name: '일상', color: Colors.primaryBeige }] },
-      },
-      monthlyActivities: [ // 월간 집중 분야 분석
-        { name: '공부', totalTime: 1500, color: '#99DDFF' },
-        { name: '운동', totalTime: 800, color: '#FFABAB' },
-        { name: '개발', totalTime: 700, color: '#FFC3A0' },
-        { name: '독서', totalTime: 500, color: '#A0FFC3' },
-      ],
-    },
-    '2025-06': { // 이전 월 예시
-      totalConcentrationTime: 2800,
-      averageConcentrationTime: 93,
-      concentrationRatio: 68,
-      focusTime: 2800,
-      breakTime: 1300,
-      dailyConcentration: {},
-      monthlyActivities: [],
-    }
+  const { records } = useFocusStore();
+  const [monthlyData, setMonthlyData] = useState(null);
+  const [selectedDayActivities, setSelectedDayActivities] = useState(null);
+
+  // 목표별 색상 지정
+  const getColorForGoal = (goal) => {
+    const colors = {
+      '공부하기': '#99DDFF',
+      '운동하기': '#FFABAB',
+      '독서하기': '#A0FFC3',
+      '개발': '#FFC3A0',
+      '토익': '#FFD1DC',
+      '업무': '#D1B5FF',
+      '일상': Colors.primaryBeige,
+      '기타': Colors.lightGray,
+    };
+    return colors[goal] || Colors.lightGray;
   };
 
-  const [monthlyData, setMonthlyData] = useState(null);
-  const [selectedDayActivities, setSelectedDayActivities] = useState(null); // 막대 그래프 클릭 시 활동 표시
-
   useEffect(() => {
-    const monthString = format(date, 'yyyy-MM');
-    setMonthlyData(mockMonthlyData[monthString] || {
-      totalConcentrationTime: 0,
-      averageConcentrationTime: 0,
-      concentrationRatio: 0,
-      focusTime: 0,
-      breakTime: 0,
-      dailyConcentration: {},
-      monthlyActivities: [],
+    const monthPrefix = format(date, 'yyyy-MM');
+    const monthRecords = records.filter(r => r.date && r.date.startsWith(monthPrefix));
+    
+    if (__DEV__) {
+      console.log('[MonthlyAnalysisView] Month:', monthPrefix, 'Records:', monthRecords.length);
+    }
+
+    // 일별 집중 시간 계산
+    const dailyConcentration = {};
+    const activitiesMap = {};
+
+    monthRecords.forEach(record => {
+      const recordDate = record.date;
+      const minutes = (record.focusedTime || 0) / 60;
+      const goal = record.goal || '기타';
+
+      // 일별 집계
+      if (!dailyConcentration[recordDate]) {
+        dailyConcentration[recordDate] = {
+          minutes: 0,
+          activities: [],
+        };
+      }
+      dailyConcentration[recordDate].minutes += minutes;
+      dailyConcentration[recordDate].activities.push({
+        name: goal,
+        color: getColorForGoal(goal),
+        time: Math.floor(minutes),
+      });
+
+      // 활동별(카테고리별) 집계
+      if (!activitiesMap[goal]) {
+        activitiesMap[goal] = 0;
+      }
+      activitiesMap[goal] += minutes;
     });
-  }, [date]);
+
+    // minutes를 정수로 변환
+    Object.keys(dailyConcentration).forEach(dateKey => {
+      dailyConcentration[dateKey].minutes = Math.floor(dailyConcentration[dateKey].minutes);
+    });
+
+    // monthlyActivities 배열 생성 (시간순 정렬)
+    const monthlyActivities = Object.entries(activitiesMap)
+      .map(([name, totalTime]) => ({
+        name,
+        totalTime: Math.floor(totalTime),
+        color: getColorForGoal(name),
+      }))
+      .sort((a, b) => b.totalTime - a.totalTime); // 내림차순
+
+    // 총 집중 시간 (분)
+    const totalConcentrationTime = monthlyActivities.reduce((sum, a) => sum + a.totalTime, 0);
+    
+    // 월간 일수 계산
+    const daysInMonth = endOfMonth(date).getDate();
+    
+    // 평균 집중 시간 (분)
+    const averageConcentrationTime = Math.floor(totalConcentrationTime / daysInMonth);
+    
+    // 집중 비율 (총 집중 시간 / 월간 총 시간 * 100)
+    const totalMonthMinutes = daysInMonth * 24 * 60;
+    const concentrationRatio = totalConcentrationTime > 0 
+      ? Math.min(100, Math.floor((totalConcentrationTime / totalMonthMinutes) * 100))
+      : 0;
+
+    setMonthlyData({
+      totalConcentrationTime,
+      averageConcentrationTime,
+      concentrationRatio,
+      focusTime: totalConcentrationTime,
+      breakTime: 0, // TODO: 휴식 시간 계산
+      dailyConcentration,
+      monthlyActivities,
+    });
+  }, [date, records]);
 
   // 월간 바 차트 데이터 (13번)
   const getMonthlyBarChartData = () => {
@@ -97,47 +137,10 @@ const MonthlyAnalysisView = ({ date }) => {
         <View style={[styles.bar, { height: `${heightPercentage}%`, backgroundColor: barColor }]} />
         <Text style={styles.barLabel}>{format(item.date, 'dd')}</Text>
       </TouchableOpacity>
-    );
-  };
-
-  // 월간 달력 UI (16번)
-  const getMarkedDatesForCalendar = () => {
-    const marked = {};
-    const start = startOfMonth(date);
-    const end = endOfMonth(date);
-    const daysInMonth = eachDayOfInterval({ start, end });
-
-    daysInMonth.forEach(day => {
-      const dayString = format(day, 'yyyy-MM-dd');
-      const minutes = monthlyData?.dailyConcentration[dayString]?.minutes || 0;
-      let backgroundColor = Colors.textLight; // 기본 흰색
-
-      if (minutes > 0) {
-        if (minutes < 60) { // 0 ~ 1시간
-          backgroundColor = '#F5E6CC'; // 밝은 갈색 (primaryBeige보다 밝게)
-        } else if (minutes >= 60 && minutes < 120) { // 1 ~ 2시간
-          backgroundColor = '#D4B88C'; // 중간 갈색
-        } else { // 2시간 이상
-          backgroundColor = '#A87C6F'; // 짙은 갈색 (secondaryBrown)
-        }
-      }
-
-      marked[dayString] = {
-        customStyles: {
-          container: {
-            backgroundColor: backgroundColor,
-            borderRadius: 5,
-          },
-          text: {
-            color: minutes > 0 ? Colors.textLight : Colors.textDark, // 집중량에 따라 텍스트 색상 변경
-          },
-        },
+      );
       };
-    });
-    return marked;
-  };
-
-  return (
+      
+      return (
     <View style={styles.container}>
       {/* 월간 집중 분야 분석 (12번) */}
       <Text style={styles.sectionTitle}>월간 집중 분야 분석</Text>
@@ -197,63 +200,43 @@ const MonthlyAnalysisView = ({ date }) => {
         </View>
       )}
 
-      {/* 월간 달력 UI (16번) */}
-      <Text style={styles.sectionTitle}>월간 집중량 달력</Text>
-      <Calendar
-        markingType={'custom'}
-        markedDates={getMarkedDatesForCalendar()}
-        theme={{
-          backgroundColor: Colors.primaryBeige,
-          calendarBackground: Colors.primaryBeige,
-          textSectionTitleColor: Colors.secondaryBrown,
-          selectedDayBackgroundColor: Colors.accentApricot, // 이 부분은 customStyles로 덮어씌워짐
-          selectedDayTextColor: Colors.textLight,
-          todayTextColor: Colors.accentApricot,
-          dayTextColor: Colors.textDark,
-          textDisabledColor: '#d9e1e8',
-          dotColor: Colors.accentApricot,
-          selectedDotColor: Colors.textLight,
-          arrowColor: Colors.secondaryBrown,
-          monthTextColor: Colors.textDark,
-          textMonthFontWeight: FontWeights.bold,
-          textMonthFontSize: FontSizes.large,
-          textDayHeaderFontWeight: FontWeights.medium,
-          textDayFontSize: FontSizes.medium,
-          textDayFontWeight: FontWeights.regular,
-        }}
-        style={styles.calendar}
+      {/* 월간 달력 UI (16번) - 오보니 캐릭터 달력 */}
+      <ObooniCalendar 
+        date={date}
+        dailyConcentration={monthlyData?.dailyConcentration || {}}
       />
-
-      {/* 월간 집중도 통계 (14번) */}
-      <Text style={styles.sectionTitle}>월간 집중도 통계</Text>
-      <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>총 집중 시간</Text>
-          <Text style={styles.statValue}>{monthlyData?.totalConcentrationTime || 0}분</Text>
+      <View style={styles.statsContainerWithChart}>
+        {/* 왼쪽: 총 집중 시간 + 평균 집중 시간 */}
+        <View style={styles.statTextSection}>
+          <View style={styles.statRow}>
+            <Text style={styles.statLabelSmall}>월간 총 집중 시간</Text>
+            <Text style={styles.statValueLarge}>{formatTime(monthlyData?.totalConcentrationTime || 0)}</Text>
+          </View>
+          <View style={[styles.statRow, { marginTop: 15 }]}>
+            <Text style={styles.statLabelSmall}>월간 평균 집중 시간</Text>
+            <Text style={styles.statValueLarge}>{formatTime(monthlyData?.averageConcentrationTime || 0)}</Text>
+          </View>
         </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>평균 집중 시간</Text>
-          <Text style={styles.statValue}>{monthlyData?.averageConcentrationTime || 0}분</Text>
-        </View>
-      </View>
-
-      {/* 집중 비율 (15번) */}
-      <Text style={styles.sectionTitle}>집중 비율</Text>
-      <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>집중 시간과 휴식 시간 비율</Text>
-          <Text style={styles.statValue}>{monthlyData?.concentrationRatio || 0}%</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>집중 시간</Text>
-          <Text style={styles.statValue}>{monthlyData?.focusTime || 0}분</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statLabel}>휴식 시간</Text>
-          <Text style={styles.statValue}>{monthlyData?.breakTime || 0}분</Text>
-        </View>
-      </View>
-    </View>
+        
+        {/* 구분선 */}
+        <View style={styles.divider} />
+        
+        {/* 오른쪽: 원형 차트 + 집중 비율 */}
+        <View style={styles.chartSection}>
+          <Text style={styles.statLabelSmall}>월간 집중 비율</Text>
+          <DonutChart 
+            percentage={monthlyData?.concentrationRatio || 0} 
+            size={100}
+            strokeWidth={10}
+            color={Colors.secondaryBrown}
+          />
+          <View style={styles.chartLabels}>
+            <Text style={styles.chartLabelText}>집중 시간   {formatTime(monthlyData?.focusTime || 0)}</Text>
+            <Text style={styles.chartLabelText}>휴식 시간   {formatTime(monthlyData?.breakTime || 0)}</Text>
+          </View>
+          </View>
+          </View>
+          </View>
   );
 };
 
@@ -395,7 +378,59 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginBottom: 20,
   },
-  // 통계 스타일 (DailyAnalysisView와 유사)
+  // 통계 스타일 - 사진과 동일한 레이아웃
+  statsContainerWithChart: {
+    width: '100%',
+    paddingHorizontal: 20,
+    marginTop: 30,
+    marginBottom: 20,
+    flexDirection: 'row',
+    backgroundColor: Colors.textLight,
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  statTextSection: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  statRow: {
+    marginBottom: 5,
+  },
+  statLabelSmall: {
+    fontSize: FontSizes.small,
+    color: Colors.secondaryBrown,
+    marginBottom: 5,
+  },
+  statValueLarge: {
+    fontSize: FontSizes.large,
+    fontWeight: FontWeights.bold,
+    color: Colors.textDark,
+  },
+  divider: {
+    width: 1,
+    height: '80%',
+    backgroundColor: Colors.secondaryBrown,
+    marginHorizontal: 15,
+  },
+  chartSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chartLabels: {
+    marginTop: 10,
+  },
+  chartLabelText: {
+    fontSize: FontSizes.small,
+    color: Colors.textDark,
+    marginVertical: 2,
+  },
   statsContainer: {
     width: '100%',
     paddingHorizontal: 20,

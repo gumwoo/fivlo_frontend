@@ -1,0 +1,86 @@
+{
+  "tasks": [
+    {
+      "id": "bbb6663e-e45f-41ec-adad-7d8adbfaaf98",
+      "name": "WeeklyAnalysisView focusStore 연동",
+      "description": "주간 분석 화면에서 mock 데이터를 제거하고 focusStore를 연동하여 실제 포모도로 집중 시간을 표시합니다.",
+      "notes": "- 일요일 시작 (weekStartsOn: 0)\n- focusedTime은 초 단위이므로 /60 필요\n- 총 집중 시간, 평균 집중 시간 계산",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-10-24T17:07:57.212Z",
+      "updatedAt": "2025-10-24T17:10:50.229Z",
+      "relatedFiles": [
+        {
+          "path": "C:\\fivlofe-master\\src\\screens\\Analysis\\WeeklyAnalysisView.jsx",
+          "type": "TO_MODIFY",
+          "description": "주간 분석 화면 - mock 데이터 제거 및 focusStore 연동"
+        },
+        {
+          "path": "C:\\fivlofe-master\\src\\store\\focusStore.js",
+          "type": "REFERENCE",
+          "description": "집중 시간 기록 스토어 - getRecordsByDateRange() 사용"
+        }
+      ],
+      "implementationGuide": "1. useFocusStore import 추가\n2. mockWeeklyData 제거\n3. useEffect에서 focusStore.getRecordsByDateRange() 호출\n4. 요일별 집중 시간 계산 (7일)\n5. 활동별 색상 매핑\n6. 바 차트 데이터 생성\n\npseudocode:\nconst { getRecordsByDateRange } = useFocusStore();\nuseEffect(() => {\n  const weekStart = startOfWeek(date);\n  const weekEnd = addDays(weekStart, 6);\n  const records = getRecordsByDateRange(...);\n  const dailyData = Array(7).map((_, i) => {\n    const day = addDays(weekStart, i);\n    const dayRecords = records.filter(r => r.date === ...);\n    return { day: format(day, 'EEEEEE'), minutes: ... };\n  });\n  setWeeklyData({ dailyConcentration: dailyData, ... });\n}, [date]);",
+      "verificationCriteria": "- mockWeeklyData 완전 제거 확인\n- focusStore에서 실제 데이터 조회\n- 요일별 바 차트 정상 표시\n- 총 집중 시간, 평균 집중 시간 정확히 계산",
+      "analysisResult": "포모도로 집중 시간을 일/주/월 분석 화면에 연동.\\n\\n**목표:**\\n1. WeeklyAnalysisView: focusStore 연동\\n2. MonthlyAnalysisView: focusStore 연동 + 달력 마커\\n3. UI 개선: 사진과 동일한 디자인\\n\\n**기술 스택:**\\n- React Native 0.79.5\\n- Zustand (focusStore)\\n- date-fns\\n- react-native-calendars\\n\\n**주의사항:**\\n- mock 데이터 제거\\n- Colors, FontSizes 상수 사용\\n- 시간 형식: 시간/분",
+      "summary": "WeeklyAnalysisView focusStore 연동 완료! ✅\\n\\n**구현 내용:**\\n1. useFocusStore import 추가\\n2. mockWeeklyData 완전 제거\\n3. getRecordsByDateRange()로 주간 데이터 조회\\n4. 요일별 집중 시간 계산 (일요일 시작 7일)\\n5. 활동별 색상 매핑 (getColorForGoal)\\n6. 총 집중 시간, 평균 집중 시간, 가장 집중한 요일 계산\\n7. 집중 비율 계산 (주간 총 시간 대비)\\n\\n**기술 세부사항:**\\n- focusedTime(초) → /60으로 분 변환\\n- startOfWeek(date, {weekStartsOn: 0}) 사용\\n- date-fns format()으로 요일 표시\\n- useEffect 의존성에 getRecordsByDateRange 추가\\n\\n**개선점:**\\n- 휴식 시간(breakTime) 계산은 TODO로 남김 (포모도로에서 휴식 시간 기록 필요)",
+      "completedAt": "2025-10-24T17:10:50.228Z"
+    },
+    {
+      "id": "7012fa50-c276-45b8-9a1d-286213192ab0",
+      "name": "MonthlyAnalysisView focusStore 연동",
+      "description": "월간 분석 화면에서 mock 데이터를 제거하고 focusStore를 연동하여 실제 포모도로 집중 시간을 표시합니다.",
+      "notes": "- 월 형식: yyyy-MM\n- 카테고리별 범례 색상 통일 필요\n- 총 집중 시간, 평균 집중 시간, 집중 비율 계산",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2025-10-24T17:07:57.212Z",
+      "updatedAt": "2025-10-24T17:12:31.350Z",
+      "relatedFiles": [
+        {
+          "path": "C:\\fivlofe-master\\src\\screens\\Analysis\\MonthlyAnalysisView.jsx",
+          "type": "TO_MODIFY",
+          "description": "월간 분석 화면 - mock 데이터 제거 및 focusStore 연동"
+        },
+        {
+          "path": "C:\\fivlofe-master\\src\\store\\focusStore.js",
+          "type": "REFERENCE",
+          "description": "집중 시간 기록 스토어 - records 배열 사용"
+        }
+      ],
+      "implementationGuide": "1. useFocusStore import 추가\n2. mockMonthlyData 제거\n3. useEffect에서 해당 월의 records 필터링\n4. 일별 집중 시간 계산\n5. 활동별(카테고리별) 총 시간 계산\n6. 통계 데이터 생성\n\npseudocode:\nconst { records } = useFocusStore();\nuseEffect(() => {\n  const monthPrefix = format(date, 'yyyy-MM');\n  const monthRecords = records.filter(r => r.date.startsWith(monthPrefix));\n  const dailyConcentration = {};\n  const activitiesMap = {};\n  monthRecords.forEach(record => {\n    if (!dailyConcentration[record.date]) dailyConcentration[record.date] = { minutes: 0 };\n    dailyConcentration[record.date].minutes += record.focusedTime / 60;\n    if (!activitiesMap[record.goal]) activitiesMap[record.goal] = 0;\n    activitiesMap[record.goal] += record.focusedTime / 60;\n  });\n  setMonthlyData({ dailyConcentration, monthlyActivities: Object.entries(activitiesMap).map(...), ... });\n}, [date]);",
+      "verificationCriteria": "- mockMonthlyData 완전 제거 확인\n- focusStore에서 실제 데이터 조회\n- 일별 집중 시간 정확히 계산\n- 활동별(카테고리별) 총 시간 정확히 집계",
+      "analysisResult": "포모도로 집중 시간을 일/주/월 분석 화면에 연동.\\n\\n**목표:**\\n1. WeeklyAnalysisView: focusStore 연동\\n2. MonthlyAnalysisView: focusStore 연동 + 달력 마커\\n3. UI 개선: 사진과 동일한 디자인\\n\\n**기술 스택:**\\n- React Native 0.79.5\\n- Zustand (focusStore)\\n- date-fns\\n- react-native-calendars\\n\\n**주의사항:**\\n- mock 데이터 제거\\n- Colors, FontSizes 상수 사용\\n- 시간 형식: 시간/분",
+      "summary": "MonthlyAnalysisView focusStore 연동 완료! ✅\\n\\n**구현 내용:**\\n1. useFocusStore import 추가\\n2. mockMonthlyData 완전 제거 (30줄 → 0줄)\\n3. records 배열에서 월별 필터링 (date.startsWith(monthPrefix))\\n4. 일별 집중 시간 계산 (dailyConcentration 객체)\\n5. 활동별(카테고리별) 총 시간 집계 (activitiesMap)\\n6. monthlyActivities 배열 생성 (시간순 내림차순)\\n7. 통계 계산:\\n   - 총 집중 시간 (월간 누적)\\n   - 평균 집중 시간 (일일 평균)\\n   - 집중 비율 (월간 총 시간 대비 %)\\n\\n**기술 구현:**\\n- focusedTime(초) → /60으로 분 변환\\n- endOfMonth(date).getDate()로 월간 일수 계산\\n- Object.entries()로 activitiesMap 배열 변환\\n- sort()로 활동별 시간 내림차순 정렬\\n\\n**데이터 구조:**\\n- dailyConcentration: { '2025-07-01': { minutes: 120, activities: [...] } }\\n- monthlyActivities: [{ name, totalTime, color }, ...]",
+      "completedAt": "2025-10-24T17:12:31.349Z"
+    },
+    {
+      "id": "c15e9984-7c60-4305-a274-fd4c6db429b5",
+      "name": "월간 달력 동그라미 마커 추가",
+      "description": "MonthlyAnalysisView의 달력에 집중 활동이 있는 날짜에 동그라미 마커를 표시합니다 (16번 스크린샷 요구사항).",
+      "notes": "- react-native-calendars의 customStyles 사용\n- 집중 시간이 있는 날만 마커 표시\n- 색상: Colors.accentApricot (오렌지)\n- 오늘 날짜 강조",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "7012fa50-c276-45b8-9a1d-286213192ab0"
+        }
+      ],
+      "createdAt": "2025-10-24T17:07:57.212Z",
+      "updatedAt": "2025-10-24T17:14:05.902Z",
+      "relatedFiles": [
+        {
+          "path": "C:\\fivlofe-master\\src\\screens\\Analysis\\MonthlyAnalysisView.jsx",
+          "type": "TO_MODIFY",
+          "description": "달력 컴포넌트에 markedDates 추가",
+          "lineStart": 60,
+          "lineEnd": 120
+        }
+      ],
+      "implementationGuide": "1. dailyConcentration 데이터 기반으로 markedDates 객체 생성\n2. Calendar 컴포넌트에 markedDates prop 전달\n3. customStyles로 동그라미 스타일링\n\npseudocode:\nconst markedDates = {};\nObject.keys(dailyConcentration).forEach(date => {\n  if (dailyConcentration[date].minutes > 0) {\n    markedDates[date] = {\n      marked: true,\n      dotColor: Colors.accentApricot,\n      customStyles: {\n        container: { backgroundColor: Colors.lightBeige, borderRadius: 20 },\n        text: { color: Colors.textDark, fontWeight: 'bold' }\n      }\n    };\n  }\n});\n\n<Calendar\n  markedDates={markedDates}\n  markingType={'custom'}\n  theme={{ todayTextColor: Colors.accentApricot }}\n/>",
+      "verificationCriteria": "- 집중 시간이 있는 날짜에 동그라미 표시\n- 동그라미 색상 및 스타일 적용\n- 오늘 날짜 강조 표시",
+      "analysisResult": "포모도로 집중 시간을 일/주/월 분석 화면에 연동.\\n\\n**목표:**\\n1. WeeklyAnalysisView: focusStore 연동\\n2. MonthlyAnalysisView: focusStore 연동 + 달력 마커\\n3. UI 개선: 사진과 동일한 디자인\\n\\n**기술 스택:**\\n- React Native 0.79.5\\n- Zustand (focusStore)\\n- date-fns\\n- react-native-calendars\\n\\n**주의사항:**\\n- mock 데이터 제거\\n- Colors, FontSizes 상수 사용\\n- 시간 형식: 시간/분",
+      "summary": "월간 달력 동그라미 마커 추가 완료! ✅\\n\\n**구현 내용:**\\n1. ✅ dailyConcentration 데이터 기반으로 markedDates 객체 생성\\n2. ✅ 집중 시간에 따라 동그라미 색상 구분:\\n   - 0~1시간: 밝은 갈색 (#F5E6CC)\\n   - 1~2시간: 중간 갈색 (#D4B88C)\\n   - 2시간 이상: 짙은 갈색 (#A87C6F)\\n3. ✅ 동그라미 스타일링:\\n   - borderRadius: 20 (완전한 원형)\\n   - width/height: 36px\\n   - justifyContent/alignItems: center\\n4. ✅ 오늘 날짜 강조:\\n   - borderWidth: 2\\n   - borderColor: Colors.accentApricot (오렌지)\\n5. ✅ 텍스트 색상 자동 조정:\\n   - 밝은 배경: 어두운 텍스트\\n   - 어두운 배경: 밝은 텍스트\\n   - 집중 시간 있으면 굵게 (FontWeights.bold)\\n\\n**기술 구현:**\\n- react-native-calendars의 customStyles 활용\\n- format(new Date(), 'yyyy-MM-dd')로 오늘 날짜 확인\\n- 집중 시간 없으면 transparent (투명) 처리\\n\\n**UI/UX 개선:**\\n- 16번 스크린샷과 동일한 동그라미 디자인\\n- 직관적인 색상 그라데이션\\n- 오늘 날짜 테두리로 명확히 표시",
+      "completedAt": "2025-10-24T17:14:05.901Z"
+    }
+  ]
+}
