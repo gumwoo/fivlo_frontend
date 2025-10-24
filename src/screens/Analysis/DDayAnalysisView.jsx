@@ -6,23 +6,14 @@ import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format, differenceInDays, isSameDay, startOfMonth, eachDayOfInterval, endOfMonth, isValid } from 'date-fns';
 import { ko } from 'date-fns/locale';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 // 공통 스타일 및 컴포넌트 임포트
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Button from '../../components/common/Button';
-
-// 캘린더 한국어 설정
-LocaleConfig.locales['ko'] = {
-  monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-  monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-  dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
-  dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
-  today: '오늘',
-};
-LocaleConfig.defaultLocale = 'ko';
+import ObooniCalendar from '../../components/common/ObooniCalendar';
+import { formatTime } from '../../utils/timeFormat';
 
 // 목표 설정 모달 컴포넌트
 const GoalSettingModal = ({ visible, onClose, onSelectGoal }) => {
@@ -109,57 +100,7 @@ const DDayAnalysisView = ({ isPremiumUser }) => {
     }
     navigation.navigate('PomodoroTimerScreen', { goal: dDayGoal });
   };
-
-  const getMarkedDatesForCalendar = () => {
-    const marked = {};
-    const baseDateForCalendar = isValid(new Date(dDayGoal.date)) ? new Date(dDayGoal.date) : new Date();
-
-    const start = startOfMonth(baseDateForCalendar);
-    const end = endOfMonth(baseDateForCalendar);
-
-    if (!isValid(start) || !isValid(end)) {
-        return {};
-    }
-
-    const daysInMonth = eachDayOfInterval({ start, end });
-
-    daysInMonth.forEach(day => {
-      if (!isValid(day)) {
-        return;
-      }
-
-      const dayString = format(day, 'yyyy-MM-dd');
-      const minutes = dDayGoal.dailyConcentration[dayString]?.minutes || 0;
-      let obooniImageSource = null;
-
-      if (minutes > 0) {
-        if (minutes < 60) {
-          obooniImageSource = require('../../../assets/images/obooni_sad.png');
-        } else if (minutes >= 60 && minutes < 120) {
-          obooniImageSource = require('../../../assets/images/obooni_default.png');
-        } else {
-          obooniImageSource = require('../../../assets/images/obooni_happy.png');
-        }
-      }
-
-      if (obooniImageSource) {
-        marked[dayString] = {
-          customStyles: {
-            container: {
-              backgroundColor: minutes > 120 ? Colors.accentApricot : (minutes > 60 ? Colors.secondaryBrown : Colors.primaryBeige),
-              borderRadius: 5,
-            },
-            text: {
-              color: minutes > 0 ? Colors.textLight : Colors.textDark,
-            },
-          },
-          dots: [{ key: `obooni-${dayString}`, color: obooniImageSource ? Colors.accentApricot : 'transparent', selectedDotColor: 'transparent' }],
-        };
-      }
-    });
-    return marked;
-  };
-
+  
   if (isLocked) {
     return (
       <View style={styles.lockedContainer}>
@@ -230,40 +171,19 @@ const DDayAnalysisView = ({ isPremiumUser }) => {
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>총 집중 시간</Text>
-                <Text style={styles.statValue}>{dDayGoal.totalConcentrationTime || 0}분</Text>
+                <Text style={styles.statValue}>{formatTime(dDayGoal.totalConcentrationTime || 0)}</Text>
               </View>
               <View style={styles.statItem}>
                 <Text style={styles.statLabel}>현재까지 목표 달성율</Text>
                 <Text style={styles.statValue}>{dDayGoal.currentAchievementRate || 0}%</Text>
               </View>
             </View>
-
-            <Text style={styles.sectionTitle}>캘린더 달성일</Text>
-            <Calendar
-              markingType={'custom'}
-              markedDates={getMarkedDatesForCalendar()}
-              theme={{
-                backgroundColor: Colors.primaryBeige,
-                calendarBackground: Colors.primaryBeige,
-                textSectionTitleColor: Colors.secondaryBrown,
-                selectedDayBackgroundColor: Colors.accentApricot,
-                selectedDayTextColor: Colors.textLight,
-                todayTextColor: Colors.accentApricot,
-                dayTextColor: Colors.textDark,
-                textDisabledColor: '#d9e1e8',
-                dotColor: Colors.accentApricot,
-                selectedDotColor: Colors.textLight,
-                arrowColor: Colors.secondaryBrown,
-                monthTextColor: Colors.textDark,
-                textMonthFontWeight: FontWeights.bold,
-                textMonthFontSize: FontSizes.large,
-                textDayHeaderFontWeight: FontWeights.medium,
-                textDayFontSize: FontSizes.medium,
-                textDayFontWeight: FontWeights.regular,
-              }}
-              style={styles.calendar}
+            
+            <ObooniCalendar 
+              date={goalDate}
+              dailyConcentration={dDayGoal.dailyConcentration || {}}
             />
-          </>
+            </>
         )}
       </ScrollView>
     </View>
@@ -274,6 +194,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.primaryBeige,
+    paddingBottom: 100, // 하단 네비게이션 바 공간 확보
   },
   scrollViewContentContainer: {
     paddingHorizontal: 20,
@@ -355,7 +276,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   disabledButton: {
-    backgroundColor: Colors.gray,
+    backgroundColor: Colors.secondaryBrown,
     elevation: 0,
   },
   goalDisplayContainer: {

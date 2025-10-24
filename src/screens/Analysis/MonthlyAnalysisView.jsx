@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     paddingHorizontal: 0,
+    paddingBottom: 100, // 하단 네비게이션 바 공간 확보
   },
   sectionTitle: {
     fontSize: FontSizes.large,

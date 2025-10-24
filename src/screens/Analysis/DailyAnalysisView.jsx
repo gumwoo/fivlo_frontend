@@ -83,7 +83,7 @@ const DailyAnalysisView = ({ date }) => {
       <Text style={styles.activityTime}>{item.time}분</Text>
     </View>
   );
-
+  
   return (
     <View style={styles.container}>
       {/* 시간대별 바 차트 (3번) */}
@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     paddingHorizontal: 0, // AnalysisGraphScreen에서 이미 패딩 적용
+    paddingBottom: 100, // 하단 네비게이션 바 공간 확보
   },
   sectionTitle: {
     fontSize: FontSizes.large,
