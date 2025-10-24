@@ -10,7 +10,6 @@ import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Header from '../../components/common/Header';
 import Button from '../../components/common/Button';
-import TimeAttackMascot from '../../components/timeattack/TimeAttackMascot';
 import { useTranslation } from 'react-i18next';
 
 const TimeAttackAISubdivisionScreen = () => {
