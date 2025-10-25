@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Modal } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 // 공통 스타일 및 컴포넌트 임포트
 import { Colors } from '../../styles/color';
@@ -13,6 +14,7 @@ import CharacterImage from '../../components/common/CharacterImage';
 const PomodoroBreakOptionModal = () => {
   const route = useRoute();
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [countdown, setCountdown] = useState(3);
 
   const { onContinue, onBreak } = route.params;
@@ -66,19 +68,19 @@ const PomodoroBreakOptionModal = () => {
         <View style={styles.modalContent}>
           <CharacterImage style={styles.obooniImage} />
           <Text style={styles.questionText}>
-            휴식시간 없이 바로{'\n'}시이클을 진행하시겠어요?
+            {t('pomodoro.break_question')}
           </Text>
           <View style={styles.buttonContainer}>
-            <Button title="네" onPress={handleContinue} style={styles.modalButton} />
+            <Button title={t('pomodoro.yes')} onPress={handleContinue} style={styles.modalButton} />
             <Button
-              title="아니오"
+              title={t('pomodoro.no')}
               onPress={handleBreak}
               primary={false}
               style={styles.modalButton}
             />
           </View>
           <Text style={styles.countdownText}>
-            {countdown}초가 지나면 '네' 로 진행합니다.
+            {t('pomodoro.countdown_message', { count: countdown })}
           </Text>
         </View>
       </View>

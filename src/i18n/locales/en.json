@@ -87,7 +87,21 @@
       "dday": "D-Day"
     },
     "premium_title": "Premium feature",
-    "premium_message": "D-Day analysis is available in Premium. Go to payment page?"
+    "premium_message": "D-Day analysis is available in Premium. Go to payment page?",
+    "dday": {
+      "goal_phrase_title": "Set Goal Statement",
+      "goal_phrase_placeholder": "Enter your goal to achieve",
+      "goal_period_title": "Set Goal Period",
+      "goal_period_placeholder": "Select target date",
+      "start_button": "Start",
+      "focus_goal": "Focus Goal",
+      "focus_summary": "Focus Summary",
+      "total_focus_time": "Total Focus Time",
+      "achievement_rate": "Achievement Rate",
+      "alert_message": "Please set both goal statement and target date.",
+      "coding": "Coding",
+      "training": "Government-funded training"
+    }
   },
   "reminder": {
     "title": "Anti-forgetting reminders",
@@ -168,7 +182,8 @@
     "timer_remaining": "{{min}}m {{sec}}s remaining",
     "pause_resume": "Resume",
     "pause_reset": "Reset",
-    "break_question": "Proceed to next cycle without a break?",
+    "break_question": "Continue to next cycle without a break?",
+    "countdown_message": "Will proceed with 'Yes' in {{count}} seconds.",
     "yes": "Yes",
     "no": "No",
     "cycle_complete": "{{count}} cycle(s) completed!",
@@ -176,6 +191,7 @@
     "stop": "Stop",
     "finish_title": "25 minutes focus completed!",
     "finish_message": "Obooni praises you ~",
+    "to_analysis": "View Focus Analysis",
     "to_home": "Go to Home",
     "study_mode": "Study",
     "break_time": "Break Time",

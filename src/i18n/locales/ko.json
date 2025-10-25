@@ -87,7 +87,21 @@
       "dday": "D-Day"
     },
     "premium_title": "유료 기능",
-    "premium_message": "D-Day 분석은 유료 버전에서만 이용 가능합니다. 결제 페이지로 이동하시겠습니까?"
+    "premium_message": "D-Day 분석은 유료 버전에서만 이용 가능합니다. 결제 페이지로 이동하시겠습니까?",
+    "dday": {
+      "goal_phrase_title": "목표 문구 설정",
+      "goal_phrase_placeholder": "달성하고자 하는 목표를 입력하세요",
+      "goal_period_title": "목표 기간 설정",
+      "goal_period_placeholder": "목표 날짜를 선택하세요",
+      "start_button": "시작하기",
+      "focus_goal": "집중 목표",
+      "focus_summary": "집중 요약",
+      "total_focus_time": "총 집중 시간",
+      "achievement_rate": "현재까지 목표 달성율",
+      "alert_message": "목표 문구와 목표 기간을 모두 설정해주세요.",
+      "coding": "코딩하기",
+      "training": "국비 교육 공부하기"
+    }
   },
   "reminder": {
     "title": "망각방지 알림 시스템",
@@ -178,6 +192,7 @@
     "pause_resume": "다시 시작",
     "pause_reset": "초기화",
     "break_question": "휴식 시간 없이 바로 사이클을 진행하시겠어요?",
+    "countdown_message": "{{count}}초가 지나면 '네' 로 진행합니다.",
     "yes": "네",
     "no": "아니오",
     "cycle_complete": "{{count}} 사이클 완료!",

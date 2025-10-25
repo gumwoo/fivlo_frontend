@@ -7,6 +7,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { format, differenceInDays, isSameDay, startOfMonth, eachDayOfInterval, endOfMonth, isValid } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 // 공통 스타일 및 컴포넌트 임포트
 import { Colors } from '../../styles/color';
@@ -16,10 +17,16 @@ import ObooniCalendar from '../../components/common/ObooniCalendar';
 import { formatTime } from '../../utils/timeFormat';
 
 // 목표 설정 모달 컴포넌트
-const GoalSettingModal = ({ visible, onClose, onSelectGoal }) => {
+const GoalSettingModal = ({ visible, onClose, onSelectGoal, t }) => {
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customGoal, setCustomGoal] = useState('');
-  const presetGoals = ['공부하기', '운동하기', '독서하기', '코딩하기', '국비 교육 공부하기'];
+  const presetGoals = [
+    t('pomodoro_goals.study'),
+    t('pomodoro_goals.exercise'),
+    t('pomodoro_goals.reading'),
+    t('analysis.dday.coding'),
+    t('analysis.dday.training')
+  ];
 
   const handleCustomGoalSubmit = () => {
     if (customGoal.trim()) {
@@ -27,7 +34,7 @@ const GoalSettingModal = ({ visible, onClose, onSelectGoal }) => {
       setCustomGoal('');
       setShowCustomInput(false);
     } else {
-      Alert.alert('알림', '목표를 입력해주세요.');
+      Alert.alert(t('common.error'), t('analysis.dday.alert_message'));
     }
   };
 
@@ -40,7 +47,7 @@ const GoalSettingModal = ({ visible, onClose, onSelectGoal }) => {
     >
       <Pressable style={styles.modalBackdrop} onPress={onClose}>
         <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>무엇에 집중하고 싶으신가요?</Text>
+          <Text style={styles.modalTitle}>{t('pomodoro.what_focus')}</Text>
           <ScrollView>
             {presetGoals.map((goal, index) => (
               <TouchableOpacity key={index} style={styles.modalItem} onPress={() => onSelectGoal(goal)}>
@@ -53,7 +60,7 @@ const GoalSettingModal = ({ visible, onClose, onSelectGoal }) => {
               style={styles.modalItem} 
               onPress={() => setShowCustomInput(true)}
             >
-              <Text style={styles.modalItemText}>목표 직접 작성하기</Text>
+              <Text style={styles.modalItemText}>{t('pomodoro.create_goal')}</Text>
             </TouchableOpacity>
             
             {/* 직접 입력 폼 */}
@@ -61,7 +68,7 @@ const GoalSettingModal = ({ visible, onClose, onSelectGoal }) => {
               <View style={styles.customInputContainer}>
                 <TextInput
                   style={styles.customInput}
-                  placeholder="목표를 입력하세요"
+                  placeholder={t('analysis.dday.goal_phrase_placeholder')}
                   value={customGoal}
                   onChangeText={setCustomGoal}
                   autoFocus
@@ -74,19 +81,19 @@ const GoalSettingModal = ({ visible, onClose, onSelectGoal }) => {
                       setCustomGoal('');
                     }}
                   >
-                    <Text style={styles.buttonText}>취소</Text>
+                    <Text style={styles.buttonText}>{t('common.cancel')}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity 
                     style={[styles.customInputButton, styles.confirmButton]} 
                     onPress={handleCustomGoalSubmit}
                   >
-                    <Text style={styles.buttonText}>확인</Text>
+                    <Text style={styles.buttonText}>{t('common.ok')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             )}
           </ScrollView>
-          <Button title="닫기" onPress={onClose} style={{ marginTop: 10 }} />
+          <Button title={t('obooni.close')} onPress={onClose} style={{ marginTop: 10 }} />
         </View>
       </Pressable>
     </Modal>
@@ -95,6 +102,7 @@ const GoalSettingModal = ({ visible, onClose, onSelectGoal }) => {
 
 const DDayAnalysisView = ({ isPremiumUser }) => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [isLocked, setIsLocked] = useState(!isPremiumUser);
 
   // 초기 목표 문구를 비워두어 placeholder가 보이도록 수정
@@ -145,7 +153,7 @@ const DDayAnalysisView = ({ isPremiumUser }) => {
 
   const handleStartPomodoro = () => {
     if (!dDayGoal.phrase || !dDayGoal.date) {
-      Alert.alert('알림', '목표 문구와 목표 기간을 모두 설정해주세요.');
+      Alert.alert(t('reminder.location_required_title'), t('analysis.dday.alert_message'));
       return;
     }
     // 포모도로 목표 선택 화면으로 이동 (새로운 목표 자동 생성)
@@ -159,10 +167,10 @@ const DDayAnalysisView = ({ isPremiumUser }) => {
     return (
       <View style={styles.lockedContainer}>
         <FontAwesome5 name="lock" size={80} color={Colors.secondaryBrown} />
-        <Text style={styles.lockedText}>이 기능은 유료 버전에서만 이용 가능합니다.</Text>
+        <Text style={styles.lockedText}>{t('premium.preparing_message')}</Text>
         <Button
-          title="유료 버전 구매하기"
-          onPress={() => Alert.alert('결제 유도', '유료 버전 구매 페이지로 이동합니다.')}
+          title={t('premium.one_month')}
+          onPress={() => Alert.alert(t('premium.title'), t('premium.preparing_message'))}
           style={styles.purchaseButton}
         />
       </View>
@@ -177,21 +185,21 @@ const DDayAnalysisView = ({ isPremiumUser }) => {
         visible={isGoalModalVisible}
         onClose={() => setGoalModalVisible(false)}
         onSelectGoal={handleSelectGoal}
+        t={t}
       />
-      
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
-        <Text style={styles.sectionTitle}>목표 문구 설정</Text>
+        <Text style={styles.sectionTitle}>{t('analysis.dday.goal_phrase_title')}</Text>
         <TouchableOpacity style={styles.goalPhraseButton} onPress={handleSetGoalPhrase}>
           <Text style={dDayGoal.phrase ? styles.goalPhraseText : styles.placeholderText}>
-            {dDayGoal.phrase || '달성하고자 하는 목표를 입력하세요'}
+            {dDayGoal.phrase || t('analysis.dday.goal_phrase_placeholder')}
           </Text>
           <FontAwesome5 name="edit" size={18} color={Colors.secondaryBrown} />
         </TouchableOpacity>
-
-        <Text style={styles.sectionTitle}>목표 기간 설정</Text>
+      
+        <Text style={styles.sectionTitle}>{t('analysis.dday.goal_period_title')}</Text>
         <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
           <Text style={dDayGoal.date ? styles.datePickerButtonText : styles.placeholderText}>
-            {dDayGoal.date ? format(goalDate, 'yyyy년 MM월 dd일', { locale: ko }) : '목표 날짜를 선택하세요'}
+            {dDayGoal.date ? format(goalDate, 'yyyy년 MM월 dd일', { locale: ko }) : t('analysis.dday.goal_period_placeholder')}
           </Text>
         </TouchableOpacity>
         {showDatePicker && (
@@ -203,32 +211,32 @@ const DDayAnalysisView = ({ isPremiumUser }) => {
             minimumDate={new Date()}
           />
         )}
-
+      
         <Button 
-            title="시작하기" 
+            title={t('analysis.dday.start_button')} 
             onPress={handleStartPomodoro} 
             style={[styles.startButton, !isStartButtonEnabled && styles.disabledButton]}
             disabled={!isStartButtonEnabled}
         />
-
+      
         {isStartButtonEnabled && (
           <>
-            <Text style={styles.sectionTitle}>집중 목표</Text>
+            <Text style={styles.sectionTitle}>{t('analysis.dday.focus_goal')}</Text>
             <View style={styles.goalDisplayContainer}>
               <Text style={styles.goalDisplayText}>{dDayGoal.phrase}</Text>
               <Text style={styles.dDayText}>
                 D-{differenceInDays(new Date(dDayGoal.date), new Date())}
               </Text>
             </View>
-
-            <Text style={styles.sectionTitle}>집중 요약</Text>
+      
+            <Text style={styles.sectionTitle}>{t('analysis.dday.focus_summary')}</Text>
             <View style={styles.statsContainer}>
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>총 집중 시간</Text>
+                <Text style={styles.statLabel}>{t('analysis.dday.total_focus_time')}</Text>
                 <Text style={styles.statValue}>{formatTime(dDayGoal.totalConcentrationTime || 0)}</Text>
               </View>
               <View style={styles.statItem}>
-                <Text style={styles.statLabel}>현재까지 목표 달성율</Text>
+                <Text style={styles.statLabel}>{t('analysis.dday.achievement_rate')}</Text>
                 <Text style={styles.statValue}>{dDayGoal.currentAchievementRate || 0}%</Text>
               </View>
             </View>
@@ -237,7 +245,7 @@ const DDayAnalysisView = ({ isPremiumUser }) => {
               date={goalDate}
               dailyConcentration={dDayGoal.dailyConcentration || {}}
             />
-            </>
+          </>
         )}
       </ScrollView>
     </View>
