@@ -118,19 +118,25 @@ const PomodoroTimerScreen = () => {
       // 집중 시간 종료 (25분 완료) -> 휴식 선택 모달로
       navigation.navigate('PomodoroBreakOptionModal', {
         onContinue: () => {
-          // "네" 선택 시 - 바로 다음 포모도로 시작
-          navigation.navigate('PomodoroTimer', { 
-            selectedGoal: goal, 
-            resume: true, 
-            isFocusMode: true 
-          });
+          // "네" 선택 시 - 모달 닫고 바로 다음 포모도로 시작
+          navigation.goBack(); // 모달 닫기
+          setTimeout(() => {
+            navigation.navigate('PomodoroTimer', { 
+              selectedGoal: goal, 
+              resume: true, 
+              isFocusMode: true 
+            });
+          }, 100);
         },
         onBreak: () => {
-          // "아니오" 선택 시 - 휴식 시간 시작
-          navigation.navigate('PomodoroTimer', { 
-            selectedGoal: goal, 
-            isFocusMode: false 
-          });
+          // "아니오" 선택 시 - 모달 닫고 휴식 시간 시작
+          navigation.goBack(); // 모달 닫기
+          setTimeout(() => {
+            navigation.navigate('PomodoroTimer', { 
+              selectedGoal: goal, 
+              isFocusMode: false 
+            });
+          }, 100);
         },
       });
     } else {

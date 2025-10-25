@@ -17,27 +17,21 @@ const PomodoroBreakOptionModal = () => {
 
   const { onContinue, onBreak } = route.params;
 
-  // ✅ 수정된 함수: 부모 콜백 실행 → navigation.goBack() 순서
+  // ✅ 수정된 함수: 부모 콜백만 실행 (goBack 제거)
   const handleContinue = () => {
-    setTimeout(() => {
-      try {
-        onContinue && onContinue(); // 부모 로직 먼저 실행
-      } catch (e) {
-        console.warn('onContinue error:', e);
-      }
-      navigation.goBack(); // 그 다음 모달 닫기
-    }, 100);
+    try {
+      onContinue && onContinue(); // 부모 로직 실행
+    } catch (e) {
+      console.warn('onContinue error:', e);
+    }
   };
-
+  
   const handleBreak = () => {
-    setTimeout(() => {
-      try {
-        onBreak && onBreak(); // 부모 로직 먼저 실행
-      } catch (e) {
-        console.warn('onBreak error:', e);
-      }
-      navigation.goBack(); // 그 다음 모달 닫기
-    }, 100);
+    try {
+      onBreak && onBreak(); // 부모 로직 실행
+    } catch (e) {
+      console.warn('onBreak error:', e);
+    }
   };
 
   // ✅ 안전한 타이머 (언마운트 방지 포함)
