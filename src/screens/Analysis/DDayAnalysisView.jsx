@@ -17,7 +17,19 @@ import { formatTime } from '../../utils/timeFormat';
 
 // 목표 설정 모달 컴포넌트
 const GoalSettingModal = ({ visible, onClose, onSelectGoal }) => {
-  const presetGoals = ['공부하기', '운동하기', '독서하기', '코딩하기', '국비 교육 공부하기', '목표 작성하기'];
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customGoal, setCustomGoal] = useState('');
+  const presetGoals = ['공부하기', '운동하기', '독서하기', '코딩하기', '국비 교육 공부하기'];
+
+  const handleCustomGoalSubmit = () => {
+    if (customGoal.trim()) {
+      onSelectGoal(customGoal.trim());
+      setCustomGoal('');
+      setShowCustomInput(false);
+    } else {
+      Alert.alert('알림', '목표를 입력해주세요.');
+    }
+  };
 
   return (
     <Modal
@@ -35,6 +47,44 @@ const GoalSettingModal = ({ visible, onClose, onSelectGoal }) => {
                 <Text style={styles.modalItemText}>{goal}</Text>
               </TouchableOpacity>
             ))}
+            
+            {/* 직접 입력 버튼 */}
+            <TouchableOpacity 
+              style={styles.modalItem} 
+              onPress={() => setShowCustomInput(true)}
+            >
+              <Text style={styles.modalItemText}>목표 직접 작성하기</Text>
+            </TouchableOpacity>
+            
+            {/* 직접 입력 폼 */}
+            {showCustomInput && (
+              <View style={styles.customInputContainer}>
+                <TextInput
+                  style={styles.customInput}
+                  placeholder="목표를 입력하세요"
+                  value={customGoal}
+                  onChangeText={setCustomGoal}
+                  autoFocus
+                />
+                <View style={styles.customInputButtons}>
+                  <TouchableOpacity 
+                    style={[styles.customInputButton, styles.cancelButton]} 
+                    onPress={() => {
+                      setShowCustomInput(false);
+                      setCustomGoal('');
+                    }}
+                  >
+                    <Text style={styles.buttonText}>취소</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={[styles.customInputButton, styles.confirmButton]} 
+                    onPress={handleCustomGoalSubmit}
+                  >
+                    <Text style={styles.buttonText}>확인</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
           </ScrollView>
           <Button title="닫기" onPress={onClose} style={{ marginTop: 10 }} />
         </View>
@@ -98,7 +148,11 @@ const DDayAnalysisView = ({ isPremiumUser }) => {
       Alert.alert('알림', '목표 문구와 목표 기간을 모두 설정해주세요.');
       return;
     }
-    navigation.navigate('PomodoroTimerScreen', { goal: dDayGoal });
+    // 포모도로 목표 선택 화면으로 이동 (새로운 목표 자동 생성)
+    navigation.navigate('PomodoroGoalCreation', { 
+      ddayGoal: dDayGoal.phrase,
+      createNewGoal: true 
+    });
   };
   
   if (isLocked) {
@@ -373,6 +427,44 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.medium,
     color: Colors.textDark,
   },
-});
+  // 직접 입력 스타일
+  customInputContainer: {
+    padding: 15,
+    backgroundColor: Colors.primaryBeige,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  customInput: {
+    backgroundColor: Colors.textLight,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: FontSizes.medium,
+    borderWidth: 1,
+    borderColor: Colors.secondaryBrown,
+    marginBottom: 10,
+  },
+  customInputButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  customInputButton: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: Colors.lightGray,
+  },
+  confirmButton: {
+    backgroundColor: Colors.secondaryBrown,
+  },
+  buttonText: {
+    color: Colors.textLight,
+    fontSize: FontSizes.medium,
+    fontWeight: FontWeights.bold,
+  },
+  });
 
 export default DDayAnalysisView;

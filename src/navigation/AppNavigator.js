@@ -323,6 +323,12 @@ const AppNavigator = () => {
         <Stack.Screen name="ObooniShop" component={ObooniShopScreen} />
         <Stack.Screen name="ObooniCloset" component={ObooniClosetScreen} />
         <Stack.Screen name="ObooniOwnedItems" component={ObooniOwnedItemsScreen} />
+        
+        {/* Pomodoro 화면 (D-Day에서 접근 가능하도록) */}
+        <Stack.Screen name="PomodoroGoalCreation" component={PomodoroGoalCreationScreen} />
+        <Stack.Screen name="PomodoroTimer" component={PomodoroTimerScreen} />
+        <Stack.Screen name="PomodoroStartConfirmModal" component={PomodoroStartConfirmModal} options={{ presentation: 'modal' }} />
+        
         {/* 나머지 임시 화면 */}
         <Stack.Screen name="Report" component={TempScreen} />
 

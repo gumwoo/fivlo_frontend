@@ -2,8 +2,8 @@
 // src/screens/Pomodoro/PomodoroGoalCreationScreen.jsx
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Modal, FlatList, Alert } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Colors } from '../../styles/color';
@@ -23,6 +23,7 @@ const PomodoroGoalCreationScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const route = useRoute(); // route 가져오기
 
   // --- ✨ 화면 상태 관리를 위한 state 추가 ---
   const [isCreating, setIsCreating] = useState(false);
@@ -37,7 +38,32 @@ const PomodoroGoalCreationScreen = () => {
     { id: 'g4', text: t('pomodoro_goals.organize'), color: '#ABFFFF' },
     { id: 'g5', text: t('pomodoro_goals.exam_study'), color: '#D1B5FF' },
   ]);
-
+  
+  // D-Day에서 넘어온 목표 자동 생성
+  React.useEffect(() => {
+    const { ddayGoal, createNewGoal } = route.params || {};
+    
+    if (createNewGoal && ddayGoal) {
+      // D-Day 목표로 새 포모도로 목표 자동 생성
+      const newGoal = {
+        id: 'dday-' + Date.now().toString(),
+        text: ddayGoal,
+        color: COLOR_PALETTE[6], // 주황색
+      };
+      
+      // 중복 확인
+      const isDuplicate = goals.some(goal => goal.text === ddayGoal);
+      
+      if (!isDuplicate) {
+        setGoals(prevGoals => [newGoal, ...prevGoals]);
+      }
+      
+      // 자동으로 해당 목표 선택하여 포모도로 시작
+      setTimeout(() => {
+        handleSelectGoal(newGoal);
+      }, 500);
+    }
+  }, [route.params]);
   const handleSaveNewGoal = () => {
     if (!goalText.trim()) {
       Alert.alert(t('reminder.location_required_title'), t('pomodoro.create_goal_placeholder'));
