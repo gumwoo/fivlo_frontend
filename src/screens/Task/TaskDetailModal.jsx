@@ -33,6 +33,7 @@ const TaskDetailModal = () => {
   const addPhoto = useAlbumStore((state) => state.addPhoto);
   const addTask = useTaskStore((state) => state.addTask); // ✅ 추가
   const updateTask = useTaskStore((state) => state.updateTask); // ✅ 업데이트용
+  const deleteTask = useTaskStore((state) => state.deleteTask); // ✅ 삭제용
 
   const { selectedDate, tasks: initialTasks } = route.params;
   const [tasks, setTasks] = useState(initialTasks);
@@ -113,10 +114,14 @@ const TaskDetailModal = () => {
   };
 
   const onConfirmDelete = (deleteFutureTasks) => {
-    Alert.alert('삭제 완료', `"${taskToDelete.text}"가 삭제되었습니다.`);
+    if (taskToDelete) {
+      deleteTask(selectedDate, taskToDelete.id); // ✅ 전역 상태에서 삭제
+      setTasks((prev) => prev.filter((t) => t.id !== taskToDelete.id)); // 로컬 상태 업데이트
+
+      Alert.alert('삭제 완료', `"${taskToDelete.text}"가 삭제되었습니다.`);
+    }
     setIsDeleteConfirmModalVisible(false);
     setTaskToDelete(null);
-    closeModal();
   };
 
   const onCancelDelete = () => {
@@ -124,9 +129,18 @@ const TaskDetailModal = () => {
     setTaskToDelete(null);
   };
 
-  // ✅ Task 저장 시 전역 스토어에 추가
+  // ✅ Task 저장 시 전역 스토어에 추가/수정
   const onTaskEditSave = (savedTask) => {
-    addTask(selectedDate, savedTask); // ✅ 전역 상태에 추가
+    if (editMode === 'edit') {
+      // 수정 모드
+      updateTask(selectedDate, savedTask.id, savedTask);
+      setTasks((prev) => prev.map((t) => t.id === savedTask.id ? savedTask : t));
+    } else {
+      // 추가 모드
+      addTask(selectedDate, savedTask);
+      setTasks((prev) => [...prev, savedTask]);
+    }
+
     Alert.alert(
       'Task',
       t('task.saved', {
@@ -134,7 +148,6 @@ const TaskDetailModal = () => {
       })
     );
     setIsEditModalVisible(false);
-    closeModal();
   };
 
   // ✅ Swipeable Task item

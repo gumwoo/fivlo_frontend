@@ -38,6 +38,15 @@ const useTaskStore = create((set) => ({
       },
     })),
 
+  // Task 삭제
+  deleteTask: (dateString, taskId) =>
+    set((state) => ({
+      tasks: {
+        ...state.tasks,
+        [dateString]: (state.tasks[dateString] || []).filter((task) => task.id !== taskId),
+      },
+    })),
+
   // 초기 데이터 덮어쓰기 (외부 로딩용)
   setInitialTasks: (initialTasks) => set({ tasks: initialTasks }),
 }));
