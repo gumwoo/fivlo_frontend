@@ -11,6 +11,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../i18n';
 import useAuthStore from '../store/authStore';
+import { updateUserLanguage } from '../utils/api';
 
 const SettingsScreen = ({ initialIsPremiumUser = true }) => {
   const navigation = useNavigation();
@@ -29,9 +30,21 @@ const SettingsScreen = ({ initialIsPremiumUser = true }) => {
   const handleInfoPress = () => navigation.navigate('Information');
   const handleReportPress = () => navigation.navigate('Report');
 
-  const handleSelectLanguage = (lang) => {
-    changeLanguage(lang);
-    setIsLanguageExpanded(false);
+  const handleSelectLanguage = async (lang) => {
+    try {
+      changeLanguage(lang);
+      setIsLanguageExpanded(false);
+
+      // API 호출하여 언어 설정 저장
+      const apiLanguage = lang === 'ko' ? '한국어' : 'English';
+      await updateUserLanguage(apiLanguage);
+
+      if (__DEV__) {
+        console.log('[SettingsScreen] Language saved to API:', apiLanguage);
+      }
+    } catch (error) {
+      console.error('[SettingsScreen] Failed to save language:', error);
+    }
   };
 
   return (

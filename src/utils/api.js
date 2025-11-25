@@ -82,6 +82,12 @@ export const updateUserProfile = async (nickname, profileImageUrl) => {
   return response.data;
 };
 
+// 언어 설정 (REQ-BE-USER-003)
+export const updateUserLanguage = async (language) => {
+  const response = await apiClient.post('/users/languages', { language });
+  return response.data;
+};
+
 // 사용자 목적 저장 및 조회 (REQ-BE-USER-002)
 export const saveUserPurpose = async (userId, purpose) => {
   const response = await apiClient.post(`/users/${userId}/purpose`, { purpose });

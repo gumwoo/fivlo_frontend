@@ -12,6 +12,8 @@ import Header from '../components/common/Header';
 import Button from '../components/common/Button';
 import CharacterImage from '../components/common/CharacterImage';
 
+import { updateUserLanguage } from '../utils/api';
+
 const LanguageSelectionScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
@@ -22,21 +24,27 @@ const LanguageSelectionScreen = () => {
     if (__DEV__) {
       console.log('[LanguageSelectionScreen] Selected language:', language);
     }
-    
+
     setSelectedLanguage(language);
-    
+
     try {
       // i18n 언어 변경
       await i18n.changeLanguage(language);
-      
+
+      // API 호출하여 언어 설정 저장
+      const apiLanguage = language === 'ko' ? '한국어' : 'English';
+      await updateUserLanguage(apiLanguage);
+
       if (__DEV__) {
-        console.log('[LanguageSelectionScreen] Language changed to:', language);
+        console.log('[LanguageSelectionScreen] Language saved to API:', apiLanguage);
       }
-      
+
       // 목적 선택 화면으로 이동
       navigation.navigate('PurposeSelection');
     } catch (error) {
       console.error('[LanguageSelectionScreen] Language change error:', error);
+      // API 오류가 발생하더라도 화면 이동은 진행할지 여부 결정 필요 (현재는 진행 안 함)
+      // navigation.navigate('PurposeSelection'); 
     }
   };
 
