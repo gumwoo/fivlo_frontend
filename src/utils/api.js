@@ -54,6 +54,12 @@ export const logout = async (refreshToken) => {
   }
 };
 
+// 회원 탈퇴 함수 (REQ-BE-USER-004)
+export const deleteUserAccount = async () => {
+  const response = await apiClient.delete('/users/delete');
+  return response.data;
+};
+
 // 응답 인터셉터 추가
 apiClient.interceptors.response.use(
   (response) => {

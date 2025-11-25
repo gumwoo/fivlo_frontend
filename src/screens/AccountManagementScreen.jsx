@@ -10,7 +10,7 @@ import AccountDeleteModal from '../components/common/AccountDeleteModal';
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
 import useAuthStore from '../store/authStore';
-import { getUserProfile, updateUserProfile, logout as logoutApi } from '../utils/api';
+import { getUserProfile, updateUserProfile, logout as logoutApi, deleteUserAccount } from '../utils/api';
 
 const AccountManagementScreen = () => {
   const navigation = useNavigation();
@@ -199,9 +199,24 @@ const AccountManagementScreen = () => {
     setShowDeleteModal(true);
   };
 
-  const handleDeleteConfirm = () => {
-    setShowDeleteModal(false);
-    navigation.dispatch(StackActions.replace('AuthChoice'));
+  const handleDeleteConfirm = async () => {
+    try {
+      // API 회원 탈퇴 호출
+      await deleteUserAccount();
+      if (__DEV__) {
+        console.log('[AccountManagement] Account deletion API called successfully');
+      }
+      Alert.alert(t('common.success'), '회원 탈퇴가 완료되었습니다.');
+    } catch (error) {
+      console.error('[AccountManagement] Account deletion API failed:', error);
+      Alert.alert(t('common.error'), '회원 탈퇴 처리에 실패했습니다.');
+    } finally {
+      setShowDeleteModal(false);
+      // 클라이언트 로그아웃 처리
+      const { logout } = useAuthStore.getState();
+      await logout();
+      navigation.dispatch(StackActions.replace('AuthChoice'));
+    }
   };
 
   const handleDeleteCancel = () => {
