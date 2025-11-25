@@ -17,8 +17,8 @@ apiClient.interceptors.request.use(
     // 토큰 가져오기
     const token = await AsyncStorage.getItem('userToken');
 
-    // 로그인 및 회원가입 요청에는 토큰을 포함하지 않음
-    const isAuthRequest = config.url.includes('/auth/signup') || config.url.includes('/auth/signin');
+    // 로그인 및 회원가입, 소셜 로그인 요청에는 토큰을 포함하지 않음
+    const isAuthRequest = config.url.includes('/auth/signup') || config.url.includes('/auth/signin') || config.url.includes('/auth/social-login');
 
     if (token && !isAuthRequest) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -67,6 +67,12 @@ export const deleteUserAccount = async () => {
 // 알림 설정 토글 함수 (REQ-BE-USER-005)
 export const toggleUserAlarm = async () => {
   const response = await apiClient.post('/users/alarms');
+  return response.data;
+};
+
+// 소셜 로그인 함수 (REQ-BE-AUTH-004)
+export const socialLogin = async (provider, token) => {
+  const response = await apiClient.post('/auth/social-login', { provider, token });
   return response.data;
 };
 

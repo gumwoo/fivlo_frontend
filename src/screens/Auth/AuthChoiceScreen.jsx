@@ -1,16 +1,17 @@
-// src/screens/Auth/AuthChoiceScreen.jsx
-
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { GlobalStyles } from '../../styles/GlobalStyles';
-import { Colors } from '../../styles/color'; // <-- 사용자님 파일명에 맞춰 'color'로 수정!
-import { FontSizes, FontWeights } from '../../styles/Fonts'; // <-- 사용자님 파일명에 맞춰 'Fonts'로 수정!
+import { Colors } from '../../styles/color';
+import { FontSizes, FontWeights } from '../../styles/Fonts';
 import Button from '../../components/common/Button';
 import CharacterImage from '../../components/common/CharacterImage';
 import Header from '../../components/common/Header';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { socialLogin } from '../../utils/api';
+import useAuthStore from '../../store/authStore';
 
 // ✅ 로고 이미지 불러오기
 const logo = require('../../../assets/로고.png');
@@ -19,17 +20,74 @@ const AuthChoiceScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const { setAuthData } = useAuthStore();
 
-  const handleGoogleSignIn = () => {
-    console.log('Google Sign In');
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: '932554607105-jc7kcibhrfhhsegmi2kfkr6rmt5rkol9.apps.googleusercontent.com',
+      offlineAccess: true,
+    });
+  }, []);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+
+      if (userInfo.idToken) {
+        if (__DEV__) {
+          console.log('[AuthChoice] Google ID Token:', userInfo.idToken);
+        }
+
+        // 백엔드 소셜 로그인 API 호출
+        const response = await socialLogin('GOOGLE', userInfo.idToken);
+
+        if (__DEV__) {
+          console.log('[AuthChoice] Social Login Success:', response);
+        }
+
+        // 토큰 저장 및 상태 업데이트
+        const { accessToken, refreshToken, userId, isNewUser, onboardingType } = response;
+        await setAuthData(accessToken, refreshToken, userId);
+
+        // 신규 유저이거나 온보딩 정보가 없으면 온보딩으로, 아니면 메인으로
+        if (isNewUser || !onboardingType) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'PurposeSelection' }],
+          });
+        } else {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainTabs' }],
+          });
+        }
+      } else {
+        throw new Error('No ID token present');
+      }
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('[AuthChoice] User cancelled the login flow');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log('[AuthChoice] Sign in is in progress already');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log('[AuthChoice] Play services not available or outdated');
+        Alert.alert(t('common.error'), 'Google Play Services가 필요합니다.');
+      } else {
+        console.error('[AuthChoice] Google Sign-In Error:', error);
+        Alert.alert(t('common.error'), '구글 로그인 중 오류가 발생했습니다.');
+      }
+    }
   };
 
   const handleAppleSignIn = () => {
     console.log('Apple Sign In');
+    Alert.alert('알림', '애플 로그인은 준비 중입니다.');
   };
 
   const handleKakaoSignIn = () => {
     console.log('Kakao Sign In');
+    Alert.alert('알림', '카카오 로그인은 준비 중입니다.');
   };
 
   const handleEmailSignUp = () => {
@@ -43,7 +101,7 @@ const AuthChoiceScreen = () => {
   return (
     <View style={[GlobalStyles.container, { paddingTop: insets.top }]}>
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
-      
+
         {/* ✅ 여기서 직접 로고 이미지를 사용 */}
         <Image source={logo} style={styles.logo} />
 
