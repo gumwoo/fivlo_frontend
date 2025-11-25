@@ -1,6 +1,6 @@
 import axios from 'axios';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useAuthStore from '../store/authStore';
 
 const API_BASE_URL = 'https://fivlo.net/api/v1';
 
@@ -31,6 +31,19 @@ apiClient.interceptors.request.use(
   }
 );
 
+// 토큰 재발급 함수
+export const reissueToken = async (accessToken, refreshToken) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/auth/reissue`, {
+      accessToken,
+      refreshToken,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // 응답 인터셉터 추가
 apiClient.interceptors.response.use(
   (response) => {
@@ -39,7 +52,51 @@ apiClient.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
+    // 401 에러이고, 재시도하지 않은 요청인 경우
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const accessToken = await AsyncStorage.getItem('userToken');
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+
+        if (!accessToken || !refreshToken) {
+          throw new Error('No tokens available');
+        }
+
+        if (__DEV__) {
+          console.log('[API Info] Attempting token refresh...');
+        }
+
+        const { access, refresh } = await reissueToken(accessToken, refreshToken);
+
+        // 새 토큰 저장
+        const { setAuthData } = useAuthStore.getState();
+        const userId = await AsyncStorage.getItem('userId');
+        const isPremium = useAuthStore.getState().isPremiumUser;
+
+        await setAuthData(access, refresh, userId, isPremium);
+
+        // 원래 요청 헤더 업데이트 및 재시도
+        originalRequest.headers.Authorization = `Bearer ${access}`;
+        return apiClient(originalRequest);
+
+      } catch (refreshError) {
+        console.error('[API Error] Token refresh failed:', refreshError);
+
+        // 로그아웃 처리
+        const { logout } = useAuthStore.getState();
+        await logout();
+
+        // 필요하다면 여기서 네비게이션 처리 등을 할 수 있지만, 
+        // 보통 상태 변경으로 인해 UI가 반응하도록 하는 것이 좋습니다.
+        return Promise.reject(refreshError);
+      }
+    }
+
     if (error.response && error.response.status === 409) {
       if (__DEV__) console.log('[API Info] 409 Conflict (Handled in UI):', error.response.data);
     }
