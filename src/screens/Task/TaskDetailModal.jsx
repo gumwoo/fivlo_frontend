@@ -14,7 +14,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { Swipeable } from 'react-native-gesture-handler';
+import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Colors } from '../../styles/color';
 import { FontSizes, FontWeights } from '../../styles/Fonts';
 import { useTranslation } from 'react-i18next';
@@ -195,45 +195,47 @@ const TaskDetailModal = () => {
   const renderTaskItem = ({ item }) => <SwipeableTaskItem item={item} />;
 
   return (
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={true}          // 항상 보이도록 (navigation으로 제어됨)
-        onRequestClose={closeModal}
-        onDismiss={closeModal}  // ✅ 모달 닫힐 때 완전히 언마운트
-      >
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={true}          // 항상 보이도록 (navigation으로 제어됨)
+      onRequestClose={closeModal}
+      onDismiss={closeModal}  // ✅ 모달 닫힐 때 완전히 언마운트
+    >
       <Pressable style={styles.overlay} onPress={closeModal}>
-        <Pressable style={styles.modalContent}>
-          <Text style={styles.modalDate}>
-            {format(new Date(selectedDate), 'M월 d일 (E)', { locale: ko })}
-          </Text>
+        <GestureHandlerRootView style={{ flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+          <Pressable style={styles.modalContent}>
+            <Text style={styles.modalDate}>
+              {format(new Date(selectedDate), 'M월 d일 (E)', { locale: ko })}
+            </Text>
 
-          <View style={{ flex: 1 }}>
-            {tasks.length > 0 ? (
-              <FlatList
-                data={tasks}
-                renderItem={renderTaskItem}
-                keyExtractor={(item) => item.id}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.taskListContent}
-              />
-            ) : (
-              <View style={styles.noTaskContainer}>
-                <Text style={styles.noTaskText}>{t('task.no_tasks', '등록된 Task가 없습니다')}</Text>
-              </View>
-            )}
-          </View>
+            <View style={{ flex: 1 }}>
+              {tasks.length > 0 ? (
+                <FlatList
+                  data={tasks}
+                  renderItem={renderTaskItem}
+                  keyExtractor={(item) => item.id}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={styles.taskListContent}
+                />
+              ) : (
+                <View style={styles.noTaskContainer}>
+                  <Text style={styles.noTaskText}>{t('task.no_tasks', '등록된 Task가 없습니다')}</Text>
+                </View>
+              )}
+            </View>
 
-          <TouchableOpacity style={styles.addTaskButton} onPress={handleAddTask}>
-            <Text style={styles.addTaskButtonText}>+ {t('task.add_task_button', '새 Task 추가')}</Text>
-          </TouchableOpacity>
-        </Pressable>
+            <TouchableOpacity style={styles.addTaskButton} onPress={handleAddTask}>
+              <Text style={styles.addTaskButtonText}>+ {t('task.add_task_button', '새 Task 추가')}</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </GestureHandlerRootView>
 
         {/* 편집 모달 */}
-        <Modal 
+        <Modal
           animationType="slide"
           transparent={true}
-          visible={isEditModalVisible} 
+          visible={isEditModalVisible}
           onRequestClose={() => setIsEditModalVisible(false)}>
           <TaskEditModal
             mode={editMode}
@@ -266,7 +268,7 @@ const TaskDetailModal = () => {
           onSave={handlePhotoSave}
         />
       </Pressable>
-     </Modal> 
+    </Modal>
   );
 };
 
