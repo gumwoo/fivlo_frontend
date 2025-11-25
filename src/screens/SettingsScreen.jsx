@@ -10,23 +10,25 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../i18n';
+import useAuthStore from '../store/authStore';
 
 const SettingsScreen = ({ initialIsPremiumUser = true }) => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
 
-  const [isPremiumUser, setIsPremiumUser] = useState(initialIsPremiumUser);
+  // authStore에서 사용자 정보 가져오기
+  const { userNickname, userCoins, isPremiumUser } = useAuthStore();
+
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [isLanguageExpanded, setIsLanguageExpanded] = useState(false);
 
-  // ✨ 수정: 'ProfileSettings' 대신 'AccountManagement'로 이동하도록 경로를 바로잡았습니다.
   const handleProfilePress = () => navigation.navigate('AccountManagement');
-  
+
   const handlePremiumPress = () => navigation.navigate('PremiumMembership');
   const handleInfoPress = () => navigation.navigate('Information');
   const handleReportPress = () => navigation.navigate('Report');
-  
+
   const handleSelectLanguage = (lang) => {
     changeLanguage(lang);
     setIsLanguageExpanded(false);
@@ -35,18 +37,18 @@ const SettingsScreen = ({ initialIsPremiumUser = true }) => {
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('settings.title')} showBackButton={true} />
-      
+
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
         {/* 프로필 섹션 */}
         <TouchableOpacity style={styles.profileContainer} onPress={handleProfilePress}>
           <FontAwesome5 name="user-circle" size={48} color={Colors.secondaryBrown} style={styles.profileIcon} />
           <View style={styles.profileTextContainer}>
-            <Text style={styles.profileName}>{t('settings.profile_name', '이름')}</Text>
+            <Text style={styles.profileName}>{userNickname || t('settings.profile_name', '이름')}</Text>
             {isPremiumUser ? (
               <View style={styles.premiumInfoContainer}>
                 <Text style={styles.profileStatusPremium}>{t('settings.premium_account', '프리미엄 계정')}</Text>
-                <FontAwesome5 name="coins" size={12} color="#FFC700" style={{ marginRight: 4 }}/>
-                <Text style={styles.profileCoins}>{t('settings.coins_owned', { count: 5 })}</Text>
+                <FontAwesome5 name="coins" size={12} color="#FFC700" style={{ marginRight: 4 }} />
+                <Text style={styles.profileCoins}>{t('settings.coins_owned', { count: userCoins })}</Text>
               </View>
             ) : (
               <Text style={styles.profileStatusNormal}>{t('settings.normal_account', '일반계정')}</Text>
@@ -75,7 +77,7 @@ const SettingsScreen = ({ initialIsPremiumUser = true }) => {
               <Text style={styles.settingItemText}>
                 {i18n.language === 'ko' ? t('settings.language_korean') : t('settings.language_english')}
               </Text>
-              <FontAwesome5 name={isLanguageExpanded ? "chevron-up" : "chevron-down"} size={14} color={Colors.secondaryBrown} style={{ marginLeft: 6 }}/>
+              <FontAwesome5 name={isLanguageExpanded ? "chevron-up" : "chevron-down"} size={14} color={Colors.secondaryBrown} style={{ marginLeft: 6 }} />
             </View>
           </TouchableOpacity>
 
@@ -121,13 +123,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   profileContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  backgroundColor: Colors.textLight,
-  borderRadius: 12,
-  paddingVertical: 16,
-  paddingHorizontal: 15,
-  marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.textLight,
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 15,
+    marginBottom: 16,
   },
   profileIcon: {
     marginRight: 15,
@@ -171,14 +173,14 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   settingItem: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  paddingVertical: 18,
-  paddingHorizontal: 15,
-  borderBottomWidth: 1,
-  borderBottomColor: '#E5E5E5',
-  backgroundColor: Colors.primaryBeige, // 전체 배경과 같게
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 18,
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+    backgroundColor: Colors.primaryBeige, // 전체 배경과 같게
   },
   settingItemText: {
     fontSize: FontSizes.medium,
@@ -196,11 +198,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.secondaryBrown,
   },
   languageExpandedContainer: {
-  backgroundColor: Colors.primaryBeige,
-  paddingLeft: 20,
-  paddingBottom: 10,
-  borderBottomWidth: 1,
-  borderBottomColor: '#E5E5E5',
+    backgroundColor: Colors.primaryBeige,
+    paddingLeft: 20,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
   },
   languageOptionButton: {
     paddingVertical: 12,

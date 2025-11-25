@@ -70,6 +70,12 @@ export const updateOnboardingType = async (onboardingType) => {
   return response.data;
 };
 
+// 사용자 프로필 조회 (REQ-BE-USER-001)
+export const getUserProfile = async () => {
+  const response = await apiClient.get('/users/me');
+  return response.data;
+};
+
 // 사용자 목적 저장 및 조회 (REQ-BE-USER-002)
 export const saveUserPurpose = async (userId, purpose) => {
   const response = await apiClient.post(`/users/${userId}/purpose`, { purpose });

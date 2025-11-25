@@ -12,6 +12,8 @@ const useAuthStore = create((set) => ({
   userId: null,
   userPurpose: null,
   userProfileImage: null,
+  userNickname: null, // ✨ [추가] 닉네임
+  userCoins: 0,       // ✨ [추가] 보유 코인
 
   // ✨ [수정] isPremiumUser 상태를 추가하고 기본값을 false로 설정하여 프리미엄 기능 테스트를 가능하게 합니다.
   isPremiumUser: false,
@@ -27,6 +29,17 @@ const useAuthStore = create((set) => ({
     } catch (error) {
       console.error('[AuthStore] Save auth data error:', error);
     }
+  },
+
+  // ✨ [추가] 사용자 프로필 정보 저장
+  setUserProfile: (profileData) => {
+    set({
+      userNickname: profileData.nickname,
+      userProfileImage: profileData.profileImageUrl,
+      userPurpose: profileData.onboardingType,
+      isPremiumUser: profileData.isPremium,
+      userCoins: profileData.totalCoins,
+    });
   },
 
   setUserPurpose: async (purpose) => {
@@ -95,7 +108,16 @@ const useAuthStore = create((set) => ({
       await AsyncStorage.removeItem('userToken');
       await AsyncStorage.removeItem('refreshToken');
       await AsyncStorage.removeItem('userId');
-      set({ userToken: null, refreshToken: null, userId: null, userPurpose: null, userProfileImage: null, isPremiumUser: false });
+      set({
+        userToken: null,
+        refreshToken: null,
+        userId: null,
+        userPurpose: null,
+        userProfileImage: null,
+        isPremiumUser: false,
+        userNickname: null,
+        userCoins: 0
+      });
     } catch (error) {
       console.error('[AuthStore] Logout error:', error);
     }

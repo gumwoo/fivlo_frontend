@@ -1,9 +1,6 @@
-// src/screens/AccountManagementScreen.jsx
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, Alert, Modal } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackActions } from '@react-navigation/native';
+import { useNavigation, StackActions } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker';
@@ -13,28 +10,59 @@ import AccountDeleteModal from '../components/common/AccountDeleteModal';
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
 import useAuthStore from '../store/authStore';
+import { getUserProfile } from '../utils/api';
 
 const AccountManagementScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
-  const { userPurpose, userProfileImage, setUserProfileImage } = useAuthStore();
+  const {
+    userPurpose,
+    userProfileImage,
+    userNickname,
+    userCoins,
+    setUserProfileImage,
+    setUserProfile
+  } = useAuthStore();
 
-  const [name, setName] = useState('오분이');
+  const [name, setName] = useState(userNickname || '오분이');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showImagePickerModal, setShowImagePickerModal] = useState(false);
+
+  // 화면 진입 시 사용자 프로필 조회
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const profileData = await getUserProfile();
+        if (__DEV__) {
+          console.log('[AccountManagement] Profile loaded:', profileData);
+        }
+        setUserProfile(profileData);
+        if (profileData.nickname) {
+          setName(profileData.nickname);
+        }
+      } catch (error) {
+        console.error('[AccountManagement] Failed to load profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   // 목적을 한글로 변환
   const getPurposeText = () => {
     if (!userPurpose) return t('account.purpose_placeholder');
-    
+
     const purposeMap = {
       'concentration': t('core.purpose_concentration'),
       'routine': t('core.purpose_routine'),
       'goal': t('core.purpose_goal'),
+      '집중_관리': t('core.purpose_concentration'),
+      '루틴_형성': t('core.purpose_routine'),
+      '목표_관리': t('core.purpose_goal'),
     };
-    
-    return purposeMap[userPurpose] || t('account.purpose_placeholder');
+
+    return purposeMap[userPurpose] || userPurpose;
   };
 
   // 이미지 선택 Modal 열기
@@ -45,10 +73,10 @@ const AccountManagementScreen = () => {
   // 카메라로 촬영
   const handleCamera = async () => {
     setShowImagePickerModal(false);
-    
+
     try {
       const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-      
+
       if (!permissionResult.granted) {
         Alert.alert(
           t('account.permission_required'),
@@ -79,10 +107,10 @@ const AccountManagementScreen = () => {
   // 갤러리에서 선택
   const handleGallery = async () => {
     setShowImagePickerModal(false);
-    
+
     try {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
+
       if (!permissionResult.granted) {
         Alert.alert(
           t('account.permission_required'),
@@ -110,10 +138,9 @@ const AccountManagementScreen = () => {
     }
   };
 
-  // ✨ 수정: 저장 버튼 클릭 시 Alert을 띄운 후, 확인을 누르면 이전 화면으로 돌아갑니다.
   const handleSave = () => {
     Alert.alert(
-      t('account.save_confirm_title'), 
+      t('account.save_confirm_title'),
       t('account.save_confirm_message'),
       [{ text: t('common.ok'), onPress: () => navigation.goBack() }]
     );
@@ -125,7 +152,13 @@ const AccountManagementScreen = () => {
       t('account.logout_confirm_message'),
       [
         { text: t('account.cancel'), style: 'cancel' },
-        { text: t('account.confirm'), onPress: () => navigation.dispatch(StackActions.replace('AuthChoice')), style: 'destructive' },
+        {
+          text: t('account.confirm'), onPress: async () => {
+            const { logout } = useAuthStore.getState();
+            await logout();
+            navigation.dispatch(StackActions.replace('AuthChoice'));
+          }, style: 'destructive'
+        },
       ]
     );
   };
@@ -145,14 +178,13 @@ const AccountManagementScreen = () => {
 
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
-      {/* ✨ 수정: 모든 텍스트를 번역 파일(t 함수)에 맞게 수정 */}
       <Header title={t('account.title')} showBackButton={true} />
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <TouchableOpacity style={styles.imageContainer} onPress={handleImagePress}>
-          <Image 
+          <Image
             source={
-              userProfileImage 
-                ? { uri: userProfileImage } 
+              userProfileImage
+                ? { uri: userProfileImage }
                 : require('../../assets/기본오분이.png')
             }
             style={styles.profileImage}
@@ -161,15 +193,18 @@ const AccountManagementScreen = () => {
         </TouchableOpacity>
 
         <Text style={styles.label}>{t('account.name')}</Text>
-        <TextInput 
+        <TextInput
           style={styles.input}
           value={name}
           onChangeText={setName}
+          editable={false}
         />
 
         <Text style={styles.label}>{t('account.account_info')}</Text>
-        <Text style={styles.infoText}>(카카오톡/페이스북/이메일) 로그인</Text>
-        <Text style={styles.infoText}>skyhan1114@naver.com</Text>
+        <Text style={styles.infoText}>이메일 로그인</Text>
+
+        <Text style={styles.label}>보유 코인</Text>
+        <Text style={styles.infoText}>{userCoins} 코인</Text>
 
         <TouchableOpacity style={styles.actionButton} onPress={handleLogout}>
           <Text style={styles.actionText}>{t('account.logout')}</Text>
@@ -178,10 +213,10 @@ const AccountManagementScreen = () => {
         <TouchableOpacity style={styles.actionButton} onPress={handleDeleteAccount}>
           <Text style={[styles.actionText, styles.deleteText]}>{t('account.delete_account')}</Text>
         </TouchableOpacity>
-        
+
         <Text style={styles.label}>{t('account.fivlo_purpose')}</Text>
-        <TouchableOpacity 
-          style={styles.purposeBox} 
+        <TouchableOpacity
+          style={styles.purposeBox}
           onPress={() => navigation.navigate('PurposeSelection', { from: 'profile' })}
         >
           <Text style={[styles.infoText, userPurpose && styles.selectedPurposeText]}>
@@ -193,7 +228,7 @@ const AccountManagementScreen = () => {
       <View style={styles.saveButtonContainer}>
         <Button title={t('account.save')} onPress={handleSave} />
       </View>
-      
+
       {/* 회원 탈퇴 모달 */}
       <AccountDeleteModal
         visible={showDeleteModal}
@@ -217,8 +252,8 @@ const AccountManagementScreen = () => {
             <TouchableOpacity style={styles.modalButton} onPress={handleGallery}>
               <Text style={styles.modalButtonText}>{t('account.choose_from_gallery')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.modalButton, styles.cancelButton]} 
+            <TouchableOpacity
+              style={[styles.modalButton, styles.cancelButton]}
               onPress={() => setShowImagePickerModal(false)}
             >
               <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
@@ -239,10 +274,10 @@ const styles = StyleSheet.create({
   label: { width: '100%', fontSize: FontSizes.medium, fontWeight: FontWeights.medium, color: Colors.textDark, marginBottom: 8, marginTop: 24 },
   input: { width: '100%', backgroundColor: Colors.textLight, borderRadius: 10, padding: 15, fontSize: FontSizes.medium, borderWidth: 1, borderColor: Colors.secondaryBrown },
   infoText: { width: '100%', fontSize: FontSizes.medium, color: Colors.secondaryBrown, marginTop: 5 },
-  actionButton: { width: '100%', marginTop: 24, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: Colors.secondaryBrown+'50'},
+  actionButton: { width: '100%', marginTop: 24, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: Colors.secondaryBrown + '50' },
   actionText: { fontSize: FontSizes.medium, color: Colors.textDark, fontWeight: '600' },
   deleteText: { color: Colors.accentRed },
-  purposeBox: { 
+  purposeBox: {
     width: '100%',
     backgroundColor: Colors.textLight,
     borderRadius: 12,
