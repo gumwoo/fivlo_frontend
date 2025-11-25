@@ -10,7 +10,7 @@ import AccountDeleteModal from '../components/common/AccountDeleteModal';
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
 import useAuthStore from '../store/authStore';
-import { getUserProfile, updateUserProfile } from '../utils/api';
+import { getUserProfile, updateUserProfile, logout as logoutApi } from '../utils/api';
 
 const AccountManagementScreen = () => {
   const navigation = useNavigation();
@@ -171,9 +171,24 @@ const AccountManagementScreen = () => {
         { text: t('account.cancel'), style: 'cancel' },
         {
           text: t('account.confirm'), onPress: async () => {
-            const { logout } = useAuthStore.getState();
-            await logout();
-            navigation.dispatch(StackActions.replace('AuthChoice'));
+            try {
+              // API 로그아웃 호출
+              const { refreshToken, logout } = useAuthStore.getState();
+              if (refreshToken) {
+                await logoutApi(refreshToken);
+                if (__DEV__) {
+                  console.log('[AccountManagement] Logout API called successfully');
+                }
+              }
+            } catch (error) {
+              console.error('[AccountManagement] Logout API failed:', error);
+              // API 호출 실패해도 클라이언트 로그아웃은 진행
+            } finally {
+              // 클라이언트 로그아웃 처리
+              const { logout } = useAuthStore.getState();
+              await logout();
+              navigation.dispatch(StackActions.replace('AuthChoice'));
+            }
           }, style: 'destructive'
         },
       ]

@@ -44,6 +44,16 @@ export const reissueToken = async (accessToken, refreshToken) => {
   }
 };
 
+// 로그아웃 함수 (REQ-BE-AUTH-003)
+export const logout = async (refreshToken) => {
+  try {
+    const response = await apiClient.post('/auth/logout', { refreshToken });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // 응답 인터셉터 추가
 apiClient.interceptors.response.use(
   (response) => {
