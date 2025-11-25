@@ -10,7 +10,7 @@ import AccountDeleteModal from '../components/common/AccountDeleteModal';
 import { Colors } from '../styles/color';
 import { FontSizes, FontWeights } from '../styles/Fonts';
 import useAuthStore from '../store/authStore';
-import { getUserProfile } from '../utils/api';
+import { getUserProfile, updateUserProfile } from '../utils/api';
 
 const AccountManagementScreen = () => {
   const navigation = useNavigation();
@@ -138,12 +138,29 @@ const AccountManagementScreen = () => {
     }
   };
 
-  const handleSave = () => {
-    Alert.alert(
-      t('account.save_confirm_title'),
-      t('account.save_confirm_message'),
-      [{ text: t('common.ok'), onPress: () => navigation.goBack() }]
-    );
+  const handleSave = async () => {
+    try {
+      // API 호출하여 프로필 업데이트
+      await updateUserProfile(name, userProfileImage);
+
+      // 성공 시 스토어 업데이트 (이미지는 이미 업데이트됨)
+      setUserProfile({
+        nickname: name,
+        profileImageUrl: userProfileImage,
+        onboardingType: userPurpose,
+        isPremium: useAuthStore.getState().isPremiumUser,
+        totalCoins: userCoins
+      });
+
+      Alert.alert(
+        t('account.save_confirm_title'),
+        '프로필 정보가 성공적으로 수정되었습니다.',
+        [{ text: t('common.ok'), onPress: () => navigation.goBack() }]
+      );
+    } catch (error) {
+      console.error('[AccountManagement] Failed to update profile:', error);
+      Alert.alert(t('common.error'), '프로필 수정에 실패했습니다.');
+    }
   };
 
   const handleLogout = () => {
@@ -197,7 +214,7 @@ const AccountManagementScreen = () => {
           style={styles.input}
           value={name}
           onChangeText={setName}
-          editable={false}
+          editable={true}
         />
 
         <Text style={styles.label}>{t('account.account_info')}</Text>
