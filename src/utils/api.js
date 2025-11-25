@@ -1,7 +1,8 @@
-// src/services/authApi.js (예시)
 import axios from 'axios';
 
-const API_BASE_URL = 'http://YOUR_BACKEND_SERVER_IP:YOUR_BACKEND_PORT'; // 백엔드 개발 서버 IP 주소와 포트로 변경하세요.
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const API_BASE_URL = 'https://fivlo.net/api/v1';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -10,13 +11,62 @@ const apiClient = axios.create({
   },
 });
 
-export const signUpWithEmail = async (email, password, purpose) => {
-  const response = await apiClient.post('/users/signup', { email, password, purpose });
+// 요청 인터셉터 추가
+apiClient.interceptors.request.use(
+  async (config) => {
+    // 토큰 가져오기
+    const token = await AsyncStorage.getItem('userToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    if (__DEV__) {
+      console.log(`[API Request] ${config.method.toUpperCase()} ${config.url}`, config.data);
+    }
+    return config;
+  },
+  (error) => {
+    console.error('[API Request Error]', error);
+    return Promise.reject(error);
+  }
+);
+
+// 응답 인터셉터 추가
+apiClient.interceptors.response.use(
+  (response) => {
+    if (__DEV__) {
+      console.log(`[API Response] ${response.status} ${response.config.url}`, response.data);
+    }
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 409) {
+      if (__DEV__) console.log('[API Info] 409 Conflict (Handled in UI):', error.response.data);
+    }
+    else if (error.response) {
+      console.error('[API Response Error]', error.response.status, error.response.data);
+    } else if (error.request) {
+      console.error('[API No Response]', error.request);
+    } else {
+      console.error('[API Error]', error.message);
+    }
+    return Promise.reject(error);
+  }
+);
+
+export const signUpWithEmail = async (email, password) => {
+  const response = await apiClient.post('/auth/signup', { email, password });
   return response.data;
 };
 
 export const loginWithEmail = async (email, password) => {
-  const response = await apiClient.post('/users/login', { email, password });
+  const response = await apiClient.post('/auth/signin', { email, password });
+  return response.data;
+};
+
+// 온보딩 목표 설정/수정 (REQ-BE-USER-002)
+export const updateOnboardingType = async (onboardingType) => {
+  const response = await apiClient.post('/users/onboarding', { onboardingType });
   return response.data;
 };
 

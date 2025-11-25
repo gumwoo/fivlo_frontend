@@ -12,6 +12,7 @@ import Button from '../components/common/Button';
 import CharacterImage from '../components/common/CharacterImage';
 import { useTranslation } from 'react-i18next';
 import useAuthStore from '../store/authStore';
+import { updateOnboardingType } from '../utils/api';
 
 const PurposeSelectionScreen = () => {
   const navigation = useNavigation();
@@ -20,24 +21,52 @@ const PurposeSelectionScreen = () => {
   const { t } = useTranslation();
   const { setUserPurpose } = useAuthStore();
 
-  const handlePurposeSelect = (purpose) => {
+  const handlePurposeSelect = async (purpose) => {
     console.log('Selected purpose:', purpose);
-    
-    // authStore에 목적 저장
-    setUserPurpose(purpose);
-    
-    if (__DEV__) {
-      console.log('[PurposeSelection] Saved purpose:', purpose);
-    }
-    
-    // --- 수정: 홈 화면으로 이동하고, 이전 스택을 모두 제거 ---
-    if (route.params?.from === 'profile') {
-      navigation.goBack(); // 프로필 수정에서 온 경우 → 원래 화면으로
-    } else {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Main' }],
-      });
+
+    // 1. API에 보낼 값 매핑
+    const purposeMapping = {
+      'concentration': '집중력_개선',
+      'routine': '루틴_형성',
+      'goal': '목표_관리'
+    };
+    const apiValue = purposeMapping[purpose] || '목표_관리';
+
+    try {
+      // 2. API 호출
+      await updateOnboardingType(apiValue);
+
+      if (__DEV__) {
+        console.log('[PurposeSelection] API updated:', apiValue);
+      }
+
+      // 3. 로컬 스토어에 목적 저장
+      setUserPurpose(purpose);
+
+      // 4. 화면 이동
+      if (route.params?.from === 'profile') {
+        navigation.goBack(); // 프로필 수정에서 온 경우 → 원래 화면으로
+      } else {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Main' }],
+        });
+      }
+    } catch (error) {
+      console.error('[PurposeSelection] Failed to update onboarding type:', error);
+      // 에러가 나더라도 진행을 막을지, 아니면 알림을 띄울지 결정 필요. 
+      // 우선은 진행하되 에러 로그를 남김.
+
+      // 로컬 스토어에는 저장하고 이동 (사용자 경험을 위해)
+      setUserPurpose(purpose);
+      if (route.params?.from === 'profile') {
+        navigation.goBack();
+      } else {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Main' }],
+        });
+      }
     }
   };
 

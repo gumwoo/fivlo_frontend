@@ -12,11 +12,14 @@ import Button from '../../components/common/Button';
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { signUpWithEmail } from '../../utils/api';
+import useAuthStore from '../../store/authStore';
 
 const EmailSignUpScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const { setAuthData } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,16 +37,26 @@ const EmailSignUpScreen = () => {
     }
 
     try {
+      const data = await signUpWithEmail(email, password);
+
       if (__DEV__) {
-        console.log('[EmailSignUpScreen] Sign up attempt:', { email });
+        console.log('[EmailSignUpScreen] Sign up success:', data);
       }
+
+      // 스토어에 인증 정보 저장
+      await setAuthData(data.accessToken, data.refreshToken, data.user_id);
+
       Alert.alert(t('core.auth.signup_success_title'), t('core.auth.signup_success_message'));
-      
+
       // 회원가입 성공 후 언어 선택 화면으로 이동
       navigation.navigate('LanguageSelection');
     } catch (error) {
       console.error('회원가입 실패:', error);
-      Alert.alert(t('core.auth.signup_fail_title'), t('core.auth.signup_fail_message'));
+      if (error.response && error.response.status === 409) {
+        Alert.alert(t('core.auth.signup_fail_title'), '이미 가입된 이메일입니다.');
+      } else {
+        Alert.alert(t('core.auth.signup_fail_title'), t('core.auth.signup_fail_message'));
+      }
     }
   };
 
@@ -77,7 +90,7 @@ const EmailSignUpScreen = () => {
           />
         </View>
       </View>
-      
+
       <View style={styles.buttonContainer}>
         <Button
           title={t('core.auth.start_routine')}

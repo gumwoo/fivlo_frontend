@@ -12,10 +12,14 @@ import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
+import { loginWithEmail } from '../../utils/api';
+import useAuthStore from '../../store/authStore';
+
 const EmailLoginScreen = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
+  const { setAuthData } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,14 +30,25 @@ const EmailLoginScreen = () => {
       return;
     }
 
-    if (__DEV__) {
-      console.log('[EmailLoginScreen] Login attempt:', { email });
+    try {
+      const data = await loginWithEmail(email, password);
+
+      if (__DEV__) {
+        console.log('[EmailLoginScreen] Login success:', data);
+      }
+
+      // 스토어에 인증 정보 저장 (isPremium 포함)
+      await setAuthData(data.accessToken, data.refreshToken, data.userId, data.isPremium);
+
+      Alert.alert(t('core.auth.login_success_title'), t('core.auth.login_success_message'));
+
+      // 로그인 성공 후 언어 선택 화면으로 이동
+      navigation.navigate('LanguageSelection');
+    } catch (error) {
+      console.error('로그인 실패:', error);
+      Alert.alert(t('core.auth.login_fail_title'), t('core.auth.login_fail_message'));
     }
-    Alert.alert(t('core.auth.login_success_title'), t('core.auth.login_success_message'));
-    
-    // 로그인 성공 후 언어 선택 화면으로 이동
-    navigation.navigate('LanguageSelection');
-    };
+  };
 
 
   return (
@@ -54,7 +69,7 @@ const EmailLoginScreen = () => {
           onChangeText={setPassword}
         />
       </View>
-      
+
       <View style={styles.buttonContainer}>
         <Button
           title={t('core.auth.login_header')}
