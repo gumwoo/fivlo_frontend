@@ -1,5 +1,3 @@
-// src/screens/SettingsScreen.jsx
-
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Switch } from 'react-native';
 import Header from '../components/common/Header';
@@ -11,7 +9,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../i18n';
 import useAuthStore from '../store/authStore';
-import { updateUserLanguage } from '../utils/api';
+import { updateUserLanguage, toggleUserAlarm } from '../utils/api';
 
 const SettingsScreen = ({ initialIsPremiumUser = true }) => {
   const navigation = useNavigation();
@@ -47,6 +45,24 @@ const SettingsScreen = ({ initialIsPremiumUser = true }) => {
     }
   };
 
+  const handleNotificationToggle = async () => {
+    try {
+      // 낙관적 업데이트 (Optimistic Update)
+      setNotificationsEnabled(prev => !prev);
+
+      // API 호출
+      await toggleUserAlarm();
+
+      if (__DEV__) {
+        console.log('[SettingsScreen] Alarm toggled successfully');
+      }
+    } catch (error) {
+      console.error('[SettingsScreen] Failed to toggle alarm:', error);
+      // 실패 시 롤백
+      setNotificationsEnabled(prev => !prev);
+    }
+  };
+
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('settings.title')} showBackButton={true} />
@@ -77,7 +93,7 @@ const SettingsScreen = ({ initialIsPremiumUser = true }) => {
             <Switch
               trackColor={{ false: '#767577', true: Colors.accentApricot }}
               thumbColor={Colors.textLight}
-              onValueChange={() => setNotificationsEnabled(prev => !prev)}
+              onValueChange={handleNotificationToggle}
               value={notificationsEnabled}
             />
           </View>
