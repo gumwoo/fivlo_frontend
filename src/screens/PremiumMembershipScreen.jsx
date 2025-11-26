@@ -28,12 +28,12 @@ const PremiumMembershipScreen = () => {
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('premium.title')} showBackButton={true} />
-      
+
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
         {/* 오분이 캐릭터 */}
         <View style={styles.characterContainer}>
-          <Image 
-            source={require('../../assets/images/오분이_노랑티셔츠_착용.png')}
+          <Image
+            source={require('../../assets/images/obooni_yellow_tshirt_wear.png')}
             style={styles.characterImage}
             resizeMode="contain"
           />
@@ -46,7 +46,7 @@ const PremiumMembershipScreen = () => {
 
         {/* 가격 옵션 */}
         <View style={styles.pricingContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.pricingOption}
             onPress={() => handlePurchaseAttempt('monthly')}
           >
@@ -54,7 +54,7 @@ const PremiumMembershipScreen = () => {
             <Text style={styles.periodText}>{t('premium.one_month')}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.pricingOption}
             onPress={() => handlePurchaseAttempt('yearly')}
           >
@@ -68,7 +68,7 @@ const PremiumMembershipScreen = () => {
           <Text style={styles.featuresTitle}>
             {t('premium.available_features')}
           </Text>
-          
+
           <View style={styles.featuresList}>
             <View style={styles.featureItem}>
               <Text style={styles.featureBullet}>•</Text>
@@ -76,21 +76,21 @@ const PremiumMembershipScreen = () => {
                 {t('premium.feature_gps')}
               </Text>
             </View>
-            
+
             <View style={styles.featureItem}>
               <Text style={styles.featureBullet}>•</Text>
               <Text style={styles.featureText}>
                 {t('premium.feature_dday')}
               </Text>
             </View>
-            
+
             <View style={styles.featureItem}>
               <Text style={styles.featureBullet}>•</Text>
               <Text style={styles.featureText}>
                 {t('premium.feature_ai')}
               </Text>
             </View>
-            
+
             <View style={styles.featureItem}>
               <Text style={styles.featureBullet}>•</Text>
               <Text style={styles.featureText}>
