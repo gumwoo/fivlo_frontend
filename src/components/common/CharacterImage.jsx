@@ -3,7 +3,7 @@ import React from 'react';
 import { Image, StyleSheet } from 'react-native';
 
 // 실제 이미지 경로 정의
-const obooniDefault = require('../../../assets/기본오분이.png');
+const obooniDefault = require('../../../assets/obooni_default_base.png');
 const obooniHappy = require('../../../assets/images/obooni_happy.png');
 const obooniSad = require('../../../assets/images/obooni_sad.png');
 

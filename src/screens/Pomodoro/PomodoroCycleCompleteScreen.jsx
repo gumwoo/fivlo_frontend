@@ -51,41 +51,41 @@ const PomodoroCycleCompleteScreen = () => {
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('pomodoro.header')} showBackButton={true} />
-  
+
       <ScrollView contentContainerStyle={styles.contentContainer}>
         {/* 상단 타이틀 */}
         <Text style={styles.titleText}>공부하기</Text>
-        
+
         {/* GIF 애니메이션 */}
-        <Image 
-          source={require('../../../assets/포모도로.gif')}
+        <Image
+          source={require('../../../assets/pomodoro.gif')}
           style={styles.pomodoroGif}
         />
-        
+
         {/* 사이클 완료 메시지 */}
         <Text style={styles.cycleCompleteText}>
           {cycleCount} 사이클 완료!
         </Text>
-        
+
         <Text style={styles.questionText}>
           {cycleCount} 사이클 더 하실래요?
         </Text>
-        
+
         {/* 버튼들 */}
         <View style={styles.buttonContainer}>
-          <Button 
-            title="계속하기" 
-            onPress={handleContinue} 
+          <Button
+            title="계속하기"
+            onPress={handleContinue}
             style={styles.continueButton}
           />
-          <Button 
-            title="그만하기" 
-            onPress={handleStop} 
-            primary={false} 
-            style={styles.stopButton} 
+          <Button
+            title="그만하기"
+            onPress={handleStop}
+            primary={false}
+            style={styles.stopButton}
           />
         </View>
-        
+
         <Text style={styles.autoProceedText}>
           3초가 지나면 '계속하기' 로 진행합니다.
         </Text>

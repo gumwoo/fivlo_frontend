@@ -232,7 +232,7 @@ const AccountManagementScreen = () => {
             source={
               userProfileImage
                 ? { uri: userProfileImage }
-                : require('../../assets/기본오분이.png')
+                : require('../../assets/obooni_default_base.png')
             }
             style={styles.profileImage}
           />

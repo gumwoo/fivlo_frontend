@@ -34,7 +34,7 @@ const PomodoroBreakChoiceScreen = () => {
           focusedTime,
           type: 'pomodoro', // 포모도로 기록
         });
-        
+
         if (__DEV__) {
           console.log('[PomodoroBreakChoice] Saved focus record:', {
             goal: goalText,
@@ -70,13 +70,13 @@ const PomodoroBreakChoiceScreen = () => {
         <Text style={styles.titleText}>
           {goalText}
         </Text>
-        
+
         {/* GIF 애니메이션 캐릭터 */}
-        <Image 
-          source={require('../../../assets/포모도로.gif')}
+        <Image
+          source={require('../../../assets/pomodoro.gif')}
           style={styles.pomodoroGif}
         />
-        
+
         {/* 집중 완료 메시지 */}
         <Text style={styles.completeText}>
           {t('pomodoro.focus_complete', { minutes, seconds })}
@@ -86,9 +86,9 @@ const PomodoroBreakChoiceScreen = () => {
         </Text>
 
         {/* 집중도 분석 버튼 */}
-        <Button 
-          title={t('pomodoro.view_analysis')} 
-          onPress={handleAnalysis} 
+        <Button
+          title={t('pomodoro.view_analysis')}
+          onPress={handleAnalysis}
           style={styles.analysisButton}
         />
       </ScrollView>

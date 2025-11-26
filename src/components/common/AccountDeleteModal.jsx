@@ -19,40 +19,40 @@ const AccountDeleteModal = ({ visible, onCancel, onConfirm }) => {
       <View style={styles.overlay}>
         <View style={styles.modalContainer}>
           {/* 오분이 이미지 */}
-          <Image 
-            source={require('../../../assets/놀란 오분이.png')}
+          <Image
+            source={require('../../../assets/obooni_surprised.png')}
             style={styles.characterImage}
             resizeMode="contain"
           />
-          
+
           {/* 제목 */}
           <Text style={styles.title}>
             {t('account.delete_confirm_title')}
           </Text>
-          
+
           {/* 메시지 */}
           <Text style={styles.message}>
             {t('account.delete_confirm_message')}
           </Text>
-          
+
           {/* 부제목 */}
           <Text style={styles.subMessage}>
             {t('account.delete_confirm_submessage')}
           </Text>
-          
+
           {/* 버튼 컨테이너 */}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity 
-              style={styles.cancelButton} 
+            <TouchableOpacity
+              style={styles.cancelButton}
               onPress={onCancel}
             >
               <Text style={styles.cancelButtonText}>
                 {t('account.cancel')}
               </Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={styles.deleteButton} 
+
+            <TouchableOpacity
+              style={styles.deleteButton}
               onPress={onConfirm}
             >
               <Text style={styles.deleteButtonText}>

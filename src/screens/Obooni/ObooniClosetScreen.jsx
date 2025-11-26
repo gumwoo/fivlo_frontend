@@ -75,7 +75,7 @@ const ObooniClosetScreen = ({ isPremiumUser }) => {
   const getObooniCharacterSource = () => {
     // 실제로는 CharacterImage 컴포넌트가 equippedItems를 props로 받아서
     // 여러 이미지 레이어를 조합하여 오분이를 렌더링해야 합니다.
-    return require('../../../assets/images/오분이몸.png');
+    return require('../../../assets/images/obooni_body.png');
   };
 
   return (
@@ -99,7 +99,7 @@ const ObooniClosetScreen = ({ isPremiumUser }) => {
               <FontAwesome5 name="plus" size={20} color={Colors.secondaryBrown} />
             </TouchableOpacity>
           </View>
-          
+
           {ownedItems.length > 0 ? (
             <FlatList
               data={ownedItems}

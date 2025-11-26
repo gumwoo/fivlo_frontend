@@ -46,7 +46,7 @@ const ObooniCustomizationScreen = () => {
     if (selectedClothes && selectedClothes.wornImage) {
       return selectedClothes.wornImage;
     }
-    return require('../../../assets/images/오분이몸.png');
+    return require('../../../assets/images/obooni_body.png');
   };
 
   return (
@@ -68,7 +68,7 @@ const ObooniCustomizationScreen = () => {
           </View>
 
           {ownedClothes.length > 0 ? (
-            <ScrollView 
+            <ScrollView
               style={styles.clothesScrollView}
               showsVerticalScrollIndicator={false}
             >

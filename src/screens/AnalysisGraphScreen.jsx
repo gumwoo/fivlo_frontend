@@ -27,16 +27,16 @@ const AiAnalysisView = () => {
     <ScrollView contentContainerStyle={styles.aiContainer}>
       <View style={styles.aiHeader}>
         <Text style={styles.aiTitle}>오분이의 월간 ai 분석 제안서</Text>
-        <Image 
-          source={require('../../assets/기본오분이.png')} // 캐릭터 이미지 경로 확인 필요
-          style={styles.aiCharacterImage} 
+        <Image
+          source={require('../../assets/obooni_default_base.png')} // 캐릭터 이미지 경로 확인 필요
+          style={styles.aiCharacterImage}
         />
       </View>
 
       <View style={styles.analysisRow}>
         <View style={styles.analysisBox}>
           <Text style={styles.boxTitle}>최적의 집중 시작 시간</Text>
-          <Text style={[styles.mainText, {color: Colors.accentApricot}]}>AM 09 : 00</Text>
+          <Text style={[styles.mainText, { color: Colors.accentApricot }]}>AM 09 : 00</Text>
           <Text style={styles.subText}>포모도로 세트 수 : 3개</Text>
           <Text style={styles.subText}>포모도로 중간률 : 8%</Text>
           <Text style={styles.subText}>평균 집중 시간 : 48분</Text>
@@ -44,7 +44,7 @@ const AiAnalysisView = () => {
         </View>
         <View style={styles.analysisBox}>
           <Text style={styles.boxTitle}>최적의 집중 요일</Text>
-          <Text style={[styles.mainText, {color: Colors.accentApricot}]}>수요일, 금요일</Text>
+          <Text style={[styles.mainText, { color: Colors.accentApricot }]}>수요일, 금요일</Text>
           <Text style={styles.subText}>✓ 수요일 평균 3.4세트, 성공률 92%, 평균 집중 95분</Text>
           <Text style={styles.subText}>✓ 금요일 평균 3.2세트, 성공률 88%, 평균 집중 87분</Text>
           <Text style={styles.bulletPoint}>→ 집중 시간이 길고, 실제 효율이 높은 요일</Text>
@@ -54,7 +54,7 @@ const AiAnalysisView = () => {
       <View style={styles.analysisRow}>
         <View style={styles.analysisBox}>
           <Text style={styles.boxTitle}>집중도가 낮은 시간</Text>
-          <Text style={[styles.mainText, {color: Colors.textDark}]}>PM 13 : 00 ~ 14 : 00</Text>
+          <Text style={[styles.mainText, { color: Colors.textDark }]}>PM 13 : 00 ~ 14 : 00</Text>
           <Text style={styles.subText}>루틴 중단률 : 52%</Text>
           <Text style={styles.subText}>평균 집중 시간 : 33분</Text>
           <Text style={styles.subText}>세트 성공률 : 48%</Text>
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 40,
   },
-  
+
   // AI 분석 뷰를 위한 스타일
   aiContainer: {
     padding: 15,

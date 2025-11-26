@@ -24,23 +24,23 @@ const TaskCompleteCoinModal = ({ isVisible, onClose, taskText, earnedCoins = 10 
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
           {/* 오분이 캐릭터 */}
-          <Image source={require('../../../assets/기본오분이.png')} style={styles.obooniImage} />
-          
+          <Image source={require('../../../assets/obooni_default_base.png')} style={styles.obooniImage} />
+
           {/* 완료 메시지 */}
           <Text style={styles.completeMessage}>
             {t('task_complete.complete_message', { taskText })}
           </Text>
-          
+
           {/* 코인 지급 */}
           <View style={styles.coinContainer}>
             <Image source={require('../../../assets/coin.png')} style={styles.coinImage} />
             <Text style={styles.coinText}>+{earnedCoins}</Text>
           </View>
-          
+
           <Text style={styles.encourageMessage}>
             {t('task_complete.encourage_message')}
           </Text>
-          
+
           <Button title={t('task_complete.confirm')} onPress={onClose} style={styles.confirmButton} />
         </View>
       </View>

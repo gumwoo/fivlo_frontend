@@ -25,11 +25,11 @@ const PremiumPreparingModal = ({ visible, onClose }) => {
     >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
-          <TouchableWithoutFeedback onPress={() => {}}>
+          <TouchableWithoutFeedback onPress={() => { }}>
             <View style={styles.modalContainer}>
               {/* 오분이 이미지 */}
               <Image
-                source={require('../../../assets/기본오분이.png')}
+                source={require('../../../assets/obooni_default_base.png')}
                 style={styles.characterImage}
                 resizeMode="contain"
               />

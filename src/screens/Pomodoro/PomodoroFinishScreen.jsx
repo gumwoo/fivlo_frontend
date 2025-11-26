@@ -45,9 +45,9 @@ const PomodoroFinishScreen = () => {
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('pomodoro.header')} showBackButton={true} />
 
-      <ScrollView contentContainerStyle={styles.contentContainer}>        
+      <ScrollView contentContainerStyle={styles.contentContainer}>
         <Image
-          source={require('../../../assets/오분이_신난이미지.png')}
+          source={require('../../../assets/obooni_excited.png')}
           style={{ width: 250, height: 250, marginBottom: 50 }}
           resizeMode="contain"
         />

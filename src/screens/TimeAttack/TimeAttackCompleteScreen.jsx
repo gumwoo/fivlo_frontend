@@ -1,7 +1,7 @@
 // src/screens/TimeAttackCompleteScreen.jsx
 
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image , Modal} from 'react-native';
+import { View, Text, StyleSheet, Image, Modal } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -37,13 +37,13 @@ const TimeAttackCompleteScreen = () => {
 
       <View style={styles.contentContainer}>
         <Image
-          source={require('../../../assets/오분이_신난이미지.png')}
+          source={require('../../../assets/obooni_excited.png')}
           style={styles.obooniCharacter}
           resizeMode="contain"
         />
         <Text style={styles.completeText}>{t('time_attack_complete.complete_ready')}</Text>
         <Text style={styles.praiseText}>{t('time_attack_complete.praise_message')}</Text>
-        
+
         <Button title={t('time_attack_complete.go_home')} onPress={handleGoToHome} style={styles.homeButton} />
       </View>
     </View>

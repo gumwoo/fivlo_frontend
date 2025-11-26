@@ -14,7 +14,7 @@ import { socialLogin } from '../../utils/api';
 import useAuthStore from '../../store/authStore';
 
 // ✅ 로고 이미지 불러오기
-const logo = require('../../../assets/로고.png');
+const logo = require('../../../assets/logo.png');
 
 const AuthChoiceScreen = () => {
   const navigation = useNavigation();

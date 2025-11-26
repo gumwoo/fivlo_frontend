@@ -31,7 +31,7 @@ const HomeScreen = ({ isPremiumUser }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [coins, setCoins] = useState(1234);
   const [showCoinGrantModal, setShowCoinGrantModal] = useState(false);
-  const [obooniImage, setObooniImage] = useState(require('../../assets/images/오분이몸.png'));
+  const [obooniImage, setObooniImage] = useState(require('../../assets/images/obooni_body.png'));
 
   //  전역 상태 가져오기
   const tasks = useTaskStore((state) => state.tasks);
@@ -57,30 +57,30 @@ const HomeScreen = ({ isPremiumUser }) => {
         if (selectedClothes && selectedClothes.wornImage) {
           setObooniImage(selectedClothes.wornImage);
         } else {
-          setObooniImage(require('../../assets/images/오분이몸.png'));
+          setObooniImage(require('../../assets/images/obooni_body.png'));
         }
       } catch (error) {
-        setObooniImage(require('../../assets/images/오분이몸.png'));
+        setObooniImage(require('../../assets/images/obooni_body.png'));
       }
     }
   }, [isFocused]);
 
-//  모든 Task 완료 시 코인 지급 (처음 한 번만)
-useEffect(() => {
-  const checkAndShowModal = async () => {
-    const today = format(currentDate, 'yyyy-MM-dd');
-    const shownKey = `coinModalShown_${today}`; // 날짜별 저장 키
-    const alreadyShown = await AsyncStorage.getItem(shownKey);
+  //  모든 Task 완료 시 코인 지급 (처음 한 번만)
+  useEffect(() => {
+    const checkAndShowModal = async () => {
+      const today = format(currentDate, 'yyyy-MM-dd');
+      const shownKey = `coinModalShown_${today}`; // 날짜별 저장 키
+      const alreadyShown = await AsyncStorage.getItem(shownKey);
 
-    // 모든 task 완료 + 아직 모달 안 띄운 경우만 실행
-    if (tasksForDate.length > 0 && tasksForDate.every((task) => task.completed) && !alreadyShown) {
-      await AsyncStorage.setItem(shownKey, 'true'); // 하루 1회만
-      setTimeout(() => setShowCoinGrantModal(true), 400);
-    }
-  };
+      // 모든 task 완료 + 아직 모달 안 띄운 경우만 실행
+      if (tasksForDate.length > 0 && tasksForDate.every((task) => task.completed) && !alreadyShown) {
+        await AsyncStorage.setItem(shownKey, 'true'); // 하루 1회만
+        setTimeout(() => setShowCoinGrantModal(true), 400);
+      }
+    };
 
-  checkAndShowModal();
-}, [tasksForDate]);
+    checkAndShowModal();
+  }, [tasksForDate]);
 
 
   const handleGoToTaskCalendar = () => navigation.navigate('TaskCalendar');

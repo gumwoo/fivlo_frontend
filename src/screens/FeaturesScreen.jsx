@@ -15,12 +15,12 @@ const FeaturesScreen = () => {
   const insets = useSafeAreaInsets();
 
   const features = [
-    { name: t('core.features.pomodoro'), image: require('../../assets/앱아이콘.png'), screen: 'Pomodoro' },
-    { name: t('core.features.reminder'), image: require('../../assets/벨.png'), screen: 'Reminder' },
-    { name: t('core.features.album'), image: require('../../assets/앨범.png'), screen: 'GrowthAlbumTab' },
-    { name: t('core.features.time_attack'), image: require('../../assets/타임어택.png'), screen: 'TimeAttack' },
-    { name: t('core.features.routine'), image: require('../../assets/테스크.png'), screen: 'RoutineSetting' },
-    { name: t('core.features.analysis'), image: require('../../assets/그래프.png'), screen: 'AnalysisGraph' },
+    { name: t('core.features.pomodoro'), image: require('../../assets/app_icon_asset.png'), screen: 'Pomodoro' },
+    { name: t('core.features.reminder'), image: require('../../assets/bell.png'), screen: 'Reminder' },
+    { name: t('core.features.album'), image: require('../../assets/album.png'), screen: 'GrowthAlbumTab' },
+    { name: t('core.features.time_attack'), image: require('../../assets/time_attack.png'), screen: 'TimeAttack' },
+    { name: t('core.features.routine'), image: require('../../assets/task.png'), screen: 'RoutineSetting' },
+    { name: t('core.features.analysis'), image: require('../../assets/graph.png'), screen: 'AnalysisGraph' },
   ];
 
   const handleFeaturePress = (screenName) => {
@@ -32,7 +32,7 @@ const FeaturesScreen = () => {
       'AnalysisGraph': 'AnalysisTab',
       'GrowthAlbumTab': 'GrowthAlbumTab'
     };
-    
+
     if (tabMapping[screenName]) {
       navigation.navigate('Main', { screen: tabMapping[screenName] });
     } else {

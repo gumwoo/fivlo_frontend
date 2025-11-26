@@ -99,11 +99,11 @@ const PomodoroTimerScreen = () => {
     setIsRunning(false);
     // 실제 집중한 시간 계산 (초 단위)
     const focusedTime = isFocusMode ? (FOCUS_TIME - timeLeft) : 0;
-    
+
     navigation.navigate('PomodoroResetConfirmModal', {
       onConfirm: () => {
         // 중단 시 화면 13 (집중 완료 화면)으로
-        navigation.navigate('PomodoroBreakChoice', { 
+        navigation.navigate('PomodoroBreakChoice', {
           selectedGoal: goal,
           focusedTime: focusedTime, // 실제 집중 시간 전달
         });
@@ -111,7 +111,7 @@ const PomodoroTimerScreen = () => {
       onCancel: () => navigation.goBack(),
     });
   };
-  
+
   const handleCycleEnd = () => {
     setIsRunning(false);
     if (isFocusMode) {
@@ -121,10 +121,10 @@ const PomodoroTimerScreen = () => {
           // "네" 선택 시 - 모달 닫고 바로 다음 포모도로 시작
           navigation.goBack(); // 모달 닫기
           setTimeout(() => {
-            navigation.navigate('PomodoroTimer', { 
-              selectedGoal: goal, 
-              resume: true, 
-              isFocusMode: true 
+            navigation.navigate('PomodoroTimer', {
+              selectedGoal: goal,
+              resume: true,
+              isFocusMode: true
             });
           }, 100);
         },
@@ -132,9 +132,9 @@ const PomodoroTimerScreen = () => {
           // "아니오" 선택 시 - 모달 닫고 휴식 시간 시작
           navigation.goBack(); // 모달 닫기
           setTimeout(() => {
-            navigation.navigate('PomodoroTimer', { 
-              selectedGoal: goal, 
-              isFocusMode: false 
+            navigation.navigate('PomodoroTimer', {
+              selectedGoal: goal,
+              isFocusMode: false
             });
           }, 100);
         },
@@ -169,30 +169,30 @@ const PomodoroTimerScreen = () => {
         <Text style={styles.titleText}>
           {isFocusMode ? (goal?.text || goal || t('pomodoro.study_mode')) : t('pomodoro.break_time')}
         </Text>
-      
+
         {/* GIF 애니메이션 캐릭터 */}
-        <Image 
-          source={require('../../../assets/포모도로.gif')}
+        <Image
+          source={require('../../../assets/pomodoro.gif')}
           style={styles.pomodoroGif}
         />
-      
+
         {/* 타이머 시간 표시 */}
         <Text style={styles.timerText}>
           {formatTime(currentTotalTime - timeLeft)}
         </Text>
-        
+
         {/* 남은 시간 텍스트 */}
         <Text style={styles.remainingTimeText}>
           {t('pomodoro.timer_remaining', { min: remainingMinutes, sec: remainingSeconds })}
         </Text>
-      
+
         {/* 컨트롤 버튼 */}
         <View style={styles.controlButtons}>
           <TouchableOpacity style={styles.controlButton} onPress={handleStartPause}>
-            <FontAwesome5 
-              name={isRunning ? "pause" : "play"} 
-              size={32} 
-              color={Colors.textDark} 
+            <FontAwesome5
+              name={isRunning ? "pause" : "play"}
+              size={32}
+              color={Colors.textDark}
             />
           </TouchableOpacity>
           <TouchableOpacity style={styles.controlButton} onPress={handleStop}>

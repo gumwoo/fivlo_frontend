@@ -12,7 +12,7 @@ const OnboardingScreen = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       // replace를 사용하여 뒤로가기 시 온보딩 화면으로 돌아오지 않도록 함
-      navigation.replace('AuthChoice'); 
+      navigation.replace('AuthChoice');
     }, 1500); // 1.5초 = 1500ms
 
     // 컴포넌트가 언마운트될 때 타이머를 정리하여 메모리 누수 방지
@@ -25,7 +25,7 @@ const OnboardingScreen = () => {
       {/* 상태바 스타일을 화면에 맞게 조절할 수 있습니다. */}
       <StatusBar barStyle="dark-content" />
       <Image
-        source={require('../../assets/로고.png')}
+        source={require('../../assets/logo.png')}
         style={styles.logo}
       />
     </View>

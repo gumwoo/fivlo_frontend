@@ -47,12 +47,12 @@ const TimeAttackInProgressScreen = () => {
     if (currentTask) {
       setTimeLeft(currentTask.time * 60); // 분을 초로 변환
       setIsRunning(true); // 새 태스크 시작 시 타이머 자동 시작
-      
+
       // TTS: 태스크 시작 메시지 (한영 번역) - 약간의 지연 후 실행
       setTimeout(() => {
         const startMessageKo = `${currentTask.text} 시작합니다.`;
         const startMessageEn = `${currentTask.text} has started.`;
-        
+
         if (i18n.language === 'ko') {
           speakText(startMessageKo);
         } else {
@@ -100,11 +100,11 @@ const TimeAttackInProgressScreen = () => {
 
   const handleTaskComplete = () => {
     setIsRunning(false); // 타이머 정지
-    
+
     // TTS: 완료 메시지 (한영 번역)
     const completedMessageKo = `${currentTask.text} 완료되었습니다.`;
     const completedMessageEn = `${currentTask.text} has been completed.`;
-    
+
     if (i18n.language === 'ko') {
       speakText(completedMessageKo);
     } else {
@@ -149,11 +149,11 @@ const TimeAttackInProgressScreen = () => {
       handleNextTask(); // 직접 다음 단계 이동
     }
   };
-  
+
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('headers.time_attack')} showBackButton={true} />
-      
+
       {/* --- 수정: ScrollView로 전체 콘텐츠를 감싸 화면 overflow 방지 --- */}
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
         <Text style={styles.goalText}>{selectedGoal}</Text>
@@ -161,8 +161,8 @@ const TimeAttackInProgressScreen = () => {
 
         {/* 타임어택 오분이 GIF */}
         <View style={styles.obooniContainer}>
-          <Image 
-            source={require('../../../assets/타임어택_오분이.gif')} 
+          <Image
+            source={require('../../../assets/time_attack_obooni.gif')}
             style={styles.obooniImage}
             resizeMode="contain"
           />
@@ -183,7 +183,7 @@ const TimeAttackInProgressScreen = () => {
           </Text>
         </TouchableOpacity>
       </ScrollView>
-      </View>
+    </View>
   );
 };
 
