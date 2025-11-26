@@ -377,6 +377,8 @@
       "login_error_message": "이메일과 비밀번호를 입력해주세요.",
       "login_success_title": "성공",
       "login_success_message": "로그인 되었습니다. 홈 화면으로 이동합니다.",
+      "login_fail_title": "로그인 실패",
+      "login_fail_message": "이메일과 비밀번호를 확인해주세요.",
       "email_placeholder": "이메일",
       "password_placeholder": "비밀번호",
       "signup_header": "이메일로 시작하기",

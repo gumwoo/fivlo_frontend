@@ -124,7 +124,15 @@
     "saved_message": "Saved \"{{title}}\".",
     "time_setting": "Time settings",
     "repeat_days": "Repeat days",
-    "days": ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+    "days": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
     "cancel": "Cancel",
     "confirm": "OK",
     "location_setting": "Location settings",
@@ -154,9 +162,29 @@
     "add_comment": "Navigate to reminder 'add' page",
     "reminder_click_comment": "Click reminder title, time, location to go to 'edit' page",
     "add_button_comment": "Click '+' button to go to 'add' page",
-    "default_checklist": ["Wallet", "Phone", "Keys"],
-    "days_full": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    "days_short": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "default_checklist": [
+      "Wallet",
+      "Phone",
+      "Keys"
+    ],
+    "days_full": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
+    "days_short": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
     "snooze_implementation": "5-minute reminder feature needs implementation",
     "skip_implementation": "Skip today feature needs implementation"
   },
@@ -340,6 +368,8 @@
       "login_error_message": "Please enter email and password.",
       "login_success_title": "Success",
       "login_success_message": "Logged in. Going to Home.",
+      "login_fail_title": "Login failed",
+      "login_fail_message": "Please enter email and password.",
       "email_placeholder": "Email",
       "password_placeholder": "Password",
       "signup_header": "Start with Email",
@@ -457,10 +487,10 @@
     "delete_confirm_message": "It's such a pity..",
     "delete_confirm_submessage": "If you withdraw as a member, all created routines and albums will disappear.",
     "confirm": "Confirm"
-    },
-    "timeattack": {
+  },
+  "timeattack": {
     "exit_confirm_message": "Do you want to end your focus time with Obooni?"
-    },
+  },
   "task_detail": {
     "delete_confirm_yes": "Yes",
     "delete_confirm_no": "No"
@@ -488,9 +518,38 @@
     }
   },
   "calendar": {
-    "months": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    "days_full": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-    "days_short": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    "months": [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ],
+    "days_full": [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
+    "days_short": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ],
     "today": "Today",
     "date_format": "yyyy-MM-dd EEEE"
   },
