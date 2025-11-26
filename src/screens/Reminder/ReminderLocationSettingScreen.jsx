@@ -70,17 +70,14 @@ const ReminderLocationSettingScreen = () => {
     return `<!DOCTYPE html><html><head><meta charset="utf-8"/><meta name="viewport" content="initial-scale=1, maximum-scale=1"/><style>html,body,#map{margin:0;padding:0;height:100%;}</style><script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false"></script></head><body><div id="map"></div><script>window.onload=function(){kakao.maps.load(function(){var container=document.getElementById('map');var center=new kakao.maps.LatLng(${lat},${lng});var map=new kakao.maps.Map(container,{center:center,level:4});var marker=new kakao.maps.Marker({position:center});marker.setMap(map);var circle=new kakao.maps.Circle({center:center,radius:${locationRadius},strokeWeight:2,strokeColor:'#FFC400',strokeOpacity:0.9,fillColor:'rgba(255,196,0,0.15)',fillOpacity:0.7});circle.setMap(map);kakao.maps.event.addListener(map,'click',function(mouseEvent){var ll=mouseEvent.latLng;marker.setPosition(ll);circle.setOptions({center:ll});if(window.ReactNativeWebView){window.ReactNativeWebView.postMessage(JSON.stringify({type:'select',lat:ll.getLat(),lng:ll.getLng()}));}});});};</script></body></html>`;
   }, [KAKAO_KEY, region, locationRadius]);
 
-  // --- ✨ [수정] 앱을 방해하던 위치 시뮬레이션 및 알림 관련 useEffect, 함수 전체 삭제 ---
-
   const handleSaveLocation = async () => {
     if (!locationName.trim() && !addressInput.trim()) {
       Alert.alert(t('reminder.location_required_title'), t('reminder.location_required_message'));
       return;
     }
-    
+
     const finalLocation = locationName.trim() || addressInput.trim();
-    
-    // (이하 저장 로직은 원본과 동일)
+
     try {
       if (onLocationSelected) {
         onLocationSelected({ name: finalLocation, coords: selectedCoord, radius: locationRadius });
@@ -89,8 +86,12 @@ const ReminderLocationSettingScreen = () => {
       navigation.goBack();
     } catch (error) {
       console.error('위치 저장 실패:', error);
-      Alert.alert('오류', '위치 저장에 실패했습니다.');
+      Alert.alert(t('common.error'), t('reminder.location_save_error'));
     }
+  };
+
+  const handleChipPress = (location) => {
+    setLocationName(t(`reminder.chips.${location}`));
   };
 
   return (
@@ -102,16 +103,16 @@ const ReminderLocationSettingScreen = () => {
 
         {/* 빠른 선택 칩 */}
         <View style={styles.chipsRow}>
-          {['집', '회사', '학교'].map((label) => (
-            <TouchableOpacity key={label} style={[styles.chip, locationName === label && styles.chipSelected]} onPress={() => setLocationName(label)}>
-              <Text style={[styles.chipText, locationName === label && styles.chipTextSelected]}>{label}</Text>
+          {['home', 'company', 'school'].map((key) => (
+            <TouchableOpacity key={key} style={[styles.chip, locationName === t(`reminder.chips.${key}`) && styles.chipSelected]} onPress={() => handleChipPress(key)}>
+              <Text style={[styles.chipText, locationName === t(`reminder.chips.${key}`) && styles.chipTextSelected]}>{t(`reminder.chips.${key}`)}</Text>
             </TouchableOpacity>
           ))}
         </View>
 
         <Text style={styles.sectionTitle}>{t('reminder.address_label')}</Text>
         <TextInput style={styles.inputField} placeholder={t('reminder.address_placeholder')} value={addressInput} onChangeText={setAddressInput} />
-        
+
         {/* 1순위: Kakao WebView (키가 있으면 우선 사용) */}
         {KAKAO_KEY && WebViewComponent && kakaoHtml && (
           <View style={styles.mapBox}>
@@ -124,7 +125,7 @@ const ReminderLocationSettingScreen = () => {
                   if (data?.type === 'select') {
                     setSelectedCoord({ latitude: data.lat, longitude: data.lng });
                   }
-                } catch (err) {}
+                } catch (err) { }
               }}
             />
           </View>
@@ -154,20 +155,20 @@ const ReminderLocationSettingScreen = () => {
         {mapReady === null && (
           <View style={styles.mapPlaceholder}>
             <ActivityIndicator color={Colors.secondaryBrown} />
-            <Text style={[styles.mapPlaceholderText, { marginTop: 8 }]}>지도 모듈 로딩 중...</Text>
+            <Text style={[styles.mapPlaceholderText, { marginTop: 8 }]}>{t('reminder.map_loading')}</Text>
           </View>
         )}
         {(mapReady === false && KAKAO_KEY && !WebViewComponent) && (
           <View style={styles.mapPlaceholder}>
-            <Text style={styles.mapPlaceholderText}>react-native-webview 패키지가 필요합니다.</Text>
-            <Text style={[styles.mapPlaceholderText, { marginTop: 8 }]}>터미널에서: npx expo install react-native-webview</Text>
+            <Text style={styles.mapPlaceholderText}>{t('reminder.webview_required')}</Text>
+            <Text style={[styles.mapPlaceholderText, { marginTop: 8 }]}>{t('reminder.webview_install_guide')}</Text>
           </View>
         )}
         {mapReady === false && !KAKAO_KEY && (
           <View style={styles.mapPlaceholder}>
             <Text style={styles.mapPlaceholderText}>{t('reminder.map_placeholder')}</Text>
             <Text style={styles.mapRadiusText}>{t('reminder.map_radius')}</Text>
-            <Text style={[styles.mapPlaceholderText, { marginTop: 8 }]}>react-native-maps 설치 후 자동 표시됩니다.</Text>
+            <Text style={[styles.mapPlaceholderText, { marginTop: 8 }]}>{t('reminder.maps_install_guide')}</Text>
           </View>
         )}
 
@@ -177,22 +178,21 @@ const ReminderLocationSettingScreen = () => {
   );
 };
 
-// (스타일 코드는 유지)
 const styles = StyleSheet.create({
-    screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige, },
-    scrollViewContentContainer: { paddingHorizontal: 20, paddingBottom: 40, paddingTop: 10, alignItems: 'center', },
-    sectionTitle: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.textDark, marginTop: 25, marginBottom: 10, width: '100%', textAlign: 'left', },
-    inputField: { width: '100%', backgroundColor: Colors.textLight, borderRadius: 10, padding: 15, fontSize: FontSizes.medium, color: Colors.textDark, },
-    mapPlaceholder: { width: '100%', height: 300, backgroundColor: Colors.textLight, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 30, borderWidth: 1, borderColor: Colors.secondaryBrown, position: 'relative', },
-    mapBox: { width: '100%', height: 300, borderRadius: 10, overflow: 'hidden', backgroundColor: Colors.textLight, marginTop: 20, marginBottom: 30 },
-    mapPlaceholderText: { fontSize: FontSizes.medium, color: Colors.secondaryBrown, textAlign: 'center', },
-    mapRadiusText: { position: 'absolute', bottom: 10, right: 10, fontSize: FontSizes.small, color: Colors.secondaryBrown, },
-    saveButton: { width: '100%', },
-    chipsRow: { flexDirection: 'row', width: '100%', marginTop: 10, },
-    chip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 18, backgroundColor: Colors.primaryBeige, borderWidth: 1, borderColor: Colors.secondaryBrown, marginRight: 8 },
-    chipSelected: { backgroundColor: Colors.accentApricot, borderColor: Colors.accentApricot },
-    chipText: { color: Colors.secondaryBrown },
-    chipTextSelected: { color: Colors.textLight, fontWeight: FontWeights.bold },
+  screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige, },
+  scrollViewContentContainer: { paddingHorizontal: 20, paddingBottom: 40, paddingTop: 10, alignItems: 'center', },
+  sectionTitle: { fontSize: FontSizes.large, fontWeight: FontWeights.bold, color: Colors.textDark, marginTop: 25, marginBottom: 10, width: '100%', textAlign: 'left', },
+  inputField: { width: '100%', backgroundColor: Colors.textLight, borderRadius: 10, padding: 15, fontSize: FontSizes.medium, color: Colors.textDark, },
+  mapPlaceholder: { width: '100%', height: 300, backgroundColor: Colors.textLight, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginTop: 20, marginBottom: 30, borderWidth: 1, borderColor: Colors.secondaryBrown, position: 'relative', },
+  mapBox: { width: '100%', height: 300, borderRadius: 10, overflow: 'hidden', backgroundColor: Colors.textLight, marginTop: 20, marginBottom: 30 },
+  mapPlaceholderText: { fontSize: FontSizes.medium, color: Colors.secondaryBrown, textAlign: 'center', },
+  mapRadiusText: { position: 'absolute', bottom: 10, right: 10, fontSize: FontSizes.small, color: Colors.secondaryBrown, },
+  saveButton: { width: '100%', },
+  chipsRow: { flexDirection: 'row', width: '100%', marginTop: 10, },
+  chip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 18, backgroundColor: Colors.primaryBeige, borderWidth: 1, borderColor: Colors.secondaryBrown, marginRight: 8 },
+  chipSelected: { backgroundColor: Colors.accentApricot, borderColor: Colors.accentApricot },
+  chipText: { color: Colors.secondaryBrown },
+  chipTextSelected: { color: Colors.textLight, fontWeight: FontWeights.bold },
 });
 
 

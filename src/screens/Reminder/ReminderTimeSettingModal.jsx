@@ -1,4 +1,4 @@
-// src/screens/ReminderTimeSettingModal.jsx
+// src/screens/Reminder/ReminderTimeSettingModal.jsx
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Switch } from 'react-native';
@@ -46,10 +46,8 @@ const ReminderTimeSettingModal = ({ initialTime, onTimeSelected, onClose }) => {
     }
     onClose();
   };
-  
+
   // t 함수를 사용하여 요일 배열을 가져옵니다.
-  // 'reminder.days_full' 키에 ['월요일', '화요일', ...] 값이 있다고 가정합니다.
-  // 만약 없다면 ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'] 로 직접 사용하셔도 됩니다.
   const daysOfWeek = t('reminder.days_full', { returnObjects: true });
   const dayShort = t('reminder.days_short', { returnObjects: true });
 
@@ -76,7 +74,7 @@ const ReminderTimeSettingModal = ({ initialTime, onTimeSelected, onClose }) => {
               locale="ko-KR" // 한국어 설정
             />
           </View>
-          
+
 
           {/* 요일 반복 설정 */}
           <View style={styles.daysContainer}>
@@ -95,8 +93,8 @@ const ReminderTimeSettingModal = ({ initialTime, onTimeSelected, onClose }) => {
           </View>
 
           <View style={styles.buttonContainer}>
-            <Button title={t('reminder.cancel')} onPress={onClose} primary={false} style={styles.actionButton} />
-            <Button title={t('reminder.save')} onPress={handleSave} style={styles.actionButton} />
+            <Button title={t('common.cancel')} onPress={onClose} primary={false} style={styles.actionButton} />
+            <Button title={t('common.save')} onPress={handleSave} style={styles.actionButton} />
           </View>
         </View>
       </View>

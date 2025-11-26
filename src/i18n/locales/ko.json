@@ -5,7 +5,8 @@
     "cancel": "취소",
     "yes": "예",
     "no": "아니요",
-    "error": "오류"
+    "error": "오류",
+    "save": "저장"
   },
   "tabs": {
     "home": "홈",
@@ -76,7 +77,9 @@
     "completed_message": "\"{{task}}\"(을)를 종료했어요!",
     "minute_label": "분",
     "start_title": "타임어택 시작",
-    "start_message": "{{goal}} 목표에 {{minutes}}분 타임어택을 시작합니다."
+    "start_message": "{{goal}} 목표에 {{minutes}}분 타임어택을 시작합니다.",
+    "tts_start": "{{task}} 시작합니다.",
+    "tts_complete": "{{task}} 완료되었습니다."
   },
   "analysis": {
     "title": "집중도 분석",
@@ -195,7 +198,17 @@
     "delete_message": "이 알림을 삭제할까요?",
     "delete_confirm": "삭제",
     "dont_forget": "잊지말고 체크하세요!",
-    "check_please": "체크 해주세요"
+    "check_please": "체크 해주세요",
+    "location_save_error": "위치 저장에 실패했습니다.",
+    "chips": {
+      "home": "집",
+      "company": "회사",
+      "school": "학교"
+    },
+    "map_loading": "지도 모듈 로딩 중...",
+    "webview_required": "react-native-webview 패키지가 필요합니다.",
+    "webview_install_guide": "터미널에서: npx expo install react-native-webview",
+    "maps_install_guide": "react-native-maps 설치 후 자동 표시됩니다."
   },
   "pomodoro": {
     "header": "포모도로 기능",

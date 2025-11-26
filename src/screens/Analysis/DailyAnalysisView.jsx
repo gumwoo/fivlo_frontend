@@ -26,11 +26,11 @@ const DailyAnalysisView = ({ date }) => {
     // 활동별로 그룹화하고 총 시간 계산
     const activitiesMap = {};
     let totalTime = 0;
-    
+
     records.forEach((record) => {
       const goal = record.goal || '기타';
       const time = record.focusedTime || 0; // 초 단위
-      
+
       if (!activitiesMap[goal]) {
         activitiesMap[goal] = {
           id: goal,
@@ -39,8 +39,8 @@ const DailyAnalysisView = ({ date }) => {
           color: getColorForGoal(goal),
         };
       }
-      
-      // ✅ 초를 분으로 변환하여 저장
+
+      // 초를 분으로 변환하여 저장
       activitiesMap[goal].time += Math.floor(time / 60);
       totalTime += time;
     });
@@ -67,7 +67,7 @@ const DailyAnalysisView = ({ date }) => {
     };
     return colors[goal] || Colors.lightGray;
   };
-  
+
   // 시간대별 바 차트 데이터 생성 (3번)
   const hourlyChartData = Array.from({ length: 24 }, (_, i) => {
     const hour = i.toString().padStart(2, '0');
@@ -83,7 +83,7 @@ const DailyAnalysisView = ({ date }) => {
       <Text style={styles.activityTime}>{item.time}분</Text>
     </View>
   );
-  
+
   return (
     <View style={styles.container}>
       {/* 시간대별 바 차트 (3번) */}
@@ -140,14 +140,14 @@ const DailyAnalysisView = ({ date }) => {
           <Text style={styles.statLabelSmall}>총 집중 시간</Text>
           <Text style={styles.statValueLarge}>{formatTime(dailyData?.totalConcentrationTime || 0)}</Text>
         </View>
-        
+
         {/* 구분선 */}
         <View style={styles.divider} />
-        
+
         {/* 오른쪽: 원형 차트 + 집중 비율 */}
         <View style={styles.chartSection}>
-          <DonutChart 
-            percentage={dailyData?.concentrationRatio || 0} 
+          <DonutChart
+            percentage={dailyData?.concentrationRatio || 0}
             size={80}
             strokeWidth={8}
             color={Colors.secondaryBrown}

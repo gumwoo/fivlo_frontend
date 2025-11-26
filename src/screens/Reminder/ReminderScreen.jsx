@@ -35,7 +35,7 @@ const ReminderScreen = () => {
   const loadReminders = useCallback(async (force = false) => {
     if (isLoading && !force) return;
     setIsLoading(true);
-    
+
     try {
       const storedReminders = await AsyncStorage.getItem(REMINDERS_STORAGE_KEY);
       const remindersData = storedReminders ? JSON.parse(storedReminders) : [];
@@ -59,13 +59,13 @@ const ReminderScreen = () => {
       }
     }
   }, [isFocused, navigation, loadReminders]);
-  
+
   // 최초 진입 시 데이터 로드
   useEffect(() => {
     loadReminders(true);
   }, []);
 
-  // --- ✨ [기능 추가] 알림 ON/OFF 상태를 저장하는 함수 ---
+  // ---  [기능 추가] 알림 ON/OFF 상태를 저장하는 함수 ---
   const handleToggleActive = async (reminderId, newIsActive) => {
     try {
       let updatedReminders = reminders.map(reminder => reminder);
@@ -133,8 +133,8 @@ const ReminderScreen = () => {
     return (
       <View style={styles.reminderItemContainer}>
         {/* 알림 제목, 시간, 장소를 누르면 '수정' 페이지로 이동 */}
-        <TouchableOpacity 
-          style={styles.reminderContent} 
+        <TouchableOpacity
+          style={styles.reminderContent}
           onPress={() => handleEditReminder(item)}
           onLongPress={() => navigation.navigate('ReminderChecklistOverlay', { reminderTitle: item.title, items: item.checklist?.length ? item.checklist : (t('reminder.default_checklist', { returnObjects: true })) })}
         >
@@ -198,64 +198,64 @@ const ReminderScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige },
-    scrollViewContentContainer: { paddingHorizontal: 20, paddingBottom: 100 },
-    emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 100 },
-    noRemindersText: { fontSize: FontSizes.medium, color: Colors.secondaryBrown, textAlign: 'center' },
-    reminderItemContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: Colors.textLight,
-        borderRadius: 15,
-        padding: 20,
-        marginBottom: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-        elevation: 2,
-    },
-    reminderContent: {
-        flex: 1,
-        marginRight: 15,
-    },
-    reminderTitle: {
-        fontSize: FontSizes.large,
-        fontWeight: FontWeights.bold,
-        color: Colors.textDark,
-        marginBottom: 8,
-    },
-    reminderDetails: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 4,
-    },
-    reminderTime: {
-        fontSize: FontSizes.medium,
-        color: Colors.secondaryBrown,
-        marginLeft: 8,
-    },
-    reminderLocationText: {
-        fontSize: FontSizes.medium,
-        color: Colors.secondaryBrown,
-        marginLeft: 8,
-    },
-    addButton: {
-        position: 'absolute',
-        bottom: 100, // 탭바 위에 보이도록 여백 확보
-        alignSelf: 'center',
-        backgroundColor: '#E6E6E6',
-        width: 64,
-        height: 64,
-        borderRadius: 32,
-        justifyContent: 'center',
-        alignItems: 'center',
-        elevation: 3,
-        zIndex: 1000,
-    },
-    itemActions: { flexDirection: 'row', alignItems: 'center' },
-    deleteButton: { marginLeft: 12, padding: 6 },
+  screenContainer: { flex: 1, backgroundColor: Colors.primaryBeige },
+  scrollViewContentContainer: { paddingHorizontal: 20, paddingBottom: 100 },
+  emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 100 },
+  noRemindersText: { fontSize: FontSizes.medium, color: Colors.secondaryBrown, textAlign: 'center' },
+  reminderItemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: Colors.textLight,
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  reminderContent: {
+    flex: 1,
+    marginRight: 15,
+  },
+  reminderTitle: {
+    fontSize: FontSizes.large,
+    fontWeight: FontWeights.bold,
+    color: Colors.textDark,
+    marginBottom: 8,
+  },
+  reminderDetails: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  reminderTime: {
+    fontSize: FontSizes.medium,
+    color: Colors.secondaryBrown,
+    marginLeft: 8,
+  },
+  reminderLocationText: {
+    fontSize: FontSizes.medium,
+    color: Colors.secondaryBrown,
+    marginLeft: 8,
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 100, // 탭바 위에 보이도록 여백 확보
+    alignSelf: 'center',
+    backgroundColor: '#E6E6E6',
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
+    zIndex: 1000,
+  },
+  itemActions: { flexDirection: 'row', alignItems: 'center' },
+  deleteButton: { marginLeft: 12, padding: 6 },
 });
 
 export default ReminderScreen;

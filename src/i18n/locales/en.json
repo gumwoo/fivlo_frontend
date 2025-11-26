@@ -5,7 +5,8 @@
     "cancel": "Cancel",
     "yes": "Yes",
     "no": "No",
-    "error": "Error"
+    "error": "Error",
+    "save": "Save"
   },
   "tabs": {
     "home": "Home",
@@ -76,7 +77,9 @@
     "completed_message": "Finished \"{{task}}\"!",
     "minute_label": "min",
     "start_title": "Start Time Attack",
-    "start_message": "Start Time Attack for {{minutes}} minutes on \"{{goal}}\"."
+    "start_message": "Start Time Attack for {{minutes}} minutes on \"{{goal}}\".",
+    "tts_start": "{{task}} has started.",
+    "tts_complete": "{{task}} has been completed."
   },
   "analysis": {
     "title": "Focus Analysis",
@@ -186,7 +189,17 @@
       "Sun"
     ],
     "snooze_implementation": "5-minute reminder feature needs implementation",
-    "skip_implementation": "Skip today feature needs implementation"
+    "skip_implementation": "Skip today feature needs implementation",
+    "location_save_error": "Failed to save location.",
+    "chips": {
+      "home": "Home",
+      "company": "Work",
+      "school": "School"
+    },
+    "map_loading": "Loading map module...",
+    "webview_required": "react-native-webview package is required.",
+    "webview_install_guide": "Run in terminal: npx expo install react-native-webview",
+    "maps_install_guide": "Will appear automatically after installing react-native-maps."
   },
   "pomodoro": {
     "header": "Pomodoro",

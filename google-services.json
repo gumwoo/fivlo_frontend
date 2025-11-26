@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "191475438602",
+    "project_id": "fivlo-2334d",
+    "storage_bucket": "fivlo-2334d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191475438602:android:ddc72419bfa3d358d7bbf3",
+        "android_client_info": {
+          "package_name": "com.gunwookang.FIVLO_App"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "191475438602-02blg4m5tlp5v8gdbov7c2o5ouilfjhq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gunwookang.FIVLO_App",
+            "certificate_hash": "22b0c6ea33e6056cf6ee2b2a018e7cd508eda89b"
+          }
+        },
+        {
+          "client_id": "191475438602-qv6jft20d0v6tdueam3ts8st8d1m29ku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA8_eGt-nGil_i5Yd_aYeTUlLWayG7WcM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "191475438602-qv6jft20d0v6tdueam3ts8st8d1m29ku.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "191475438602-bscqc6gau7pb6o527ab44ajtrquag1ql.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gunwookang.fivlo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

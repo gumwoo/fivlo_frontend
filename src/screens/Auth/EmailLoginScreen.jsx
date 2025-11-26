@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native';
 import { GlobalStyles } from '../../styles/GlobalStyles';
-import { Colors } from '../../styles/color'; // <-- 사용자님 파일명에 맞춰 'color'로 수정!
-import { FontSizes, FontWeights } from '../../styles/Fonts'; // <-- 사용자님 파일명에 맞춰 'Fonts'로 수정!
+import { Colors } from '../../styles/color'; // <-- 파일명에 맞춰 'color'로 수정!
+import { FontSizes, FontWeights } from '../../styles/Fonts'; // <-- 파일명에 맞춰 'Fonts'로 수정!
 import Header from '../../components/common/Header';
 import Input from '../../components/common/Input';
 import Button from '../../components/common/Button';

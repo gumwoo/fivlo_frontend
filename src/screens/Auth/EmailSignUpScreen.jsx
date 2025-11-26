@@ -51,7 +51,6 @@ const EmailSignUpScreen = () => {
       // 회원가입 성공 후 언어 선택 화면으로 이동
       navigation.navigate('LanguageSelection');
     } catch (error) {
-      console.error('회원가입 실패:', error);
       if (error.response && error.response.status === 409) {
         Alert.alert(t('core.auth.signup_fail_title'), '이미 가입된 이메일입니다.');
       } else {

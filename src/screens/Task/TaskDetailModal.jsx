@@ -129,7 +129,7 @@ const TaskDetailModal = () => {
     setTaskToDelete(null);
   };
 
-  // ✅ Task 저장 시 전역 스토어에 추가/수정
+  //  Task 저장 시 전역 스토어에 추가/수정
   const onTaskEditSave = (savedTask) => {
     if (editMode === 'edit') {
       // 수정 모드

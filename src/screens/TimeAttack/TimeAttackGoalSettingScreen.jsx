@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 // Modal, TouchableOpacity를 import에 추가합니다.
-import { View, Text, StyleSheet, Alert, Modal, TouchableOpacity,Image } from 'react-native';
+import { View, Text, StyleSheet, Alert, Modal, TouchableOpacity, Image } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -36,7 +36,7 @@ const TimeAttackGoalSettingScreen = () => {
     const displaySeconds = (totalSeconds % 60).toString().padStart(2, '0');
     return `${displayMinutes}:${displaySeconds}`;
   };
-  
+
   // 모달 관련 함수
   const handleOpenModal = () => {
     setTempTime(time); // 모달을 열 때 현재 시간으로 임시 시간 설정
@@ -63,7 +63,7 @@ const TimeAttackGoalSettingScreen = () => {
   return (
     <View style={[styles.screenContainer, { paddingTop: insets.top }]}>
       <Header title={t('headers.time_attack')} showBackButton={true} />
-      <View style={styles.content}>        
+      <View style={styles.content}>
         <Text style={styles.questionText}>{t('time_attack.question_time')}</Text>
         {/* 4. 시간 표시 영역을 TouchableOpacity로 감싸 모달을 열도록 합니다. */}
         <TouchableOpacity style={styles.timerDisplayContainer} onPress={handleOpenModal}>
@@ -89,16 +89,16 @@ const TimeAttackGoalSettingScreen = () => {
         onRequestClose={handleCancelTime}
       >
         <View style={styles.modalContainer}>
-          <TouchableOpacity 
-            style={styles.modalBackdrop} 
-            activeOpacity={1} 
+          <TouchableOpacity
+            style={styles.modalBackdrop}
+            activeOpacity={1}
             onPress={handleCancelTime}
           />
           <View style={styles.modalContent}>
             <TimePicker time={tempTime} setTime={setTempTime} />
             <View style={styles.modalButtonContainer}>
-              <Button title={"취소"} onPress={handleCancelTime} style={styles.modalButton} primary={false} />
-              <Button title={"저장"} onPress={handleConfirmTime} style={styles.modalButton} />
+              <Button title={t('common.cancel')} onPress={handleCancelTime} style={styles.modalButton} primary={false} />
+              <Button title={t('common.save')} onPress={handleConfirmTime} style={styles.modalButton} />
             </View>
           </View>
         </View>
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFD700', // 노란색
     borderRadius: 5,
     paddingVertical: 15,
-    marginHorizontal: 0, 
+    marginHorizontal: 0,
     marginTop: 0,
   },
   startButtonText: { color: Colors.textDark, fontSize: FontSizes.large, fontWeight: 'bold' },

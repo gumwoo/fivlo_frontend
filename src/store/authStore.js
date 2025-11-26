@@ -31,7 +31,7 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  // ✨ [추가] 사용자 프로필 정보 저장
+  //  사용자 프로필 정보 저장
   setUserProfile: (profileData) => {
     set({
       userNickname: profileData.nickname,

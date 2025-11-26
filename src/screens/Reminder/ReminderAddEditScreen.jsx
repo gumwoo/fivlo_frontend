@@ -61,7 +61,7 @@ const ReminderAddEditScreen = () => {
     return days.join(', ');
   };
 
-  // --- ✨ 저장 기능 구현 및 네비게이션 수정 ---
+  // ---  저장 기능 구현 및 네비게이션 수정 ---
   const handleSaveReminder = async () => {
     if (!title.trim()) {
       Alert.alert(t('reminder.error_title'), t('reminder.title_required'));
@@ -73,7 +73,7 @@ const ReminderAddEditScreen = () => {
       if (initialReminder?.notificationIds?.length) {
         await cancelReminderNotifications(initialReminder.notificationIds);
       }
-    } catch {}
+    } catch { }
 
     const newReminder = {
       id: initialReminder ? initialReminder.id : Date.now().toString(),
@@ -97,7 +97,7 @@ const ReminderAddEditScreen = () => {
       const REMINDERS_STORAGE_KEY = 'reminders_data';
       const existingReminders = await AsyncStorage.getItem(REMINDERS_STORAGE_KEY);
       let reminders = existingReminders ? JSON.parse(existingReminders) : [];
-      
+
       const existingIndex = reminders.findIndex(r => r.id === newReminder.id);
 
       if (existingIndex >= 0) {
@@ -107,9 +107,9 @@ const ReminderAddEditScreen = () => {
         // 새 항목 추가
         reminders.push(newReminder);
       }
-      
+
       await AsyncStorage.setItem(REMINDERS_STORAGE_KEY, JSON.stringify(reminders));
-      
+
       // 목록 화면으로 돌아가면서 새로고침하도록 파라미터 전달
       navigation.navigate('ReminderMain', { refresh: true });
     } catch (error) {
@@ -117,7 +117,7 @@ const ReminderAddEditScreen = () => {
       Alert.alert(t('reminder.error_title'), t('reminder.save_failed'));
     }
   };
-  
+
   // (체크리스트 관련 함수들은 생략, 원본 코드와 동일)
   const addChecklistItem = () => setChecklistItems([...checklistItems, '']);
   const handleChecklistItemChange = (text, index) => { /* ... */ };
@@ -139,7 +139,7 @@ const ReminderAddEditScreen = () => {
           </View>
           <FontAwesome5 name="chevron-right" size={18} color={Colors.secondaryBrown} />
         </TouchableOpacity>
-        
+
         {/* 장소 설정 */}
         <Text style={styles.sectionTitle}>{t('reminder.location_setting')}</Text>
         <TouchableOpacity
@@ -168,8 +168,8 @@ const ReminderAddEditScreen = () => {
           {t('reminder.info_text')}
         </Text>
 
-        <Button title={t('reminder.save')} onPress={handleSaveReminder} style={{marginTop: 40}} />
-        
+        <Button title={t('reminder.save')} onPress={handleSaveReminder} style={{ marginTop: 40 }} />
+
       </ScrollView>
 
       {isTimeModalVisible && (

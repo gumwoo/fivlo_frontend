@@ -13,7 +13,7 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import { socialLogin } from '../../utils/api';
 import useAuthStore from '../../store/authStore';
 
-// ✅ 로고 이미지 불러오기
+// 로고 이미지 불러오기
 const logo = require('../../../assets/logo.png');
 
 const AuthChoiceScreen = () => {
@@ -102,7 +102,7 @@ const AuthChoiceScreen = () => {
     <View style={[GlobalStyles.container, { paddingTop: insets.top }]}>
       <ScrollView contentContainerStyle={styles.scrollViewContentContainer}>
 
-        {/* ✅ 여기서 직접 로고 이미지를 사용 */}
+        {/* 여기서 직접 로고 이미지를 사용 */}
         <Image source={logo} style={styles.logo} />
 
         <Text style={styles.tagline}>

@@ -48,16 +48,10 @@ const TimeAttackInProgressScreen = () => {
       setTimeLeft(currentTask.time * 60); // 분을 초로 변환
       setIsRunning(true); // 새 태스크 시작 시 타이머 자동 시작
 
-      // TTS: 태스크 시작 메시지 (한영 번역) - 약간의 지연 후 실행
+      // TTS: 태스크 시작 메시지 (i18n 적용) - 약간의 지연 후 실행
       setTimeout(() => {
-        const startMessageKo = `${currentTask.text} 시작합니다.`;
-        const startMessageEn = `${currentTask.text} has started.`;
-
-        if (i18n.language === 'ko') {
-          speakText(startMessageKo);
-        } else {
-          speakText(startMessageEn);
-        }
+        const startMessage = t('time_attack.tts_start', { task: currentTask.text });
+        speakText(startMessage);
       }, 500); // 0.5초 지연
     } else {
       // 모든 태스크 완료
@@ -95,34 +89,17 @@ const TimeAttackInProgressScreen = () => {
       await Speech.speak(text, { language: lang });
     } catch (e) {
       console.warn("Speech synthesis failed", e);
-    }
-  };
-
-  const handleTaskComplete = () => {
-    setIsRunning(false); // 타이머 정지
-
-    // TTS: 완료 메시지 (한영 번역)
-    const completedMessageKo = `${currentTask.text} 완료되었습니다.`;
-    const completedMessageEn = `${currentTask.text} has been completed.`;
-
-    if (i18n.language === 'ko') {
-      speakText(completedMessageKo);
-    } else {
-      speakText(completedMessageEn);
-    }
-
-    // 3초 후 자동으로 다음 단계로 이동
-    setAutoNextCountdown(3);
-    const cd = setInterval(() => {
-      setAutoNextCountdown(prev => {
-        if (prev === 1) {
-          clearInterval(cd);
-          handleNextTask();
-          return null;
-        }
-        return (prev || 1) - 1;
-      });
-    }, 1000);
+      const cd = setInterval(() => {
+        setAutoNextCountdown(prev => {
+          if (prev === 1) {
+            clearInterval(cd);
+            handleNextTask();
+            return null;
+          }
+          return (prev || 1) - 1;
+        });
+      }, 1000);
+    };
   };
 
   const handleNextTask = () => {
