@@ -82,6 +82,16 @@ export const getTimeAttackGoals = async () => {
   return response.data;
 };
 
+// 타임어택 목표 추가 함수 (REQ-BE-TIMEATTACK-002)
+export const addTimeAttackGoal = async (name, languageCode = 'ko') => {
+  const response = await apiClient.post('/time-attack/goals', {
+    name,
+    languageCode,
+    isPredefined: false
+  });
+  return response.data;
+};
+
 // 응답 인터셉터 추가
 apiClient.interceptors.response.use(
   (response) => {

@@ -79,7 +79,12 @@
     "start_title": "Start Time Attack",
     "start_message": "Start Time Attack for {{minutes}} minutes on \"{{goal}}\".",
     "tts_start": "{{task}} has started.",
-    "tts_complete": "{{task}} has been completed."
+    "tts_complete": "{{task}} has been completed.",
+    "goal": {
+      "houseCleaning": "Cleaning up the house",
+      "mealPrep": "Preperation of a meal",
+      "outingPrep": "Get ready to go out"
+    }
   },
   "analysis": {
     "title": "Focus Analysis",
