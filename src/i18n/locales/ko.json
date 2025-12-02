@@ -79,7 +79,12 @@
     "start_title": "타임어택 시작",
     "start_message": "{{goal}} 목표에 {{minutes}}분 타임어택을 시작합니다.",
     "tts_start": "{{task}} 시작합니다.",
-    "tts_complete": "{{task}} 완료되었습니다."
+    "tts_complete": "{{task}} 완료되었습니다.",
+    "goal": {
+      "houseCleaning": "집 정리하기",
+      "mealPrep": "식사 준비하기",
+      "outingPrep": "외출 준비하기"
+    }
   },
   "analysis": {
     "title": "집중도 분석",

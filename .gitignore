@@ -40,3 +40,6 @@ Thumbs.db
 *.bak
 *.tmp
 *.swp
+
+google-services.json
+GoogleService-Info.plist

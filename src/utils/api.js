@@ -76,6 +76,12 @@ export const socialLogin = async (provider, token) => {
   return response.data;
 };
 
+// 타임어택 목표 조회 함수 (REQ-BE-TIMEATTACK-001)
+export const getTimeAttackGoals = async () => {
+  const response = await apiClient.get('/time-attack/goals');
+  return response.data;
+};
+
 // 응답 인터셉터 추가
 apiClient.interceptors.response.use(
   (response) => {
